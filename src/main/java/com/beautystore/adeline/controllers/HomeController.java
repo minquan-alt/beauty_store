@@ -9,4 +9,14 @@ public class HomeController {
     public String home() {
         return "index";
     }
+
+    @GetMapping("signin")
+    public String signin() {
+        return "signin";
+    }
+
+    @GetMapping("signup")
+    public String signup() {
+        return "signup";
+    }
 }
