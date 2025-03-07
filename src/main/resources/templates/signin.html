@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adeline | Sign In</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        :root {
+            --primary-color: #FF6B6B;
+            --secondary-color: #4ECDC4;
+            --light-gray: #F8F9FA;
+        }
+        
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(to right, var(--light-gray), var(--primary-color));
+        }
+
+        .auth-container {
+            max-width: 900px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-left {
+            padding: 50px;
+        }
+
+        .auth-right {
+            background: url('assets/images/adeline-banner.jpeg') no-repeat center;
+            background-size: cover;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            transition: 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #E65A5A;
+        }
+
+        .btn-google {
+            background: #DB4437;
+            color: white;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .btn-phone {
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .text-small {
+            font-size: 14px;
+            color: #777;
+        }
+
+        @media (max-width: 768px) {
+            .auth-right {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container auth-container">
+        <div class="row">
+            <!-- Form Section -->
+            <div class="col-md-6 auth-left">
+                <h2 class="text-center fw-bold mb-4">Welcome Back!</h2>
+                <p class="text-center text-small">Sign in to continue your beauty journey with Adeline.</p>
+
+                <form th:action="@{/signin}" method="post">
+                    <div class="mb-3">
+                        <input type="email" class="form-control" name="email" placeholder="Email" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" class="form-control" name="password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Sign In</button>
+                </form>
+
+                <div class="text-center my-3 text-small">OR</div>
+
+                <button class="btn btn-google w-100 mb-2" onclick="location.href='/oauth2/authorization/google'">
+                    <i class="fab fa-google me-2"></i> Continue with Google
+                </button>
+                <button class="btn btn-phone w-100">
+                    <i class="fas fa-phone me-2"></i> Continue with Phone
+                </button>
+
+                <p class="mt-3 text-center text-small">New here? <a href="/signup" class="text-decoration-none">Create an account</a></p>
+            </div>
+
+            <!-- Image Section -->
+            <div class="col-md-6 auth-right"></div>
+        </div>
+    </div>
+</body>
+</html>
