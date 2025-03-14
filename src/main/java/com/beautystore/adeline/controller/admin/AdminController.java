@@ -1,4 +1,4 @@
-package com.beautystore.adeline.controllers.admin;
+package com.beautystore.adeline.controller.admin;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

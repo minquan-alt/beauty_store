@@ -1,0 +1,85 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;60...=swap');
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Parisienne&family=Sacramento&family=Satisfy&display=swap');
+
+.navbar-nav {
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+    height: 100%; /* Đảm bảo chiều cao đầy đủ */
+}
+
+.navbar-custom {
+    background-color: #FFFFFF;
+    height: 100%;
+    display: flex;
+    align-items: center; /* Căn giữa các phần tử con theo chiều dọc */
+    /* Màu nền giống trong ảnh */
+}
+
+.navbar-brand,
+.navbar-brand.brand-name {
+    font-family: Parisienne;
+    font-weight: bold;
+    color: black;
+    font-size: 40px;
+    transition: color 0.3s ease; /* Thêm hiệu ứng chuyển đổi màu */
+}
+
+.navbar-brand.brand-name:hover {
+    color: #ff6f61; /* Màu khi hover */
+}
+
+.nav-link {
+    color: black !important;
+    font-weight: 200;
+    transition: all 0.3s ease; /* Đảm bảo có đơn vị thời gian (0.3s) */
+    position: relative; /* Cần thiết để tạo hiệu ứng gạch chân */
+}
+
+.nav-link:hover {
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+    text-decoration: none; /* Loại bỏ gạch chân mặc định */
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px; /* Điều chỉnh vị trí gạch chân */
+    width: 100%;
+    height: 1px; /* Độ dày của gạch chân */
+    background-color: black; /* Màu của gạch chân */
+    transform: scaleX(0); /* Ban đầu ẩn gạch chân */
+    transform-origin: bottom right;
+    transition: transform 0.3s ease; /* Hiệu ứng mượt mà */
+}
+
+.nav-link:hover::after {
+    transform: scaleX(1); /* Hiển thị gạch chân khi hover */
+    transform-origin: bottom left;
+}
+
+.nav-link.active {
+    color: blue !important;
+}
+
+.center-logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+i {
+    font-size: 1.4rem;
+
+}
+
+a {
+    text-decoration: none;
+}
+
+.navbar-nav .nav-link,
+.d-flex a {
+    font-size: 1.2rem;
+    /* Tăng kích thước chữ */
+}

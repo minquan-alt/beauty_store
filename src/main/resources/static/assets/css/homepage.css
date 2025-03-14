@@ -1,0 +1,205 @@
+* {
+    box-sizing: border-box;
+}
+html {
+    scroll-snap-type: y mandatory; 
+    scroll-behavior: smooth; 
+}
+
+header,
+.banner,
+.category,
+.test {
+    scroll-snap-align: start; 
+}
+
+header{
+    height: 10vh;
+}
+
+/* Thiết lập chung cho banner */
+.banner {
+    width: 100%;
+    height: 90vh; /* Chiều cao bằng viewport height */
+    background-image: url("/assets/images/banner.jpeg");
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    background-attachment: fixed;
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    color: white;
+    text-align: center;
+    overflow: hidden;
+}
+
+/* Lớp phủ màu cho banner */
+.banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7)); /* Gradient từ trên xuống */
+    z-index: 1;
+}
+
+/* Thiết kế thẻ information */
+.information {
+    position: relative;
+    z-index: 2; /* Đặt lên trên lớp phủ */
+    max-width: 800px; /* Giới hạn chiều rộng */
+    padding: 20px;
+    margin-bottom: 10vh;
+}
+
+/* Thiết kế chữ "Welcome to" */
+.welcome-text {
+    font-size: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+/* Thiết kế tên thương hiệu "Adeline" */
+.brand-name {
+    font-size: 4rem;
+    font-weight: bold;
+    font-family: 'Parisienne', cursive; /* Sử dụng font chữ Parisienne */
+    margin-bottom: 20px;
+}
+
+/* Thiết kế phần mô tả */
+.description {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+/* Thiết kế nút "Explore Now" */
+/* Thiết kế nút "Explore Now" mới */
+.explore-button {
+    display: inline-block;
+    padding: 12px 40px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: white;
+    background-color: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 30px; /* Bo tròn viền */
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+}
+
+/* Hiệu ứng gradient khi hover */
+.explore-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: all 0.6s ease;
+}
+
+.explore-button:hover {
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+}
+
+.explore-button:hover::before {
+    left: 100%;
+}
+
+/* Thêm dải ánh sáng chạy ngang */
+.explore-button::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, #f5e477, #c5f9f9);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+}
+
+.explore-button:hover::after {
+    transform: scaleX(1);
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+img {
+    width: 100%;
+    color: white;
+}
+
+.hover-underline {
+    width: 5vh;
+    cursor: pointer;
+    color: #ffffff;
+    position: absolute;
+    display: inline-block;
+    bottom: 30px; /* Đặt chữ ở dưới cùng */
+    left: 50%;
+    transform: translateX(-50%); /* Căn giữa theo chiều ngang */
+    z-index: 2; /* Đặt chữ lên trên lớp phủ */
+    color: white; /* Màu chữ */
+    text-align: center;
+    font-size: 1.5rem; /* Kích thước chữ */
+    font-weight: 300; /* Độ đậm của chữ */
+    text-transform: uppercase; /* Viết hoa */
+    letter-spacing: 2px; /* Khoảng cách giữa các chữ */
+    transition: all 0.3s ease;
+    opacity: 0; /* Ban đầu ẩn chữ */
+    animation: fadeIn 2s ease-in-out forwards; /* Hiệu ứng fade-in */
+  }
+  /* Hiệu ứng lơ lửng (floating) */
+@keyframes float {
+    0%, 100% {
+      transform: translateY(0); /* Vị trí ban đầu */
+    }
+    50% {
+      transform: translateY(-10px); /* Di chuyển lên trên 10px */
+    }
+  }
+  
+  /* Hiệu ứng nhấp nháy (blinking) */
+  @keyframes blink {
+    0%, 100% {
+      opacity: 1; /* Hiển thị đầy đủ */
+    }
+    50% {
+      opacity: 0.5; /* Làm mờ */
+    }
+  }
+  
+  /* Áp dụng hiệu ứng cho phần tử */
+  #scroll {
+    animation: float 2s ease-in-out infinite, blink 1.5s ease-in-out infinite;
+    cursor: pointer; /* Thay đổi con trỏ khi di chuột qua */
+  }
+  
+  /* Tùy chọn: Thêm hiệu ứng khi di chuột qua */
+  #scroll:hover {
+    animation: float 1s ease-in-out infinite, blink 0.75s ease-in-out infinite;
+  }

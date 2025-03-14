@@ -115,6 +115,14 @@
                         <input type="tel" class="form-control" name="phone" placeholder="Phone Number (Optional)">
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+                    <div th:if="${param.error}" class="alert alert-danger">
+                        <span th:switch="${param.error}">
+                            <span th:case="password_mismatch">Mật khẩu không khớp!</span>
+                            <span th:case="email_exists">Email đã tồn tại!</span>
+                            <span th:case="invalid_role">Vai trò không hợp lệ!</span>
+                            <span th:case="database_error">Lỗi hệ thống, vui lòng thử lại!</span>
+                        </span>
+                    </div>
                 </form>
 
                 <div class="text-center my-3 text-small">OR</div>
@@ -135,6 +143,11 @@
     </div>
 
     <script>
+        function disableSubmitButton(form) {
+            const btn = form.querySelector('#submitBtn');
+            btn.disabled = true;
+            btn.innerHTML = 'Processing...';
+        }
         // Toggle password visibility
         function togglePassword(fieldId) {
             const passwordField = document.getElementById(fieldId);
