@@ -83,3 +83,7 @@ a {
     font-size: 1.2rem;
     /* Tăng kích thước chữ */
 }
+.d-flex a img{
+    width: 40px;
+    
+}

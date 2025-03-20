@@ -1,5 +1,5 @@
 package com.beautystore.adeline.dto.request;
-import jakarta.validation.constraints.Size;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,9 +12,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class UserUpdateRequest {
-    String name;
+public class AuthenticationRequest {
     String email;
-    @Size(min = 8, message = "PASSWORD_INVALID")
     String password;
 }
