@@ -1,6 +1,5 @@
 package com.beautystore.adeline.entity;
 
-import lombok.Data;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -20,6 +20,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
+    
 
     @Column(nullable = false)
     private String name;
@@ -30,6 +31,6 @@ public class User {
     @Column(name = "password_hash", nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private String role = "ROLE_USER";
+    @Column(nullable = false, columnDefinition = "VARCHAR(255) DEFAULT 'ROLE_USER'")
+    private String role;
 }
