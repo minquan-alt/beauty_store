@@ -1,0 +1,58 @@
+.about{
+    height:100vh;
+}
+.adeline-image{
+    background-color: rgb(222, 191, 215);
+    height: 90vh;
+}
+.adeline-text{
+    height: 70vh;
+}
+.adeline-text h2{
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 40px;
+    font-weight: bold;
+    letter-spacing: 6px;
+}
+.about p{
+    margin-top: 20px;
+    font-size: 16px;
+    padding-right:50px;
+}
+.learnMore-button{
+    display: inline-block;
+    padding: 12px 40px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: black;
+    background-color: transparent;
+    border: 2px solid white;
+    border-radius: 30px; /* Bo tròn viền */
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+}
+.learnMore-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: all 0.6s ease;
+}
+.learnMore-button:hover {
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+}

@@ -2,14 +2,15 @@
     box-sizing: border-box;
 }
 html {
-    scroll-snap-type: y mandatory; 
+    scroll-snap-type: y mandatory; /* Cuộn theo chiều dọc */ /*bỏ cái này nha tại không cuộn hết được, bị lỗi footer*/
     scroll-behavior: smooth; 
 }
 
 header,
 .banner,
 .category,
-.test {
+.about,
+.footer {
     scroll-snap-align: start; 
 }
 
