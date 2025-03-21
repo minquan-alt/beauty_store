@@ -15,9 +15,9 @@ public class AdminController {
         public String adminDashboard(HttpSession session) {
             Boolean isAdmin = (Boolean) session.getAttribute("isAdmin");
 
-            if (isAdmin == null || !isAdmin) {
-                return "index"; // Nếu không phải admin, chuyển về trang chủ
-            }
+            // if (isAdmin == null || !isAdmin) {
+            //     return "index"; // Nếu không phải admin, chuyển về trang chủ
+            // }
             return "admin/category/index"; // Trả về trang admin
         }
 }

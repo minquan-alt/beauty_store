@@ -5,26 +5,30 @@ $(document).ready(function() {
         var email = $("#email").val();
         var password = $("#password").val();
         console.log(email + " " + password);
-        $.ajax({
-            url: "/auth/log-in",
+        
+        fetch("/auth/log-in", {
             method: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
                 email: email,
                 password: password
-            }),
-            success: function(response) {
-                if (response.result.authenticated) {
-                    alert("Đăng nhập thành công!");
-                    window.location.href = "/"; 
-                } else {
-                    alert("Sai email hoặc mật khẩu!");
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("Lỗi:", error);
-                alert("Đăng nhập thất bại! Vui lòng thử lại.");
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.result.authenticated) {
+                alert("Đăng nhập thành công!");
+                window.location.href = "/";
+            } else {
+                alert("Sai email hoặc mật khẩu!");
             }
         })
+        .catch(error => {
+            console.error("Lỗi:", error);
+            alert("Đăng nhập thất bại! Vui lòng thử lại.");
+        });
+        
     })
 })
