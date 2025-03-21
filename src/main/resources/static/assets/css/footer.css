@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Parisienne&family=Sacramento&family=Satisfy&display=swap');        
+        footer{
+            position: relative;
+            bottom: 0;
+            flex-direction: column;
+            background-color:black;
+            display: flex;
+        }
+        
+        .footer{
+            flex:1;
+            color: white;
+            padding: 2rem;
+        }
+        
+        .brand-name {
+            font-family: Parisienne;
+            font-weight: bold;
+            color: white;
+            font-size: 4.2rem;
+        }
+        .help, .social{
+            margin-top: 2rem;
+            line-height: 2rem;
+        }
+        .adeline{
+            line-height:2rem;
+        }
+        .frame{
+            margin-top: 2.8rem;
+            border-color: white;
+            border-radius: 0.2rem;
+            border-width: 1px;
+            border-style: solid;
+            padding:2rem;
+            line-height: 2.5rem;
+        }
+        .btn-primary {
+            background: white;
+            border: none;
+            border-radius: 0.2rem;
+            padding: 12px;
+            transition: 0.3s;
+            color:black;
+            width: 100%;
+            font-size: 1rem;
+        }
+        .btn-primary:hover {
+            background: rgba(0, 0, 0, 0.733);
+            border-color: white;
+            border-width: 1px;
+            border-style: solid;
+        }
+        input[type="email"]{
+            width: 100%;
+            border-radius: 0.2rem;
+            background-color:black;
+            color: white; /* Chữ trắng để dễ nhìn */
+            border: 1px solid white; /* Viền trắng để phân biệt */
+        }
+        input[type="email"]:hover, input[type="email"]:focus, input[type="email"]:valid{
+            background-color: rgba(255, 255, 255, 0.179); /* Khi focus thì đổi màu viền */
+        }
+        input[type="checkbox"] {
+            appearance: none; /* Loại bỏ kiểu mặc định */
+            width: 15px;
+            height: 15px;
+            border: 2px solid white; /* Viền trắng */
+            background-color: black; /* Nền đen */
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+        }
+
+        input[type="checkbox"]:checked {
+            background-color: black; /* Nền trắng khi chọn */
+            border: 2px solid white; /* Giữ viền trắng */
+        }
+
+        input[type="checkbox"]::before {
+            content: ""; /* Dấu tích */
+            position: absolute;
+            width: 10px;
+            height: 6px;
+            border: solid white;
+            border-width: 0 0 3px 3px;
+            transform: rotate(-45deg);
+            top: 50%;
+            left: 50%;
+            transform-origin: center;
+            transform: translate(-50%, -60%) rotate(-45deg);
+            display: none;
+        }
+
+        input[type="checkbox"]:checked::before {
+            display: block;
+        }
+        a {
+            position: relative;
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer a::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            bottom: 0;
+            left: 0;
+            background-color: white;
+            transform: scaleX(0);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .footer a:hover::after {
+            transform: scaleX(1);
+        }
+        
+        
