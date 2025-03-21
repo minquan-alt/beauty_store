@@ -28,9 +28,38 @@
         
         <!-- Biểu tượng tài khoản + giỏ hàng bên phải -->
         <div class="d-flex ms-auto gap-3">
-          <a class="nav-link d-flex align-items-center gap-2" href="#"><i class="bi bi-person-circle"></i>Sign in</a>
-          <a class="nav-link" href="#"><i class="bi bi-bag"></i> <span th:text="${cartSize}">0</span></a>
+          <!-- Nếu đã đăng nhập, hiển thị avatar và email -->
+          <div class="dropdown" th:if="${not #strings.isEmpty(session.userEmail)}">
+            <a class="nav-link d-flex align-items-center gap-2 dropdown-toggle" href="#" id="userDropdown" role="button"
+               data-bs-toggle="dropdown" aria-expanded="false">
+              <img th:src="@{/assets/images/user.png}" alt="Avatar" class="rounded-circle">
+            </a>
+          
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+              <!-- Nếu là Admin, hiển thị Admin Dashboard -->
+              <li th:if="${session.isAdmin == true}">
+                <a class="dropdown-item" th:href="@{/admin}">Admin Dashboard</a>
+              </li>
+              <li><a class="dropdown-item" onclick="logoutUser()">Log Out</a></li>
+            </ul>
+          </div>
+          
+          <!-- Nếu chưa đăng nhập, hiển thị nút Sign in -->
+          <div th:if="${#strings.isEmpty(session.userEmail)}">
+            <a class="nav-link d-flex align-items-center gap-2" href="/signin">
+              <i class="bi bi-person-circle"></i>Sign in
+            </a>
+          </div>
+        
+          <!-- Giỏ hàng -->
+          <a class="nav-link" href="#">
+            <i class="bi bi-bag"></i> <span th:text="${cartSize}">0</span>
+          </a>
         </div>
+        
+        <!-- <a class="nav-link d-flex align-items-center gap-2" href="/signin">
+          <i class="bi bi-person-circle"></i>Sign in
+        </a> -->
       </div>
   </nav>
 

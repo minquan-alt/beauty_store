@@ -89,12 +89,12 @@
                 <h2 class="text-center fw-bold mb-4">Welcome Back!</h2>
                 <p class="text-center text-small">Sign in to continue your beauty journey with Adeline.</p>
 
-                <form th:action="@{/signin}" method="post">
+                <form th:action="@{/auth/log-in}" method="post" id="logInForm">
                     <div class="mb-3">
-                        <input type="email" class="form-control" name="email" placeholder="Email" required>
+                        <input type="email" class="form-control" name="email" placeholder="Email" id="email" required>
                     </div>
                     <div class="mb-3">
-                        <input type="password" class="form-control" name="password" placeholder="Password" required>
+                        <input type="password" class="form-control" name="password" placeholder="Password" id="password" required>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Sign In</button>
                 </form>
@@ -115,5 +115,7 @@
             <div class="col-md-6 auth-right"></div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="assets/js/signin.js"></script>
 </body>
 </html>

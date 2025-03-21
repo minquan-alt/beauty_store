@@ -2,15 +2,24 @@ package com.beautystore.adeline.controller;
 
 import java.util.List;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.beautystore.adeline.dto.request.ApiResponse;
 import com.beautystore.adeline.dto.request.UserCreateRequest;
 import com.beautystore.adeline.dto.request.UserUpdateRequest;
-import com.beautystore.adeline.dto.request.ApiResponse;
+import com.beautystore.adeline.dto.response.UserResponse;
 import com.beautystore.adeline.entity.User;
 import com.beautystore.adeline.services.UserService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
@@ -28,25 +37,33 @@ public class UserController {
     }
 
     @GetMapping()
-    List<User> getUsers() {
-        return userService.getUsers();
+    ApiResponse<List<User>> getUsers() {
+        ApiResponse<List<User>> apiResponse = new ApiResponse<>();
+        apiResponse.setResult(userService.getUsers());
+        return apiResponse;
     }
 
     @GetMapping("/{userId}")
-    User getUser(@PathVariable Long userId) {
-        return userService.getUser(userId);
+    ApiResponse<UserResponse> getUser(@PathVariable Long userId) {
+        ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
+        apiResponse.setResult(userService.getUser(userId));
+        return apiResponse;
     }
 
 
     @PutMapping("/{userId}")
-    User updateUser(@RequestBody UserUpdateRequest request,@PathVariable Long userId){
-        return userService.updateUser(request, userId);
+    ApiResponse<UserResponse> updateUser(@RequestBody UserUpdateRequest request,@PathVariable("userId") Long userId){
+        ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
+        apiResponse.setResult(userService.updateUser(request, userId));
+        return apiResponse;
     }
 
     @DeleteMapping("/{userId}")
-    String deleteUser(@PathVariable Long userId) {
+    ApiResponse<String> deleteUser(@PathVariable Long userId) {
+        ApiResponse<String> apiResponse = new ApiResponse<>();
         userService.deleteUser(userId);
-        return "User has been deleted";
+        apiResponse.setResult("User has been deleted");
+        return apiResponse;
     }
 
 }
