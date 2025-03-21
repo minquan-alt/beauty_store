@@ -1,19 +1,28 @@
 .category {
-    display: flex;
-    width: 100%;
-    height: 100vh;
-    background-color: antiquewhite;
-    align-items: center; /* Căn giữa theo chiều dọc */
-    justify-content: center; /* Căn giữa theo chiều ngang */
-}
-
-.category-container {
-    box-shadow: 0.25px 0.25px 5px rgba(0, 0, 0, 0.2);
-    border-radius: 10%;
-    width: 100%;
-    height: 90vh;
-    background-color: white;
+    background-color: rgb(253, 241, 241); /* Màu nền cho toàn bộ phần danh mục */
+    width:100%;
+    height:100vh;
 }
 .category-item {
-    background-color: white;
+    width: 100%;
+    height: 85vh; /* Điều chỉnh chiều cao theo mong muốn */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(213, 138, 184);
+}
+
+.category-text {
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+    transition: transform 0.4s ease-in-out; /* Giảm thời gian để mượt hơn */
+}
+.category-text:hover {
+    display: block;
+    text-decoration: none;
+    transform: scale(1.2); /* Phóng to chữ lên 1.3 lần */
 }
