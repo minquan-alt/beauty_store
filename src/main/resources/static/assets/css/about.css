@@ -27,7 +27,7 @@
     font-weight: 500;
     color: black;
     background-color: transparent;
-    border: 2px solid white;
+    border: 2px solid black;
     border-radius: 30px; /* Bo tròn viền */
     text-transform: uppercase;
     letter-spacing: 1.5px;
@@ -46,13 +46,15 @@
     background: linear-gradient(
         120deg,
         transparent,
-        rgba(255, 255, 255, 0.2),
+        rgb(0, 0, 0),
         transparent
     );
     transition: all 0.6s ease;
 }
 .learnMore-button:hover {
-    border-color: rgba(255, 255, 255, 0.8);
+    border-color: rgba(0, 0, 0, 0.8);
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
     transform: translateY(-3px);
+    color:white;
+    background-color: black;
 }

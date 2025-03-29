@@ -3,8 +3,11 @@
 }
 html {
     scroll-snap-type: y mandatory; /* Cuộn theo chiều dọc */ /*bỏ cái này nha tại không cuộn hết được, bị lỗi footer*/
-    scroll-behavior: smooth; 
+    scroll-behavior: smooth;
+    overflow-x: hidden;
 }
+
+
 
 header,
 .banner,

@@ -11,3 +11,7 @@ function logoutUser() {
     })
     .catch(error => console.error('Logout failed:', error));
 }
+
+
+
+
