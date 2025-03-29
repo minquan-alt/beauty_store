@@ -1,12 +1,19 @@
 /* Import Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;60...=swap');
 @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Parisienne&family=Sacramento&family=Satisfy&display=swap');
-
+header{
+    border-bottom: 1px solid rgba(0, 0, 0, 0.648);
+}
 .navbar-nav {
-    display: flex;
+    position:relative;
     align-items: center; /* Căn giữa theo chiều dọc */
     height: 100%; /* Đảm bảo chiều cao đầy đủ */
 }
+img {
+    max-width: 100%;
+    height: auto;
+}
+
 
 .navbar-custom {
     background-color: #FFFFFF;
@@ -22,6 +29,8 @@
     font-weight: bold;
     color: black;
     font-size: 40px;
+    position: relative;
+    top: 8px;
     transition: color 0.3s ease; /* Thêm hiệu ứng chuyển đổi màu */
 }
 
