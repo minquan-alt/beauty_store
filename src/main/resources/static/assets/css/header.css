@@ -59,9 +59,6 @@
     transform-origin: bottom left;
 }
 
-.nav-link.active {
-    color: blue !important;
-}
 
 .center-logo {
     position: absolute;
@@ -85,5 +82,9 @@ a {
 }
 .d-flex a img{
     width: 40px;
-    
 }
+
+.hidden {
+    display: none;
+}
+
