@@ -28,14 +28,16 @@ public class UserController {
     
     @Autowired
     private UserService userService;
-
+    
+    // create user
     @PostMapping()
     ApiResponse<User> createUser(@RequestBody @Valid UserCreateRequest request){
         ApiResponse<User> apiResponse = new ApiResponse<>();
         apiResponse.setResult(userService.createUser(request));
         return apiResponse;
     }
-
+    
+    // read users
     @GetMapping()
     ApiResponse<List<User>> getUsers() {
         ApiResponse<List<User>> apiResponse = new ApiResponse<>();
@@ -43,6 +45,7 @@ public class UserController {
         return apiResponse;
     }
 
+    // read user
     @GetMapping("/{userId}")
     ApiResponse<UserResponse> getUser(@PathVariable Long userId) {
         ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
@@ -50,7 +53,7 @@ public class UserController {
         return apiResponse;
     }
 
-
+    // update user
     @PutMapping("/{userId}")
     ApiResponse<UserResponse> updateUser(@RequestBody UserUpdateRequest request,@PathVariable("userId") Long userId){
         ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
@@ -58,6 +61,7 @@ public class UserController {
         return apiResponse;
     }
 
+    // delete user
     @DeleteMapping("/{userId}")
     ApiResponse<String> deleteUser(@PathVariable Long userId) {
         ApiResponse<String> apiResponse = new ApiResponse<>();
