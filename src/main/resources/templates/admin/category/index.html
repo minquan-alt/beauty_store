@@ -1,11 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Heloo admin</h1>
-</body>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{admin/layout/header :: header}"></head>
+  <body>
+    <div class="admin-container">
+      <!-- Header -->
+      <div th:replace="~{admin/layout/navbar :: navbar}"></div>
+
+      <!-- Sidebar -->
+      <div th:replace="~{admin/layout/sidebar :: sidebar}"></div>
+
+      <main class="main-content">
+        <div class="content">
+          <h1>Welcome to Admin Dashboard</h1>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <div th:replace="~{admin/layout/footer :: footer}"></div>
+    </div>
+  </body>
 </html>
