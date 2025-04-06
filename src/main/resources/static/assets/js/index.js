@@ -11,3 +11,12 @@ function logoutUser() {
     })
     .catch(error => console.error('Logout failed:', error));
 }
+
+window.addEventListener("load", function() {
+    document.getElementById("loading").style.display = "none";
+});
+
+
+
+
+

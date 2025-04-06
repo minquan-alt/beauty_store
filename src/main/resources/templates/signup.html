@@ -97,7 +97,7 @@
                 <h2 class="text-center fw-bold mb-4">Join Adeline</h2>
                 <p class="text-center text-small">Create your account to unlock exclusive beauty benefits</p>
 
-                <form th:action="@{/signup}" method="post" id="signupForm">
+                <form th:action="@{/users}" method="post" id="signupForm">
                     <div class="mb-3">
                         <input type="text" class="form-control" name="name" placeholder="Full Name" required>
                     </div>
@@ -110,9 +110,6 @@
                     </div>
                     <div class="mb-3 position-relative">
                         <input type="password" class="form-control" name="confirmPassword" placeholder="Confirm Password" required>
-                    </div>
-                    <div class="mb-3">
-                        <input type="tel" class="form-control" name="phone" placeholder="Phone Number (Optional)">
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Sign Up</button>
                     <div th:if="${param.error}" class="alert alert-danger">
@@ -192,6 +189,45 @@
                 }
             });
         }
+
+        $(document).ready(function() {
+            $("#signupForm").submit(function(event) {
+                event.preventDefault();
+        
+                var name = $('input[name="name"]').val();
+                var email = $('input[name="email"]').val();
+                var password = $('input[name="password"]').val();
+                console.log(email + " " + password);
+                
+                fetch("/users", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password,
+                        name: name,
+                        phone: phone,
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result.success) {
+                        alert("Đăng ký thành công!");
+                        window.location.href = "/signin";
+                    } else {
+                        alert("Sai email hoặc mật khẩu!");
+                    }
+                })
+                .catch(error => {
+                    console.error("Lỗi:", error);
+                    alert("Đăng nhập thất bại! Vui lòng thử lại.");
+                });
+                
+            })
+        })
+
     </script>
 </body>
 </html>

@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head th:replace="~{layout/head :: head}"></head>
+
 <body>
+    <div id="loading">
+        <img src="assets/images/loading.gif" alt="Hihi">
+    </div>
+    
     <div th:replace="~{layout/header :: header}"></div>
     <div th:replace="~{layout/banner :: banner}"></div>
     <div th:replace="~{layout/category :: category}"></div>

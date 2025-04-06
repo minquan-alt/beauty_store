@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head th:replace="~{layout/head :: head}"></head>
+    <head>
+        <link rel="stylesheet" href="assets/css/product.css">
+    </head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-3 custom-col">
+                <div class="bg-light p-3">
+                    <form id="searchForm" action="/products" method="GET">
+                        <div class="search-wrapper">
+                            <div class="search-box">
+                                <input type="text" class="search-input form-control" placeholder="Search anything...">
+                                <i class="fas fa-search search-icon"></i>
+                            </div>
+                        </div>
+                        <div class="price-filter" style="margin-top:30px">
+                            <h3 style="font-size:20px; color:white;">Price Range</h3>
+                            <div class="slider-container">
+                                <input type="range" id="minPrice" name="minPrice" min="0" max="2000" step="50" value="100">
+                                <input type="range" id="maxPrice" name="maxPrice" min="0" max="2000" step="50" value="1000">
+                                <div class="range-track"></div>
+                            </div>
+                            <div class="price-values">
+                                <span style="color:white;">Min: $<span id="minValue">100</span></span>
+                                <span style="color:white;">Max: $<span id="maxValue">1000</span></span>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <label class="fw-bold text-white">Category:</label>
+                            <div class="dropdown">
+                                <!-- Makeup -->
+                                <button class="btn btn-dark w-100 text-start dropdown-toggle-custom" type="button">
+                                    <i class="fas fa-caret-right me-2"></i> Makeup
+                                </button>
+                                <div class="dropdown-content ps-3 mt-2" style="display: none;">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="lipstick" name="category" value="makeup-lipstick">
+                                        <label class="form-check-label text-white" for="lipstick">Makeup Môi</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="eye" name="category" value="makeup-eye">
+                                        <label class="form-check-label text-white" for="eye">Makeup Mắt</label>
+                                    </div>
+                                </div>
+                                <!--Skincare-->
+                                <button class="btn btn-dark w-100 text-start dropdown-toggle-custom" type="button">
+                                    <i class="fas fa-caret-right me-2"></i> Skincare
+                                </button>
+                                <div class="dropdown-content ps-3 mt-2" style="display: none;">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="lipstick" name="category" value="makeup-lipstick">
+                                        <label class="form-check-label text-white" for="lipstick">Lotion</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="eye" name="category" value="makeup-eye">
+                                        <label class="form-check-label text-white" for="eye">Cleanser</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-primary w-100">Search</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-9 flex-grow bg-danger">
+                <div class="row row-cols-1 row-cols-md-4 g-4" style="margin:auto;">
+                    <div class="col">
+                        <div class="card">
+                            <div class="png-zoom">
+                                <img src="image.png" style="width:100%; height: 250px; object-fit:scale-down;" class="card-img-top" alt="...">
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Card title</h5>
+                                <p class="card-text">This is a </p>
+                                <div class="d-flex justify-content-between">
+                                    <div class="container py-5">
+                                <div class="button-group">
+                                <div class="price-section">
+                                    <button class="btn btn-outline-primary text-nowrap price-button hover-button" data-hover="🛒"><span>$20</span></button>
+                                    <button class="btn btn-outline-primary buy-now-button">Buy Now</button>
+                                </div>
+                                <button class="btn btn-danger view-details-btn" data-hover="hihi">
+                                    <span class="text">View Details</span>
+                                </button>
+                                </div>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <img src="image.png" style="width:100%; height: 250px; object-fit:scale-down;" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">Card title</h5>
+                                <p class="card-text">This is a </p>
+                                <div class="d-flex justify-content-between">
+                                    <div class="container py-5">
+                                <div class="button-group">
+                                <div class="price-section">
+                                    <button class="btn btn-outline-primary text-nowrap price-button hover-button" data-hover="🛒"><span>$20</span></button>
+                                    <button class="btn btn-outline-primary buy-now-button">Buy Now</button>
+                                </div>
+                                <button class="btn btn-danger view-details-btn" data-hover="hihi">
+                                    <span class="text">View Details</span>
+                                    <span class="exclamation">!</span>
+                                </button>
+                                </div>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <img src="image.png" style="width:100%; height: 250px; object-fit:scale-down;" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">Card title</h5>
+                                <p class="card-text">This is a </p>
+                                <div class="d-flex justify-content-between">
+                                    <div class="container py-5">
+                                <div class="button-group">
+                                <div class="price-section">
+                                    <button class="btn btn-outline-primary text-nowrap price-button hover-button" data-hover="🛒"><span>$20</span></button>
+                                    <button class="btn btn-outline-primary buy-now-button">Buy Now</button>
+                                </div>
+                                <button class="btn btn-danger view-details-btn" data-hover="hihi">
+                                    <span class="text">View Details</span>
+                                    <span class="exclamation">!</span>
+                                </button>
+                                </div>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <img src="image.png" style="width:100%; height: 250px; object-fit:scale-down;" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">Card title</h5>
+                                <p class="card-text">This is a </p>
+                                <div class="d-flex justify-content-between">
+                                    <div class="container py-5">
+                                <div class="button-group">
+                                <div class="price-section">
+                                    <button class="btn btn-outline-primary text-nowrap price-button hover-button" data-hover="🛒"><span>$20</span></button>
+                                    <button class="btn btn-outline-primary buy-now-button">Buy Now</button>
+                                </div>
+                                <button class="btn btn-danger view-details-btn" data-hover="hihi">
+                                    <span class="text">View Details</span>
+                                    <span class="exclamation">!</span>
+                                </button>
+                                </div>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="col">
+                        <div class="card">
+                            <img src="image.png" style="width:100%; height: 250px; object-fit:scale-down;" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">Card title</h5>
+                                <p class="card-text">This is a </p>
+                                <div class="d-flex justify-content-between">
+                                    <div class="container py-5">
+                                <div class="button-group">
+                                <div class="price-section">
+                                    <button class="btn btn-outline-primary text-nowrap price-button hover-button" data-hover="🛒"><span>$20</span></button>
+                                    <button class="btn btn-outline-primary buy-now-button">Buy Now</button>
+                                </div>
+                                <button class="btn btn-danger view-details-btn" data-hover="hihi">
+                                    <span class="text">View Details</span>
+                                    <span class="exclamation">!</span>
+                                </button>
+                                </div>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="col">
+                        <div class="card">
+                            <img src="image.png" style="width:100%; height: 250px; object-fit:scale-down;" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">Card title</h5>
+                                <p class="card-text">This is a </p>
+                                <div class="d-flex justify-content-between">
+                                    <div class="container py-5">
+                                <div class="button-group">
+                                <div class="price-section">
+                                    <button class="btn btn-outline-primary text-nowrap price-button hover-button" data-hover="🛒"><span>$20</span></button>
+                                    <button class="btn btn-outline-primary buy-now-button">Buy Now</button>
+                                </div>
+                                <button class="btn btn-danger view-details-btn" data-hover="hihi">
+                                    <span class="text">View Details</span>
+                                    <span class="exclamation">!</span>
+                                </button>
+                                </div>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                   
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <script>
+        const minPrice = document.getElementById("minPrice");
+const maxPrice = document.getElementById("maxPrice");
+const rangeTrack = document.querySelector(".range-track");
+
+const minGap = 50; // Khoảng cách tối thiểu giữa hai nút
+const maxValue = parseInt(maxPrice.max);
+
+function updateTrack() {
+    let minValue = parseInt(minPrice.value);
+    let maxValueCurrent = parseInt(maxPrice.value);
+
+    if (maxValueCurrent - minValue < minGap) {
+        minPrice.value = maxValueCurrent - minGap;
+    }
+
+    let minPercent = (minPrice.value / maxValue) * 100;
+    let maxPercent = (maxPrice.value / maxValue) * 100;
+
+    rangeTrack.style.left = minPercent + "%";
+    rangeTrack.style.width = (maxPercent - minPercent) + "%";
+
+    // Cập nhật giá trị hiển thị
+    document.getElementById("minValue").innerText = minPrice.value;
+    document.getElementById("maxValue").innerText = maxPrice.value;
+}
+
+function updateMax() {
+    let minValueCurrent = parseInt(minPrice.value);
+    let maxValueCurrent = parseInt(maxPrice.value);
+
+    if (maxValueCurrent - minValueCurrent < minGap) {
+        maxPrice.value = minValueCurrent + minGap;
+    }
+
+    updateTrack();
+}
+
+// Gán sự kiện
+minPrice.addEventListener("input", updateTrack);
+maxPrice.addEventListener("input", updateMax);
+
+// Khởi động ban đầu
+updateTrack();
+
+document.querySelectorAll(".dropdown-toggle-custom").forEach(button => {
+    button.addEventListener("click", function () {
+        let dropdown = this.nextElementSibling; // Lấy phần dropdown ngay sau button
+        let icon = this.querySelector("i");
+
+        if (dropdown.style.display === "block") {
+            dropdown.style.display = "none";
+            icon.style.transform = "rotate(0deg)";
+        } else {
+            dropdown.style.display = "block";
+            icon.style.transform = "rotate(90deg)";
+        }
+    });
+});
+
+
+    </script>
+</body>
+
+</html>

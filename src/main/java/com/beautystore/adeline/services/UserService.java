@@ -42,7 +42,11 @@ public class UserService {
     }
 
     public List<User> getUsers() {
-        return userRepository.findAll();
+        List<User> users = userRepository.findAll();
+        if (users.isEmpty()) {
+            throw new AppException(ErrorCode.USER_LIST_EMPTY);
+        }
+        return users;
     }
 
     // public UserResponse getUser(Long id) {
@@ -50,18 +54,18 @@ public class UserService {
     //         .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND))) ;
     // }
     public UserResponse getUser(Long id) {
-        logger.info("Fetching user with id: {}", id); // 👈 Log bắt đầu tìm kiếm user
+        logger.info("Fetching user with id: {}", id); 
 
         User user = userRepository.findById(id)
             .orElseThrow(() -> {
-                logger.error("User not found with id: {}", id); // 👈 Log lỗi nếu không tìm thấy user
+                logger.error("User not found with id: {}", id); 
                 return new AppException(ErrorCode.USER_NOT_FOUND);
             });
 
-        logger.info("User found: {}", user); // 👈 Log thông tin user đã tìm thấy
+        logger.info("User found: {}", user); // 
 
         UserResponse response = userMapper.toUserResponse(user);
-        logger.info("Mapped user to response: {}", response); // 👈 Log kết quả sau khi map
+        logger.info("Mapped user to response: {}", response); // 
 
         return response;
     }

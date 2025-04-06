@@ -20,5 +20,8 @@ public class HomeController {
     public String signup() {
         return "signup";
     }
-    
+    @GetMapping("/product")
+    public String product() {
+        return "product";
+    }
 }

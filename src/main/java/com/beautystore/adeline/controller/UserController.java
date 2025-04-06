@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.beautystore.adeline.dto.request.ApiResponse;
 import com.beautystore.adeline.dto.request.UserCreateRequest;
 import com.beautystore.adeline.dto.request.UserUpdateRequest;
+import com.beautystore.adeline.dto.response.ApiResponse;
 import com.beautystore.adeline.dto.response.UserResponse;
 import com.beautystore.adeline.entity.User;
 import com.beautystore.adeline.services.UserService;
@@ -32,6 +32,7 @@ public class UserController {
     // create user
     @PostMapping()
     ApiResponse<User> createUser(@RequestBody @Valid UserCreateRequest request){
+        System.out.println("Received request: " + request);
         ApiResponse<User> apiResponse = new ApiResponse<>();
         apiResponse.setResult(userService.createUser(request));
         return apiResponse;

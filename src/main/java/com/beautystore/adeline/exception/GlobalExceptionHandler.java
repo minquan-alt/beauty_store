@@ -5,7 +5,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.beautystore.adeline.dto.request.ApiResponse;
+import com.beautystore.adeline.dto.response.ApiResponse;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
