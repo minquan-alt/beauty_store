@@ -1,6 +1,9 @@
 package com.beautystore.adeline.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +27,14 @@ public class CouponController {
     @PostMapping()
     ApiResponse<Coupon> createCoupon(@RequestBody @Valid CouponCreateRequest request){
         ApiResponse<Coupon> apiResponse = new ApiResponse<>();
-        apiResponse.setResult(couponService.createCoupon(request));
+        apiResponse.setResult(this.couponService.createCoupon(request));
         return apiResponse;
     }    
+
+    @GetMapping()
+    ApiResponse<List<Coupon>> getCoupons(){
+        ApiResponse<List<Coupon>> apiResponse = new ApiResponse<>();
+        apiResponse.setResult(this.couponService.getCoupons());
+        return apiResponse;
+    }
 }

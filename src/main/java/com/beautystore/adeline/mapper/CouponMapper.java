@@ -9,5 +9,5 @@ import com.beautystore.adeline.entity.Coupon;
 @Mapper(componentModel = "spring")
 public interface CouponMapper {
     Coupon toCoupon(CouponCreateRequest request);
-    CouponResponse toCouponMapper(Coupon coupon);
+    CouponResponse toCouponResponse(Coupon coupon);
 }

@@ -1,6 +1,8 @@
 package com.beautystore.adeline.services;
 
 
+import java.util.List;
+
 // import org.slf4j.Logger;
 // import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +31,15 @@ public class CouponService {
     private final CouponMapper couponMapper;
 
     public Coupon createCoupon(CouponCreateRequest request) {
-        if(couponRepository.existsByCode(request.getCode()))
+        if(this.couponRepository.existsByCode(request.getCode()))
             throw new AppException(ErrorCode.COUPON_EXISTED);
         Coupon coupon = couponMapper.toCoupon(request);
-        return couponRepository.save(coupon);
+        return this.couponRepository.save(coupon);
     }
+
+    public List<Coupon> getCoupons(){
+        return this.couponRepository.findAll();
+    }
+
 
 }
