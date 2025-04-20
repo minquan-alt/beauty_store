@@ -12,7 +12,8 @@ public enum ErrorCode {
     PASSWORD_INVALID(1005, "Password must be at least 8 characters"),
     INVALID_CREDENTIALS(1006, "Password is wrong"),
 
-    COUPON_EXISTED(3001, "Coupon existed");
+    COUPON_EXISTED(3001, "Coupon existed"),
+    COUPON_NOT_FOUND(3002,"Coupon not found");
     
     ErrorCode(int code, String message) {
         this.code = code;

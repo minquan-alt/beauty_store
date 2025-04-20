@@ -3,12 +3,13 @@ package com.beautystore.adeline.services;
 
 import java.util.List;
 
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.beautystore.adeline.dto.request.CouponCreateRequest;
+import com.beautystore.adeline.dto.response.CouponResponse;
 import com.beautystore.adeline.entity.Coupon;
 import com.beautystore.adeline.exception.AppException;
 import com.beautystore.adeline.exception.ErrorCode;
@@ -22,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CouponService {
 
-    // private static Logger logger = LoggerFactory.getLogger(CouponService.class);
+    private static Logger logger = LoggerFactory.getLogger(CouponService.class);
 
     @Autowired
     private final CouponRepository couponRepository;
@@ -39,6 +40,38 @@ public class CouponService {
 
     public List<Coupon> getCoupons(){
         return this.couponRepository.findAll();
+    }
+
+    public CouponResponse getCouponByID(Long id){
+        logger.info("Fetching coupon with id: {}", id);
+
+        Coupon coupon = this.couponRepository.findById(id)
+            .orElseThrow(() -> {
+                logger.error("Coupon not found with id: {}", id);
+                return new AppException(ErrorCode.COUPON_NOT_FOUND);
+            });
+        logger.info("Coupon found: {}" , coupon);
+
+        CouponResponse response = couponMapper.toCouponResponse(coupon);
+        logger.info("Mapped coupon to response: {}", response);
+        
+        return response;
+    }
+
+    public CouponResponse getCouponByCode(String code){
+        logger.info("Fetching coupon with code: {}", code);
+
+        Coupon coupon = this.couponRepository.findByCode(code)
+            .orElseThrow(() -> {
+                logger.error("Coupon not found with code: {}", code);
+                return new AppException(ErrorCode.COUPON_NOT_FOUND);
+            });
+        logger.info("Coupon found: {}" , coupon);
+
+        CouponResponse response = couponMapper.toCouponResponse(coupon);
+        logger.info("Mapped coupon to response: {}", response);
+        
+        return response;
     }
 
 
