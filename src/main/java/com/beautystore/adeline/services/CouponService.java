@@ -83,5 +83,8 @@ public class CouponService {
         return this.couponMapper.toCouponResponse(this.couponRepository.save(coupon));
     }
 
+    public void deleteCouponByID(Long id){
+        this.couponRepository.deleteById(id);
+    }
 
 }
