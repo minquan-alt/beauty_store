@@ -10,8 +10,10 @@ public enum ErrorCode {
     USER_NOT_FOUND(1003, "User not found"),
     USER_NOT_EXISTED(1004, "User not existed"),
     PASSWORD_INVALID(1005, "Password must be at least 8 characters"),
-    INVALID_CREDENTIALS(1006, "Password is wrong")
-    ;
+    INVALID_CREDENTIALS(1006, "Password is wrong"),
+
+    COUPON_EXISTED(3001, "Coupon existed");
+    
     ErrorCode(int code, String message) {
         this.code = code;
         this.message = message;
