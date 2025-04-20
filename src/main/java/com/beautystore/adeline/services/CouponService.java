@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.beautystore.adeline.dto.request.CouponCreateRequest;
+import com.beautystore.adeline.dto.request.CouponUpdateRequest;
 import com.beautystore.adeline.dto.response.CouponResponse;
 import com.beautystore.adeline.entity.Coupon;
 import com.beautystore.adeline.exception.AppException;
@@ -34,7 +35,7 @@ public class CouponService {
     public Coupon createCoupon(CouponCreateRequest request) {
         if(this.couponRepository.existsByCode(request.getCode()))
             throw new AppException(ErrorCode.COUPON_EXISTED);
-        Coupon coupon = couponMapper.toCoupon(request);
+        Coupon coupon = this.couponMapper.toCoupon(request);
         return this.couponRepository.save(coupon);
     }
 
@@ -52,7 +53,7 @@ public class CouponService {
             });
         logger.info("Coupon found: {}" , coupon);
 
-        CouponResponse response = couponMapper.toCouponResponse(coupon);
+        CouponResponse response = this.couponMapper.toCouponResponse(coupon);
         logger.info("Mapped coupon to response: {}", response);
         
         return response;
@@ -68,10 +69,18 @@ public class CouponService {
             });
         logger.info("Coupon found: {}" , coupon);
 
-        CouponResponse response = couponMapper.toCouponResponse(coupon);
+        CouponResponse response = this.couponMapper.toCouponResponse(coupon);
         logger.info("Mapped coupon to response: {}", response);
         
         return response;
+    }
+
+    public CouponResponse updateCouponByID(CouponUpdateRequest request, Long id){
+        Coupon coupon = this.couponRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Coupon not found"));
+        this.couponMapper.updateCoupon(coupon, request);
+
+        return this.couponMapper.toCouponResponse(this.couponRepository.save(coupon));
     }
 
 

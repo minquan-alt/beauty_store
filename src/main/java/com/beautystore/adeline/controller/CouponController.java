@@ -6,12 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.beautystore.adeline.dto.request.ApiResponse;
 import com.beautystore.adeline.dto.request.CouponCreateRequest;
+import com.beautystore.adeline.dto.request.CouponUpdateRequest;
 import com.beautystore.adeline.dto.response.CouponResponse;
 import com.beautystore.adeline.entity.Coupon;
 import com.beautystore.adeline.services.CouponService;
@@ -53,4 +55,14 @@ public class CouponController {
         apiResponse.setResult(this.couponService.getCouponByCode(code));
         return apiResponse;
     }
+
+    @PutMapping("/{couponId}")
+    ApiResponse<CouponResponse> updateCouponById(@RequestBody CouponUpdateRequest request, @PathVariable("couponId") Long couponId){
+        ApiResponse<CouponResponse> apiResponse = new ApiResponse<>();
+        apiResponse.setResult(this.couponService.updateCouponByID(request, couponId));
+        return apiResponse;
+    }
+
+
+
 }

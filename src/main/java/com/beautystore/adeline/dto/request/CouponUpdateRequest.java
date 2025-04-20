@@ -1,4 +1,4 @@
-package com.beautystore.adeline.dto.response;
+package com.beautystore.adeline.dto.request;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -10,14 +10,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class CouponResponse {
-    Long id;
+public class CouponUpdateRequest {
     String code;
     BigDecimal discount;
     BigDecimal maxDiscountAmount;
