@@ -11,13 +11,20 @@ public enum ErrorCode {
     USER_NOT_EXISTED(1004, "User not existed"),
     PASSWORD_INVALID(1005, "Password must be at least 8 characters"),
     INVALID_CREDENTIALS(1006, "Password is wrong"),
+    USER_LIST_EMPTY(1007, "User list is empty"),
+
 
     CART_NOT_FOUND(2001, "Cart not found"),
     CART_ITEM_NOT_FOUND(2002, "Cart item not found"),
     PRODUCT_NOT_FOUND(2003, "Product not found"),
     QUANTITY_REQUIRED(2005, "Quantity is required"),
     QUANTITY_INVALID(2006, "Quantity must be greater than or equal to 0"),
-    PRODUCT_ID_REQUIRED(2007, "Product ID is required");
+    PRODUCT_ID_REQUIRED(2007, "Product ID is required"),
+    PRODUCT_LIST_EMPTY(2008, "Product is empty"),
+
+    SUPPLIER_NOT_FOUND(3001, "Supplier not found"),
+
+    CATEGORY_NOT_FOUND(4001, "Category not found");
 
     ErrorCode(int code, String message) {
         this.code = code;

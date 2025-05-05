@@ -2,10 +2,11 @@ package com.beautystore.adeline.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import com.beautystore.adeline.dto.response.CartItemResponse;
+import com.beautystore.adeline.dto.response.CartResponse;
 import com.beautystore.adeline.entity.Cart;
 import com.beautystore.adeline.entity.CartItem;
-import com.beautystore.adeline.dto.response.CartResponse;
-import com.beautystore.adeline.dto.response.CartItemResponse;
 
 @Mapper(componentModel = "spring")
 public interface CartMapper {
