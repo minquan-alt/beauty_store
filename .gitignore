@@ -33,3 +33,7 @@ build/
 .vscode/
 *.sql
 sql/
+
+src/main/resources/application.properties
+.DS_Store
+
