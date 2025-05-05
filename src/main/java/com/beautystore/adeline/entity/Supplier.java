@@ -1,38 +1,34 @@
 package com.beautystore.adeline.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 @Data
-@NoArgsConstructor
 @Entity
 @Table(name = "supplier")
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class Supplier {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "supplier_id")
-    long id;
-    
-    @Column(nullable = false)
-    String name;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "supplier_id")
+  private Long id;
 
-    @Column(columnDefinition = "CLOB")
-    String contact_info;
+  @Column(nullable = false)
+  private String name;
+
+  @Column(name = "contact_info", columnDefinition = "CLOB")
+  private String contactInfo;
+
+  @OneToMany(mappedBy = "supplier")
+  private List<Product> products = new ArrayList<>();
 }
-
-/* 
- CREATE TABLE supplier (
-    supplier_id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name VARCHAR2(255) NOT NULL,
-    contact_info CLOB
-);
-*/
