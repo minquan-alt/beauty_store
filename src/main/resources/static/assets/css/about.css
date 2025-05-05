@@ -46,15 +46,25 @@
     background: linear-gradient(
         120deg,
         transparent,
+<<<<<<< HEAD
         rgb(0, 0, 0),
+=======
+        rgba(255, 255, 255, 0.2),
+>>>>>>> origin/feature/coupon
         transparent
     );
     transition: all 0.6s ease;
 }
 .learnMore-button:hover {
+<<<<<<< HEAD
     border-color: rgba(0, 0, 0, 0.8);
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
     transform: translateY(-3px);
     color:white;
     background-color: black;
+=======
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+>>>>>>> origin/feature/coupon
 }

@@ -24,7 +24,10 @@ public enum ErrorCode {
 
     SUPPLIER_NOT_FOUND(3001, "Supplier not found"),
 
-    CATEGORY_NOT_FOUND(4001, "Category not found");
+    CATEGORY_NOT_FOUND(4001, "Category not found"),
+
+    COUPON_EXISTED(5001, "Coupon existed"),
+    COUPON_NOT_FOUND(5002,"Coupon not found");;
 
     ErrorCode(int code, String message) {
         this.code = code;
