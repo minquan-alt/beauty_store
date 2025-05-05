@@ -1,8 +1,11 @@
+window.addEventListener("load", function() {
+    document.getElementById("loading").style.display = "none";
+});
+
 $(document).ready(function() {
-    $("#logInForm").submit(function(event) {
+    $("#logInForm").submit(async function(event) {
         event.preventDefault();
 
-        var name = $("$name").val();
         var email = $("#email").val();
         var password = $("#password").val();
         console.log(email + " " + password);
@@ -13,7 +16,6 @@ $(document).ready(function() {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                name: name,
                 email: email,
                 password: password
             })

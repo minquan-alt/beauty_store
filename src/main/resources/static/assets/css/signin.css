@@ -1,0 +1,72 @@
+        :root {
+            --primary-color: #FF6B6B;
+            --secondary-color: #4ECDC4;
+            --light-gray: #F8F9FA;
+        }
+        
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(to right, var(--light-gray), var(--primary-color));
+        }
+
+        .auth-container {
+            max-width: 900px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-left {
+            padding: 50px;
+        }
+
+        .auth-right {
+            background: url('/assets/images/adeline-banner.jpeg') no-repeat center;
+            background-size: cover;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            transition: 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #E65A5A;
+        }
+
+        .btn-google {
+            background: #DB4437;
+            color: white;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .btn-phone {
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .text-small {
+            font-size: 14px;
+            color: #777;
+        }
+
+        @media (max-width: 768px) {
+            .auth-right {
+                display: none;
+            }
+        }

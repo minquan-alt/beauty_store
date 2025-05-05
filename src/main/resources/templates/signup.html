@@ -6,90 +6,19 @@
     <title>Adeline | Sign Up</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #FF6B6B;
-            --secondary-color: #4ECDC4;
-            --light-gray: #F8F9FA;
-        }
-        
-        body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background: linear-gradient(to right, var(--light-gray), var(--primary-color));
-        }
-
-        .auth-container {
-            max-width: 900px;
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .auth-left {
-            padding: 50px;
-        }
-
-        .auth-right {
-            background: url('assets/images/adeline-banner1.jpeg') no-repeat center;
-            background-size: cover;
-        }
-
-        .form-control {
-            border-radius: 8px;
-            border: 1px solid #ddd;
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-            border: none;
-            border-radius: 8px;
-            padding: 12px;
-            transition: 0.3s;
-        }
-
-        .btn-primary:hover {
-            background: #E65A5A;
-        }
-
-        .btn-google {
-            background: #DB4437;
-            color: white;
-            border-radius: 8px;
-            padding: 10px;
-        }
-
-        .btn-phone {
-            background: var(--secondary-color);
-            color: white;
-            border-radius: 8px;
-            padding: 10px;
-        }
-
-        .text-small {
-            font-size: 14px;
-            color: #777;
-        }
-
-        .password-toggle {
-            cursor: pointer;
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        @media (max-width: 768px) {
-            .auth-right {
-                display: none;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/signup.css">
+    
 </head>
 <body>
+    <div id="loading">
+        <img src="assets/images/loading.gif" alt="Hihi">
+    </div>
+
+    <div class="">
+        <a href="/">Home</a>
+    </div>
+
     <div class="container auth-container">
         <div class="row">
             <!-- Form Section -->
@@ -131,7 +60,7 @@
                     <i class="fas fa-phone me-2"></i> Continue with Phone
                 </button>
 
-                <p class="mt-3 text-center text-small">Already have an account? <a href="/login" class="text-decoration-none">Sign In</a></p>
+                <p class="mt-3 text-center text-small">Already have an account? <a href="/signin" class="text-decoration-none">Sign In</a></p>
             </div>
 
             <!-- Image Section -->
@@ -139,95 +68,7 @@
         </div>
     </div>
 
-    <script>
-        function disableSubmitButton(form) {
-            const btn = form.querySelector('#submitBtn');
-            btn.disabled = true;
-            btn.innerHTML = 'Processing...';
-        }
-        // Toggle password visibility
-        function togglePassword(fieldId) {
-            const passwordField = document.getElementById(fieldId);
-            const toggleIcon = passwordField.nextElementSibling;
-            if (passwordField.type === "password") {
-                passwordField.type = "text";
-                toggleIcon.classList.replace("fa-eye-slash", "fa-eye");
-            } else {
-                passwordField.type = "password";
-                toggleIcon.classList.replace("fa-eye", "fa-eye-slash");
-            }
-        }
-
-        // Phone verification modal
-        document.getElementById('phoneSignup').addEventListener('click', () => {
-            const phoneNumber = prompt("Enter your phone number (with country code):");
-            if (phoneNumber) {
-                fetch('/send-verification', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({phone: phoneNumber})
-                }).then(response => {
-                    if (response.ok) {
-                        const code = prompt("Enter verification code sent to your phone:");
-                        if (code) {
-                            verifyPhoneCode(phoneNumber, code);
-                        }
-                    }
-                });
-            }
-        });
-
-        function verifyPhoneCode(phoneNumber, code) {
-            fetch('/verify-phone', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({phone: phoneNumber, code: code})
-            }).then(response => {
-                if (response.ok) {
-                    alert("Verification successful!");
-                    document.getElementById('signupForm').phoneNumber = phoneNumber;
-                }
-            });
-        }
-
-        $(document).ready(function() {
-            $("#signupForm").submit(function(event) {
-                event.preventDefault();
-        
-                var name = $('input[name="name"]').val();
-                var email = $('input[name="email"]').val();
-                var password = $('input[name="password"]').val();
-                console.log(email + " " + password);
-                
-                fetch("/users", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        email: email,
-                        password: password,
-                        name: name,
-                        phone: phone,
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.result.success) {
-                        alert("Đăng ký thành công!");
-                        window.location.href = "/signin";
-                    } else {
-                        alert("Sai email hoặc mật khẩu!");
-                    }
-                })
-                .catch(error => {
-                    console.error("Lỗi:", error);
-                    alert("Đăng nhập thất bại! Vui lòng thử lại.");
-                });
-                
-            })
-        })
-
-    </script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="assets/js/signup.js"></script>
 </body>
 </html>

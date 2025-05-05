@@ -5,82 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adeline | Sign In</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
-        :root {
-            --primary-color: #FF6B6B;
-            --secondary-color: #4ECDC4;
-            --light-gray: #F8F9FA;
-        }
-        
-        body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background: linear-gradient(to right, var(--light-gray), var(--primary-color));
-        }
-
-        .auth-container {
-            max-width: 900px;
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .auth-left {
-            padding: 50px;
-        }
-
-        .auth-right {
-            background: url('assets/images/adeline-banner.jpeg') no-repeat center;
-            background-size: cover;
-        }
-
-        .form-control {
-            border-radius: 8px;
-            border: 1px solid #ddd;
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-            border: none;
-            border-radius: 8px;
-            padding: 12px;
-            transition: 0.3s;
-        }
-
-        .btn-primary:hover {
-            background: #E65A5A;
-        }
-
-        .btn-google {
-            background: #DB4437;
-            color: white;
-            border-radius: 8px;
-            padding: 10px;
-        }
-
-        .btn-phone {
-            background: var(--secondary-color);
-            color: white;
-            border-radius: 8px;
-            padding: 10px;
-        }
-
-        .text-small {
-            font-size: 14px;
-            color: #777;
-        }
-
-        @media (max-width: 768px) {
-            .auth-right {
-                display: none;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/signin.css">
 </head>
 <body>
+    <div id="loading">
+        <img src="assets/images/loading.gif" alt="Hihi">
+    </div>
+
+    <div class="">
+        <a href="/">Home</a>
+    </div>
+
     <div class="container auth-container">
 
         <div class="row">
@@ -115,6 +51,7 @@
             <div class="col-md-6 auth-right"></div>
         </div>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="assets/js/signin.js"></script>
 </body>
