@@ -15,6 +15,16 @@ function logoutUser() {
 window.addEventListener("load", function() {
     document.getElementById("loading").style.display = "none";
 });
+window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const target = params.get("scroll");
+    if (target) {
+      const element = document.getElementById(target);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  });
 
 
 

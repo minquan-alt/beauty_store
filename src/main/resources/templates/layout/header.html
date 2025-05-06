@@ -8,13 +8,18 @@
             <a class="nav-link" th:classappend="${activePage == 'home'} ? 'active'" th:href="@{/}">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" th:classappend="${activePage == 'about'} ? 'active'" th:href="@{/about}">Introduction</a>
+            <a class="nav-link" th:href="@{/?scroll=about}">Introduction</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/?scroll=category}">Collections</a>
+          <li class="nav-item">
+            <a class="nav-link" th:classappend="${activePage == 'product'} ? 'active'" th:href="@{/product}">Products</a>
           </li>
           
         </ul>
 
         <!-- Logo ở giữa -->
-         <div class="brand-name"><a class="navbar-brand brand-name " href="#">Adeline</a></div>
+         <div class="brand-name"><a class="navbar-brand brand-name " href="/">Adeline</a></div>
         
         <!-- Biểu tượng tài khoản + giỏ hàng bên phải -->
         <div class="d-flex ms-auto gap-3">

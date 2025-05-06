@@ -1,10 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head th:replace="~{layout/head :: head}"></head>
-    <head>
-        <link rel="stylesheet" href="assets/css/product.css">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/product.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/header.css">
+
+    <title>Product Filter</title>
+    
+</head>
 <body>
+    <div id="loading">
+        <img src="assets/images/loading.gif" alt="Hihi">
+    </div>
+    <div th:replace="~{layout/header :: header}"></div>
     <div class="container-fluid">
         <div class="row">
             <div class="col-3 custom-col">
@@ -75,7 +87,7 @@
                     <div class="col">
                         <div class="card">
                             <div class="png-zoom">
-                                <img src="image.png" style="width:100%; height: 250px; object-fit:scale-down;" class="card-img-top" alt="...">
+                                <img src="https://picsum.photos/200/300" style="width:100%; height: 250px; object-fit:scale-down;" class="card-img-top" alt="...">
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">Card title</h5>
@@ -98,7 +110,9 @@
                     </div>
                     <div class="col">
                         <div class="card">
-                            <img src="image.png" style="width:100%; height: 250px; object-fit:scale-down;" class="card-img-top" alt="...">
+                            <div class="png-zoom">
+                                <img src="https://picsum.photos/200/300" style="width:100%; height: 250px; object-fit:scale-down;" class="card-img-top" alt="...">
+                            </div>
                             <div class="card-body">
                                 <h5 class="card-title">Card title</h5>
                                 <p class="card-text">This is a </p>
@@ -111,7 +125,6 @@
                                 </div>
                                 <button class="btn btn-danger view-details-btn" data-hover="hihi">
                                     <span class="text">View Details</span>
-                                    <span class="exclamation">!</span>
                                 </button>
                                 </div>
                             </div>
@@ -121,7 +134,9 @@
                     </div>
                     <div class="col">
                         <div class="card">
-                            <img src="image.png" style="width:100%; height: 250px; object-fit:scale-down;" class="card-img-top" alt="...">
+                            <div class="png-zoom">
+                                <img src="https://picsum.photos/500" style="width:100%; height: 250px; object-fit:scale-down;" class="card-img-top" alt="...">
+                            </div>
                             <div class="card-body">
                                 <h5 class="card-title">Card title</h5>
                                 <p class="card-text">This is a </p>
@@ -134,7 +149,6 @@
                                 </div>
                                 <button class="btn btn-danger view-details-btn" data-hover="hihi">
                                     <span class="text">View Details</span>
-                                    <span class="exclamation">!</span>
                                 </button>
                                 </div>
                             </div>
@@ -144,7 +158,9 @@
                     </div>
                     <div class="col">
                         <div class="card">
-                            <img src="image.png" style="width:100%; height: 250px; object-fit:scale-down;" class="card-img-top" alt="...">
+                            <div class="png-zoom">
+                                <img src="https://picsum.photos/200/300" style="width:100%; height: 250px; object-fit:scale-down;" class="card-img-top" alt="...">
+                            </div>
                             <div class="card-body">
                                 <h5 class="card-title">Card title</h5>
                                 <p class="card-text">This is a </p>
@@ -157,16 +173,18 @@
                                 </div>
                                 <button class="btn btn-danger view-details-btn" data-hover="hihi">
                                     <span class="text">View Details</span>
-                                    <span class="exclamation">!</span>
                                 </button>
                                 </div>
                             </div>
                                 </div>
                             </div>
                         </div>
-                    </div><div class="col">
+                    </div>
+                    <div class="col">
                         <div class="card">
-                            <img src="image.png" style="width:100%; height: 250px; object-fit:scale-down;" class="card-img-top" alt="...">
+                            <div class="png-zoom">
+                                <img src="https://picsum.photos/200/300" style="width:100%; height: 250px; object-fit:scale-down;" class="card-img-top" alt="...">
+                            </div>
                             <div class="card-body">
                                 <h5 class="card-title">Card title</h5>
                                 <p class="card-text">This is a </p>
@@ -179,16 +197,18 @@
                                 </div>
                                 <button class="btn btn-danger view-details-btn" data-hover="hihi">
                                     <span class="text">View Details</span>
-                                    <span class="exclamation">!</span>
                                 </button>
                                 </div>
                             </div>
                                 </div>
                             </div>
                         </div>
-                    </div><div class="col">
+                    </div>
+                    <div class="col">
                         <div class="card">
-                            <img src="image.png" style="width:100%; height: 250px; object-fit:scale-down;" class="card-img-top" alt="...">
+                            <div class="png-zoom">
+                                <img src="https://picsum.photos/200/300" style="width:100%; height: 250px; object-fit:scale-down;" class="card-img-top" alt="...">
+                            </div>
                             <div class="card-body">
                                 <h5 class="card-title">Card title</h5>
                                 <p class="card-text">This is a </p>
@@ -201,7 +221,6 @@
                                 </div>
                                 <button class="btn btn-danger view-details-btn" data-hover="hihi">
                                     <span class="text">View Details</span>
-                                    <span class="exclamation">!</span>
                                 </button>
                                 </div>
                             </div>
@@ -216,68 +235,7 @@
             </div>
         </div>
     </div>
-    <script>
-        const minPrice = document.getElementById("minPrice");
-const maxPrice = document.getElementById("maxPrice");
-const rangeTrack = document.querySelector(".range-track");
-
-const minGap = 50; // Khoảng cách tối thiểu giữa hai nút
-const maxValue = parseInt(maxPrice.max);
-
-function updateTrack() {
-    let minValue = parseInt(minPrice.value);
-    let maxValueCurrent = parseInt(maxPrice.value);
-
-    if (maxValueCurrent - minValue < minGap) {
-        minPrice.value = maxValueCurrent - minGap;
-    }
-
-    let minPercent = (minPrice.value / maxValue) * 100;
-    let maxPercent = (maxPrice.value / maxValue) * 100;
-
-    rangeTrack.style.left = minPercent + "%";
-    rangeTrack.style.width = (maxPercent - minPercent) + "%";
-
-    // Cập nhật giá trị hiển thị
-    document.getElementById("minValue").innerText = minPrice.value;
-    document.getElementById("maxValue").innerText = maxPrice.value;
-}
-
-function updateMax() {
-    let minValueCurrent = parseInt(minPrice.value);
-    let maxValueCurrent = parseInt(maxPrice.value);
-
-    if (maxValueCurrent - minValueCurrent < minGap) {
-        maxPrice.value = minValueCurrent + minGap;
-    }
-
-    updateTrack();
-}
-
-// Gán sự kiện
-minPrice.addEventListener("input", updateTrack);
-maxPrice.addEventListener("input", updateMax);
-
-// Khởi động ban đầu
-updateTrack();
-
-document.querySelectorAll(".dropdown-toggle-custom").forEach(button => {
-    button.addEventListener("click", function () {
-        let dropdown = this.nextElementSibling; // Lấy phần dropdown ngay sau button
-        let icon = this.querySelector("i");
-
-        if (dropdown.style.display === "block") {
-            dropdown.style.display = "none";
-            icon.style.transform = "rotate(0deg)";
-        } else {
-            dropdown.style.display = "block";
-            icon.style.transform = "rotate(90deg)";
-        }
-    });
-});
-
-
-    </script>
+    <script src="assets/js/product.js"></script>
+    <script src="assets/js/index.js"></script>
 </body>
-
 </html>
