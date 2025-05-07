@@ -32,11 +32,11 @@ public class ProductService {
         if (!supplierRepository.existsById(request.getSupplier_id())) {
             throw new AppException(ErrorCode.SUPPLIER_NOT_FOUND);
         }
-        
+
         if (!categoryRepository.existsById(request.getCategory_id())) {
             throw new AppException(ErrorCode.CATEGORY_NOT_FOUND);
         }
-    
+
         Product product = productMapper.toProduct(request);
         Product savedProduct = productRepository.save(product);
         return productResponseMapper.toResponse(savedProduct);
@@ -52,11 +52,12 @@ public class ProductService {
                 .map(productResponseMapper::toResponse)
                 .toList();
     };
+
     public ProductResponse getProductById(Long id) {
         Product product = productRepository.findById(id)
-            .orElseThrow(() -> {
-                return new AppException(ErrorCode.USER_NOT_FOUND);
-            });
+                .orElseThrow(() -> {
+                    return new AppException(ErrorCode.USER_NOT_FOUND);
+                });
 
         return productResponseMapper.toResponse(product);
     };
@@ -65,7 +66,6 @@ public class ProductService {
 
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
-        
 
         if (request.getSupplier_id() != null) {
             if (!supplierRepository.existsById(request.getSupplier_id())) {
@@ -73,14 +73,14 @@ public class ProductService {
             }
             product.setSupplier(supplierRepository.findById(request.getSupplier_id()).get());
         }
-        
+
         if (request.getCategory_id() != null) {
             if (!categoryRepository.existsById(request.getCategory_id())) {
                 throw new AppException(ErrorCode.CATEGORY_NOT_FOUND);
             }
             product.setCategory(categoryRepository.findById(request.getCategory_id()).get());
         }
-        
+
         if (request.getName() != null) {
             product.setName(request.getName());
         }
@@ -98,4 +98,23 @@ public class ProductService {
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     };
+
+    public List<ProductResponse> searchProducts(String keyword, Double minPrice, Double maxPrice,
+            List<String> categories) {
+
+        String searchedKeyword = (keyword == null || keyword.trim().isEmpty()) ? null
+                : "%" + keyword.toLowerCase() + "%";
+        List<String> searchedCategories = null;
+        if (categories != null && !categories.isEmpty()) {
+            searchedCategories = categories.stream().map(String::toLowerCase).toList();
+        }
+        List<Product> products = productRepository.searchProducts(searchedKeyword, minPrice, maxPrice,
+                searchedCategories);
+        if (products.isEmpty()) {
+            throw new AppException(ErrorCode.PRODUCT_LIST_EMPTY);
+        }
+        return products.stream()
+                .map(productResponseMapper::toResponse)
+                .toList();
+    }
 }
