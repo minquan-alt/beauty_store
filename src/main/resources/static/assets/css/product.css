@@ -1,3 +1,421 @@
+<<<<<<< Updated upstream
 .filter{
     background-color: yellow;
 }
+=======
+    .container-fluid {
+        background-color:none;
+    }
+    .col-3 {
+        background-color: black;
+        height:100vh;
+    }
+    .custom-col {
+            width: 20.83%; /* 2.5/12 * 100% */
+            max-width: 20.83%;
+            flex: 0 0 auto;
+        }
+    .col-9 {
+        background-color: white !important;
+        height:100vh;
+        max-width:100%;
+    }
+    .search-wrapper {
+    max-width: 300px;
+    margin-top:100px;
+}
+
+.search-box {
+    position: relative;
+    background: white;
+    border-radius: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.search-box:focus-within {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.search-input {
+    border: 2px solid #eee;
+    border-radius: 30px;
+    padding: 15px 25px;
+    padding-right: 50px;
+    width: 100%;
+    height:40px;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: white;
+    box-shadow: none;
+    background-color: black;
+    color:white;
+}
+
+.search-icon {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.search-box:focus-within .search-icon {
+    color: white;
+}
+
+.suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 15px;
+    margin-top: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.search-box:focus-within .suggestions {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.suggestion-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.suggestion-item:hover {
+    background: #f8f9fa;
+}
+
+.suggestion-item i {
+    margin-right: 10px;
+    color: #666;
+}
+
+.recent-searches {
+    color: #666;
+    font-size: 0.8rem;
+    padding: 10px 20px;
+    background: #f8f9fa;
+    border-radius: 15px 15px 0 0;
+}
+.bg-light {
+    background-color: black !important;
+}
+        .slider-container {
+        position: relative;
+        width: 100%;
+        height: 5px;
+        background: #ddd;
+        margin: 20px 0;
+    }
+    
+    .slider-container {
+    position: relative;
+    width: 100%;
+    height: 8px; /* Chiều cao track */
+    background: #ffffff89;
+    border-radius: 4px;
+}
+
+.range-track {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 8px;
+    background: white;
+    border-radius: 4px;
+    z-index: 2; /* Giúp track hiển thị trên container */
+    pointer-events: none; /* Tránh che mất slider */
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    position: absolute;
+    top: -5px; /* Đưa thumb về giữa track */
+    left: 0;
+    background: none;
+    pointer-events: none;
+    z-index: 3; /* Đảm bảo nút slider nằm trên track */
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+    height: 6px;
+    background: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: rgb(51, 50, 50);
+    border: 3px solid rgba(255, 255, 255, 0.778);
+    border-radius: 50%;
+    position: relative;
+    pointer-events: auto;
+    cursor: pointer;
+}
+.dropdown-toggle-custom{
+    background-color: black;
+    color:white;
+    border:none;
+}
+.dropdown-toggle-custom:hover{
+    background-color: black;
+    color:white;
+}
+.btn-dark:active, 
+.btn-dark:focus, 
+.btn-dark:focus-visible {
+    background-color: #000000 !important; /* Màu nền mặc định của btn-dark */
+    color: white !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+.dropdown-toggle-custom i {
+    transition: transform 0.4s;
+}
+
+.dropdown.open .dropdown-toggle-custom i {
+    transform: rotate(90deg); /* Xoay mũi tên khi mở */
+}
+@keyframes waveGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #ffffff, #989899, #515050, #000000);
+    background-size: 300% 300%;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+    background-color: white !important
+}
+.btn-outline-primary{
+    background-color: white !important;
+}
+.btn-primary:hover {
+    animation: waveGradient 2s infinite ease-in-out;
+    background-size: 400% 400%;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+    border: none;
+    color: white;
+}
+.flex-grow {
+    flex-grow: 1; /* Cột 9 tự động chiếm phần còn lại */
+}
+.button-group {
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    
+    .price-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+      background-color: white;
+    }
+    
+    .price-button {
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+      width: 60px;
+      position: relative; /* Thêm vào cho data-hover */
+      overflow: hidden; /* Thêm vào cho data-hover */
+      background-color:white;
+      border:none;
+      color: black;
+    }
+    
+    .buy-now-button {
+      transition: all 0.3s ease;
+      transform: scaleX(0);
+      transform-origin: left;
+      width: 0;
+      opacity: 0;
+      padding: 0;
+      border: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+      
+    }
+    
+    .view-details-btn {
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+      position: relative; /* Thêm vào */
+      background-color:none !important;
+      border:none !important;
+    }
+    
+    /* Hiệu ứng hover */
+    .price-section:hover .price-button {
+      width: 50px;
+    }
+    
+    .price-section:hover .buy-now-button {
+      transform: scaleX(1);
+      width: 90px;
+      opacity: 1;
+      padding: 6px 12px;
+      border: none;
+      color:black;
+    }
+    
+    .price-section:hover ~ .view-details-btn {
+      width: 40px;
+      text-align: center;
+      padding-left: 0;
+      padding-right: 0;
+    }
+    
+    /* Đảm bảo không bị tràn layout */
+    .button-group {
+      overflow: hidden;
+    }
+
+    /* HIỆU ỨNG DATA-HOVER CỦA BẠN */
+    .price-button::after {
+      content: attr(data-hover);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: white;
+      color: white;
+      opacity: 0;
+      transition: opacity 0.3s;
+      border:none !important;
+        border-radius: none !important;
+        background-color:none !important;
+    }
+    
+    .price-button:hover::after {
+      opacity: 1;
+    }
+    
+    .price-button:hover span {
+      opacity: 0;
+    }
+    
+    .price-button span {
+      transition: opacity 0.3s;
+    }
+
+    /* HIỆU ỨNG THAY ĐỔI VIEW DETAILS */
+    .price-section:hover ~ .view-details-btn {
+      opacity: 0;
+    }
+    .py-5{
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+    .card-body{
+        border-bottom-right-radius: inherit;
+        border-bottom-left-radius: inherit;
+        color:black;
+    }
+    .card{
+        border-color:none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        background-color: white !important;
+        border: none !important;
+    }
+    .buy-now-button:hover {
+        background-color: rgb(229, 155, 155) !important;
+        color: white !important;
+    }
+    .card-title {
+        text-align: center;
+    }
+    .btn-danger {
+        background-color: white !important;
+        color: rgb(229, 155, 155) !important;  
+        text-decoration: underline;  
+    }
+    .btn-danger:hover {
+        background-color: white !important;
+        color: rgb(92, 193, 176) !important;    
+    }
+    .png-zoom {
+    display: inline-block; /* Ôm sát đối tượng */
+    line-height: 0; /* Loại bỏ khoảng trống dư */
+  }
+  
+  .png-zoom img {
+    transition: transform 0.4s ease-out;
+    transform-origin: center bottom; /* Tuỳ chỉnh điểm zoom */
+  }
+  
+  .png-zoom:hover img {
+    transform: scale(1.08); /* Chỉ zoom đối tượng */
+  }
+    .card-img-top:hover {
+        cursor: pointer;
+    }
+
+     #quantityContainer {
+            display: none;
+            margin-top: 10px;
+        }
+        #quantity {
+            margin: 0 10px;
+            font-weight: bold;
+        }
+    input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.text-primary{
+    color: black !important;
+}
+#moreBtn{
+    color:rgb(60, 157, 255) !important;
+    text-decoration: underline !important;
+}
+.btn-outline-secondary{
+    background-color: white !important;
+    color: black !important;
+    border-color: white !important;
+}
+.btn-buy-now{
+    background-color: white !important;
+    color: black !important;
+    border-color: black !important;
+}
+.btn-buy-now:hover{
+    background-color: black !important;
+    color: white !important;
+}
+
+>>>>>>> Stashed changes
