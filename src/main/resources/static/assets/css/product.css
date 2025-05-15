@@ -1,8 +1,3 @@
-<<<<<<< Updated upstream
-.filter{
-    background-color: yellow;
-}
-=======
     .container-fluid {
         background-color:none;
     }
@@ -418,4 +413,3 @@ input[type=number] {
     color: white !important;
 }
 
->>>>>>> Stashed changes
