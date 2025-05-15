@@ -348,9 +348,6 @@ input[type="range"]::-webkit-slider-thumb {
     .card-title {
         text-align: center;
     }
-    .card-text {
-        text-align: center;
-    }
     .btn-danger {
         background-color: white !important;
         color: rgb(229, 155, 155) !important;  
@@ -376,3 +373,43 @@ input[type="range"]::-webkit-slider-thumb {
     .card-img-top:hover {
         cursor: pointer;
     }
+
+     #quantityContainer {
+            display: none;
+            margin-top: 10px;
+        }
+        #quantity {
+            margin: 0 10px;
+            font-weight: bold;
+        }
+    input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.text-primary{
+    color: black !important;
+}
+#moreBtn{
+    color:rgb(60, 157, 255) !important;
+    text-decoration: underline !important;
+}
+.btn-outline-secondary{
+    background-color: white !important;
+    color: black !important;
+    border-color: white !important;
+}
+.btn-buy-now{
+    background-color: white !important;
+    color: black !important;
+    border-color: black !important;
+}
+.btn-buy-now:hover{
+    background-color: black !important;
+    color: white !important;
+}
+

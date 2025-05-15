@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Your Shopping Cart</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+
+    <style>
+      .header-row {
+        background-color: #f8f9fa;
+        padding: 10px;
+      }
+      .header-row .col {
+        text-align: center;
+        font-size: 1.5rem;
+      }
+      .btn-success {
+        background-color: black;
+        color: white;
+        border: none;
+        font-size: 16px;
+      }
+      .btn-success:hover {
+        background-color: #333;
+        color: white;
+      }
+      .product-img {
+        width: 100px;
+        height: 180px;
+        object-fit: cover;
+      }
+      .form-select {
+        margin-top: 80px;
+      }
+      .price {
+        margin-top: 100px;
+        font-size: 24px;
+        color: #333 !important;
+      }
+      .navbar-brand.brand-name {
+        font-family: 'Parisienne', cursive;
+        font-weight: bold;
+        color: white;
+        font-size: 40px;
+        position: relative;
+        transition: color 0.3s ease; /* Thêm hiệu ứng chuyển đổi màu */
+    }
+
+    .navbar-brand.brand-name:hover {
+        color: #ff6f61; /* Màu khi hover */
+    }
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  </head>
+  <body>
+    <header>
+      <div class="row header-row" style="background-color: black; color: white;">
+        <div class="col col-2" style="font-size: 18px; margin-top: 20px">
+          <i class="bi bi-chevron-left"></i>
+          <a class="text-white text-decoration-none" href="#">Product</a>
+        </div>
+         <div class="col col-8 brand-name"><a class="navbar-brand brand-name " href="/">Adeline</a></div>
+
+        <!-- <div class="" style="font-size: 29px">adeline</div> -->
+      </div>
+    </header>
+
+    <div class="freeship-row d-flex justify-content-center align-items-center" style="background-color: rgba(0, 0, 0, 0.74); height: 50px; color: white">
+      Free shipping on all orders for members
+    </div>
+
+    <div class="container mt-4">
+      <!-- ✅ Giỏ hàng -->
+      <div id="cart-container">
+        <h2>Giỏ hàng</h2>
+
+        <!-- Sản phẩm 1 -->
+        <div class="container py-3 border-bottom product-item">
+          <div class="row">
+            <div class="col-12 d-flex justify-content-between align-items-start">
+              <h4 class="fw-semibold">Dầu Gội Ginger Scalp Care Shampoo 250ML</h4>
+              <button class="btn btn-link text-danger p-0 btn-remove">
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </div>
+          </div>
+          <div class="row align-items-center">
+            <div class="col-1">
+              <img src="image.png" alt="Dầu gội" class="img-fluid product-img" />
+            </div>
+            <div class="col-9">
+              <select class="form-select w-auto quantity-select" aria-label="Chọn số lượng">
+                <option selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </div>
+            <div class="col-2 text-end">
+              <p class="price mb-2 fw-semibold text-success">325.000VND</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sản phẩm 2 -->
+        <div class="container py-3 border-bottom product-item">
+          <div class="row">
+            <div class="col-12 d-flex justify-content-between align-items-start">
+              <h4 class="fw-semibold">Sữa Rửa Mặt Hàn Quốc 150ML</h4>
+              <button class="btn btn-link text-danger p-0 btn-remove">
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </div>
+          </div>
+          <div class="row align-items-center">
+            <div class="col-1">
+              <img src="image.png" alt="Sữa rửa mặt" class="img-fluid product-img" />
+            </div>
+            <div class="col-9">
+              <select class="form-select w-auto quantity-select" aria-label="Chọn số lượng">
+                <option selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </div>
+            <div class="col-2 text-end">
+              <p class="price mb-2 fw-semibold text-success">325.000VND</p>
+            </div>
+          </div>
+        </div>
+
+<!-- Tổng & Mã giảm giá -->
+<div class="mt-4 p-4" style="background-color: #f8f9fa; border-radius: 8px;">
+  <div class="row mb-3">
+    <div class="col-md-6 d-flex">
+      <input
+        type="text"
+        class="form-control border-0 border-bottom rounded-0"
+        placeholder="Nhập mã giảm giá (ví dụ: GIAM10)"
+        id="coupon-code"
+        style="background-color: #f9f5ed; color: #004c3f;"
+      />
+      <button
+        class="btn text-white ms-2"
+        style="background-color: #000000; width: 140px;"
+        id="apply-coupon"
+      >
+        Áp dụng
+      </button>
+    </div>
+  </div>
+
+  <div class="row justify-content-end text-end">
+    <div class="col-md-6">
+      <p class="mb-1"><strong>Tổng phụ:</strong> <span id="subtotal">0VND</span></p>
+      <p class="mb-1 text-success"><strong>Giảm giá:</strong> <span id="discount">0VND</span></p>
+      <hr />
+      <h4><strong>Tổng cộng:</strong> <span id="cart-total">0VND</span></h4>
+    </div>
+  </div>
+</div>
+
+<div class="text-end mt-4">
+  <a href="/checkout.html" class="proceed-payment" style="text-decoration: none; background-color:black; padding:16px; color:white;">
+    Tiến hành thanh toán
+  </a>
+</div>
+
+      </div>
+
+      <!-- ❌ Giao diện giỏ hàng trống -->
+      <div id="empty-cart" style="display: none;">
+        <div class="d-flex flex-column justify-content-center align-items-center" style="height: 50%">
+          <h2>Shopping Cart</h2>
+          <h6>Your shopping cart is empty</h6>
+          <button class="btn btn-success" style="height: 50px; width: 250px;">Continue Shopping</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let appliedDiscount = 0;
+
+      function formatVND(number) {
+        return number.toLocaleString("vi-VN") + "VND";
+      }
+document.getElementById("apply-coupon").addEventListener("click", function () {
+  const code = document.getElementById("coupon-code").value.trim().toUpperCase();
+
+  if (code === "GIAM10") {
+    appliedDiscount = 100000;
+    alert("Áp dụng mã giảm thành công: GIAM10 (-100.000đ)");
+  } else if (code === "SALE50") {
+    appliedDiscount = 50000;
+    alert("Áp dụng mã SALE50 (-50.000đ)");
+  } else {
+    appliedDiscount = 0;
+    alert("Mã không hợp lệ hoặc đã hết hạn.");
+  }
+
+  updateCartTotal();
+});
+
+      function updateCartTotal() {
+        let subtotal = 0;
+  document.querySelectorAll(".product-item").forEach((item) => {
+    const quantity = parseInt(item.querySelector(".quantity-select").value);
+    const unitPrice = 325000;
+    subtotal += quantity * unitPrice;
+  });
+
+  let totalAfterDiscount = subtotal - appliedDiscount;
+  if (totalAfterDiscount < 0) totalAfterDiscount = 0;
+
+  document.getElementById("subtotal").innerText = formatVND(subtotal);
+  document.getElementById("discount").innerText = formatVND(appliedDiscount);
+  document.getElementById("cart-total").innerText = formatVND(totalAfterDiscount);
+      }
+
+      function checkCartEmpty() {
+        const productItems = document.querySelectorAll(".product-item");
+        const cartContainer = document.getElementById("cart-container");
+        const emptyCart = document.getElementById("empty-cart");
+
+        if (productItems.length === 0) {
+          cartContainer.style.display = "none";
+          emptyCart.style.display = "block";
+        } else {
+          cartContainer.style.display = "block";
+          emptyCart.style.display = "none";
+        }
+      }
+
+      // Gán sự kiện cho các dropdown chọn số lượng
+      document.querySelectorAll(".quantity-select").forEach((select) => {
+        select.addEventListener("change", function () {
+          const quantity = parseInt(this.value);
+          const productItem = this.closest(".product-item");
+          const priceDisplay = productItem.querySelector(".price");
+          const unitPrice = 325000;
+          const total = quantity * unitPrice;
+          priceDisplay.innerText = formatVND(total);
+          updateCartTotal();
+        });
+      });
+
+      // Gán sự kiện cho nút xoá sản phẩm
+      document.querySelectorAll(".btn-remove").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const productItem = this.closest(".product-item");
+          if (productItem) {
+            productItem.remove();
+            updateCartTotal();
+            checkCartEmpty();
+          }
+        });
+      });
+
+      // Tính tổng và kiểm tra khi trang load
+      updateCartTotal();
+      checkCartEmpty();
+    </script>
+  </body>
+</html>

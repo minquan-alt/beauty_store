@@ -24,4 +24,9 @@ public class HomeController {
     public String product() {
         return "product";
     }
+
+    @GetMapping("/cart-view")
+    public String cart() {
+        return "cart";
+    }
 }
