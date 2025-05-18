@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.beautystore.adeline.dto.request.ProductCreateRequest;
 import com.beautystore.adeline.dto.request.ProductUpdateRequest;
+import com.beautystore.adeline.dto.response.GetProductImageResponse;
+import com.beautystore.adeline.dto.response.ProductImageResponse;
 import com.beautystore.adeline.dto.response.ProductResponse;
 import com.beautystore.adeline.entity.Product;
 import com.beautystore.adeline.exception.AppException;
@@ -118,4 +120,21 @@ public class ProductService {
                 .map(productResponseMapper::toResponse)
                 .toList();
     }
+
+     public GetProductImageResponse getProductImages(Long id) {
+        Product product = productRepository.findById(id)
+            .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        List<ProductImageResponse> imageRes = product.getImages().stream()
+            .map(img -> ProductImageResponse.builder()
+                .id(img.getId())
+                .imageUrl(img.getImageUrl())
+                .build())
+            .toList();
+
+        return GetProductImageResponse.builder()
+            .images(imageRes)
+            .build();
+    }
+
 }

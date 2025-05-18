@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.beautystore.adeline.dto.request.ProductCreateRequest;
 import com.beautystore.adeline.dto.request.ProductUpdateRequest;
 import com.beautystore.adeline.dto.response.ApiResponse;
+import com.beautystore.adeline.dto.response.GetProductImageResponse;
 import com.beautystore.adeline.dto.response.ProductResponse;
 import com.beautystore.adeline.services.ProductService;
 
@@ -77,4 +78,12 @@ public class ProductController {
         apiResponse.setResult(productService.searchProducts(keyword, minPrice, maxPrice, category));
         return apiResponse;
     }
+
+    @GetMapping("/{productId}/images")
+    public ApiResponse<GetProductImageResponse> getProductImage(@PathVariable Long productId) {
+        ApiResponse<GetProductImageResponse> apiResponse = new ApiResponse<>();
+        apiResponse.setResult(productService.getProductImages(productId));
+        return apiResponse;
+    }
+
 }
