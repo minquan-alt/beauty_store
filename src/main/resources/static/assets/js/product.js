@@ -5,61 +5,93 @@
     const minGap = 50; // Khoảng cách tối thiểu giữa hai nút
     const maxValue = parseInt(maxPrice.max);
 
-    function updateTrack() {
-        let minValue = parseInt(minPrice.value);
-        let maxValueCurrent = parseInt(maxPrice.value);
+function updateTrack() {
+  let minValue = parseInt(minPrice.value);
+  let maxValueCurrent = parseInt(maxPrice.value);
 
-        if (maxValueCurrent - minValue < minGap) {
-            minPrice.value = maxValueCurrent - minGap;
-        }
+  if (maxValueCurrent - minValue < minGap) {
+    minPrice.value = maxValueCurrent - minGap;
+  }
+  let minPercent = (minPrice.value / maxValue) * 100;
+  let maxPercent = (maxPrice.value / maxValue) * 100;
 
-        let minPercent = (minPrice.value / maxValue) * 100;
-        let maxPercent = (maxPrice.value / maxValue) * 100;
+  rangeTrack.style.left = minPercent + "%";
+  rangeTrack.style.width = maxPercent - minPercent + "%";
 
-        rangeTrack.style.left = minPercent + "%";
-        rangeTrack.style.width = (maxPercent - minPercent) + "%";
+  // Cập nhật giá trị hiển thị
+  document.getElementById("minValue").innerText = minPrice.value;
+  document.getElementById("maxValue").innerText = maxPrice.value;
+}
 
-        // Cập nhật giá trị hiển thị
-        document.getElementById("minValue").innerText = minPrice.value;
-        document.getElementById("maxValue").innerText = maxPrice.value;
+function updateMax() {
+  let minValueCurrent = parseInt(minPrice.value);
+  let maxValueCurrent = parseInt(maxPrice.value);
+
+  if (maxValueCurrent - minValueCurrent < minGap) {
+    maxPrice.value = minValueCurrent + minGap;
+  }
+
+  updateTrack();
+}
+
+// Gán sự kiện
+minPrice.addEventListener("input", updateTrack);
+maxPrice.addEventListener("input", updateMax);
+
+// Khởi động ban đầu
+updateTrack();
+
+document.querySelectorAll(".dropdown-toggle-custom").forEach((button) => {
+  button.addEventListener("click", function () {
+    let dropdown = this.nextElementSibling; // Lấy phần dropdown ngay sau button
+    let icon = this.querySelector("i");
+
+    if (dropdown.style.display === "block") {
+      dropdown.style.display = "none";
+      icon.style.transform = "rotate(0deg)";
+    } else {
+      dropdown.style.display = "block";
+      icon.style.transform = "rotate(90deg)";
     }
+  });
+});
 
-    function updateMax() {
-        let minValueCurrent = parseInt(minPrice.value);
-        let maxValueCurrent = parseInt(maxPrice.value);
+const searchForm = document.getElementById("searchForm");
+const searchIcon = document.querySelector(".search-icon");
 
-        if (maxValueCurrent - minValueCurrent < minGap) {
-            maxPrice.value = minValueCurrent + minGap;
-        }
+searchForm.addEventListener("submit", function (event) {
+  event.preventDefault();
 
-        updateTrack();
-    }
+  const keywordInput = document.querySelector('input[name="keyword"]');
+  const minPriceInput = document.querySelector('input[name="minPrice"]');
+  const maxPriceInput = document.querySelector('input[name="maxPrice"]');
 
-    // Gán sự kiện
-    minPrice.addEventListener("input", updateTrack);
-    maxPrice.addEventListener("input", updateMax);
+  let url = "/products/searchByQuery?";
+  let params = [];
 
-    // Khởi động ban đầu
-    updateTrack();
+  if (keywordInput.value.trim()) {
+    params.push(`keyword=${encodeURIComponent(keywordInput.value.trim())}`);
+  }
 
-    document.querySelectorAll(".dropdown-toggle-custom").forEach(button => {
-        button.addEventListener("click", function () {
-            let dropdown = this.nextElementSibling; // Lấy phần dropdown ngay sau button
-            let icon = this.querySelector("i");
+  params.push(`minPrice=${minPriceInput.value}`);
+  params.push(`maxPrice=${maxPriceInput.value}`);
 
-            if (dropdown.style.display === "block") {
-                dropdown.style.display = "none";
-                icon.style.transform = "rotate(0deg)";
-            } else {
-                dropdown.style.display = "block";
-                icon.style.transform = "rotate(90deg)";
-            }
-        });
+  document
+    .querySelectorAll('input[name="category"]:checked')
+    .forEach((checkbox) => {
+      params.push(`category=${encodeURIComponent(checkbox.value)}`);
     });
 
+  url += params.join("&");
+  window.location.href = url;
+});
+
+searchIcon.addEventListener("click", function () {
+  searchForm.dispatchEvent(new Event("submit"));
+});
 
 window.addEventListener("load", function () {
-    document.getElementById("loading").style.display = "none";
+  document.getElementById("loading").style.display = "none";
 });
 function increaseQty(btn) {
     const input = btn.parentElement.querySelector('input[type="number"]');
