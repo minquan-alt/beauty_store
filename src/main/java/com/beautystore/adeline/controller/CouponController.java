@@ -30,8 +30,8 @@ public class CouponController {
     private CouponService couponService;
 
     @PostMapping()
-    ApiResponse<Coupon> createCoupon(@RequestBody @Valid CouponCreateRequest request){
-        ApiResponse<Coupon> apiResponse = new ApiResponse<>();
+    ApiResponse<CouponResponse> createCoupon(@RequestBody @Valid CouponCreateRequest request){
+        ApiResponse<CouponResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(this.couponService.createCoupon(request));
         return apiResponse;
     }    
@@ -47,13 +47,6 @@ public class CouponController {
     ApiResponse<CouponResponse> getCoupon(@PathVariable Long couponId) {
         ApiResponse<CouponResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(this.couponService.getCouponByID(couponId));
-        return apiResponse;
-    }
-
-    @GetMapping("/code/{code}")
-    ApiResponse<CouponResponse> getCoupon(@PathVariable String code) {
-        ApiResponse<CouponResponse> apiResponse = new ApiResponse<>();
-        apiResponse.setResult(this.couponService.getCouponByCode(code));
         return apiResponse;
     }
 

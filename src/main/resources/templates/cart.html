@@ -6,53 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
-
-    <style>
-      .header-row {
-        background-color: #f8f9fa;
-        padding: 10px;
-      }
-      .header-row .col {
-        text-align: center;
-        font-size: 1.5rem;
-      }
-      .btn-success {
-        background-color: black;
-        color: white;
-        border: none;
-        font-size: 16px;
-      }
-      .btn-success:hover {
-        background-color: #333;
-        color: white;
-      }
-      .product-img {
-        width: 100px;
-        height: 180px;
-        object-fit: cover;
-      }
-      .form-select {
-        margin-top: 80px;
-      }
-      .price {
-        margin-top: 100px;
-        font-size: 24px;
-        color: #333 !important;
-      }
-      .navbar-brand.brand-name {
-        font-family: 'Parisienne', cursive;
-        font-weight: bold;
-        color: white;
-        font-size: 40px;
-        position: relative;
-        transition: color 0.3s ease; /* Thêm hiệu ứng chuyển đổi màu */
-    }
-
-    .navbar-brand.brand-name:hover {
-        color: #ff6f61; /* Màu khi hover */
-    }
-
-    </style>
+    <link rel="stylesheet" href="assets/css/cart.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   </head>
@@ -61,7 +15,7 @@
       <div class="row header-row" style="background-color: black; color: white;">
         <div class="col col-2" style="font-size: 18px; margin-top: 20px">
           <i class="bi bi-chevron-left"></i>
-          <a class="text-white text-decoration-none" href="#">Product</a>
+          <a class="text-white text-decoration-none" href="/product">Product</a>
         </div>
          <div class="col col-8 brand-name"><a class="navbar-brand brand-name " href="/">Adeline</a></div>
 
@@ -90,7 +44,7 @@
           </div>
           <div class="row align-items-center">
             <div class="col-1">
-              <img src="image.png" alt="Dầu gội" class="img-fluid product-img" />
+              <img src="https://picsum.photos/200" alt="Dầu gội" class="img-fluid product-img" />
             </div>
             <div class="col-9">
               <select class="form-select w-auto quantity-select" aria-label="Chọn số lượng">
@@ -117,7 +71,7 @@
           </div>
           <div class="row align-items-center">
             <div class="col-1">
-              <img src="image.png" alt="Sữa rửa mặt" class="img-fluid product-img" />
+              <img src="https://picsum.photos/200/300" alt="Sữa rửa mặt" class="img-fluid product-img" />
             </div>
             <div class="col-9">
               <select class="form-select w-auto quantity-select" aria-label="Chọn số lượng">
@@ -183,87 +137,6 @@
 
     <!-- JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        let appliedDiscount = 0;
-
-      function formatVND(number) {
-        return number.toLocaleString("vi-VN") + "VND";
-      }
-document.getElementById("apply-coupon").addEventListener("click", function () {
-  const code = document.getElementById("coupon-code").value.trim().toUpperCase();
-
-  if (code === "GIAM10") {
-    appliedDiscount = 100000;
-    alert("Áp dụng mã giảm thành công: GIAM10 (-100.000đ)");
-  } else if (code === "SALE50") {
-    appliedDiscount = 50000;
-    alert("Áp dụng mã SALE50 (-50.000đ)");
-  } else {
-    appliedDiscount = 0;
-    alert("Mã không hợp lệ hoặc đã hết hạn.");
-  }
-
-  updateCartTotal();
-});
-
-      function updateCartTotal() {
-        let subtotal = 0;
-  document.querySelectorAll(".product-item").forEach((item) => {
-    const quantity = parseInt(item.querySelector(".quantity-select").value);
-    const unitPrice = 325000;
-    subtotal += quantity * unitPrice;
-  });
-
-  let totalAfterDiscount = subtotal - appliedDiscount;
-  if (totalAfterDiscount < 0) totalAfterDiscount = 0;
-
-  document.getElementById("subtotal").innerText = formatVND(subtotal);
-  document.getElementById("discount").innerText = formatVND(appliedDiscount);
-  document.getElementById("cart-total").innerText = formatVND(totalAfterDiscount);
-      }
-
-      function checkCartEmpty() {
-        const productItems = document.querySelectorAll(".product-item");
-        const cartContainer = document.getElementById("cart-container");
-        const emptyCart = document.getElementById("empty-cart");
-
-        if (productItems.length === 0) {
-          cartContainer.style.display = "none";
-          emptyCart.style.display = "block";
-        } else {
-          cartContainer.style.display = "block";
-          emptyCart.style.display = "none";
-        }
-      }
-
-      // Gán sự kiện cho các dropdown chọn số lượng
-      document.querySelectorAll(".quantity-select").forEach((select) => {
-        select.addEventListener("change", function () {
-          const quantity = parseInt(this.value);
-          const productItem = this.closest(".product-item");
-          const priceDisplay = productItem.querySelector(".price");
-          const unitPrice = 325000;
-          const total = quantity * unitPrice;
-          priceDisplay.innerText = formatVND(total);
-          updateCartTotal();
-        });
-      });
-
-      // Gán sự kiện cho nút xoá sản phẩm
-      document.querySelectorAll(".btn-remove").forEach((btn) => {
-        btn.addEventListener("click", function () {
-          const productItem = this.closest(".product-item");
-          if (productItem) {
-            productItem.remove();
-            updateCartTotal();
-            checkCartEmpty();
-          }
-        });
-      });
-
-      // Tính tổng và kiểm tra khi trang load
-      updateCartTotal();
-      checkCartEmpty();
-    </script>
+    <script src="assets/js/cart.js"></script>
   </body>
 </html>

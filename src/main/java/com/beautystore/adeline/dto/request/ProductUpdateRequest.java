@@ -1,5 +1,7 @@
 package com.beautystore.adeline.dto.request;
 
+import java.math.BigDecimal;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +17,7 @@ import lombok.experimental.FieldDefaults;
 public class ProductUpdateRequest {
     String name;
     String description;
-    Double price;
+    BigDecimal price;
     Long supplier_id;
     Long category_id;
 }

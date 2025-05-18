@@ -151,11 +151,11 @@ public class CartService {
   }
 
   private Double calculateTotal(Cart cart) {
-    return cart.getCartItems().stream()
-        .mapToDouble(item -> item.getQuantity() * item.getProduct().getPrice())
-        .sum();
+      return cart.getCartItems().stream()
+          .mapToDouble(item -> item.getQuantity() * item.getProduct().getPrice().doubleValue())
+          .sum();
   }
-
+  
   private Integer calculateTotalItems(Cart cart) {
     return cart.getCartItems().stream()
         .mapToInt(CartItem::getQuantity)

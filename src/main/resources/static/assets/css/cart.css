@@ -1,0 +1,43 @@
+.header-row {
+        background-color: #f8f9fa;
+        padding: 10px;
+      }
+      .header-row .col {
+        text-align: center;
+        font-size: 1.5rem;
+      }
+      .btn-success {
+        background-color: black;
+        color: white;
+        border: none;
+        font-size: 16px;
+      }
+      .btn-success:hover {
+        background-color: #333;
+        color: white;
+      }
+      .product-img {
+        width: 100px;
+        height: 180px;
+        object-fit: cover;
+      }
+      .form-select {
+        margin-top: 80px;
+      }
+      .price {
+        margin-top: 100px;
+        font-size: 24px;
+        color: #333 !important;
+      }
+      .navbar-brand.brand-name {
+        font-family: 'Parisienne', cursive;
+        font-weight: bold;
+        color: white;
+        font-size: 40px;
+        position: relative;
+        transition: color 0.3s ease; /* Thêm hiệu ứng chuyển đổi màu */
+    }
+
+    .navbar-brand.brand-name:hover {
+        color: #ff6f61; /* Màu khi hover */
+    }

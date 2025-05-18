@@ -18,6 +18,6 @@ public interface CartMapper {
   @Mapping(target = "productName", source = "product.name")
   @Mapping(target = "productImage", expression = "java(cartItem.getProduct().getImages().isEmpty() ? null : cartItem.getProduct().getImages().get(0).getImageUrl())")
   @Mapping(target = "unitPrice", source = "product.price")
-  @Mapping(target = "totalPrice", expression = "java(cartItem.getQuantity() * cartItem.getProduct().getPrice())")
+  @Mapping(target = "totalPrice", expression = "java(cartItem.getQuantity() * cartItem.getProduct().getPrice().doubleValue())")
   CartItemResponse toCartItemResponse(CartItem cartItem);
 }

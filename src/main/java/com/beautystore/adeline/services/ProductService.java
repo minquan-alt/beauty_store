@@ -2,8 +2,6 @@ package com.beautystore.adeline.services;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
 import com.beautystore.adeline.dto.request.ProductCreateRequest;
 import com.beautystore.adeline.dto.request.ProductUpdateRequest;
 import com.beautystore.adeline.dto.response.ProductResponse;
@@ -15,6 +13,8 @@ import com.beautystore.adeline.mapper.ProductResponseMapper;
 import com.beautystore.adeline.repository.CategoryRepository;
 import com.beautystore.adeline.repository.ProductRepository;
 import com.beautystore.adeline.repository.SupplierRepository;
+
+import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,6 +44,7 @@ public class ProductService {
 
     public List<ProductResponse> getAllProducts() {
         List<Product> products = productRepository.findAll();
+        System.out.println("Tất cả product: " + products);
         if (products.isEmpty()) {
             throw new AppException(ErrorCode.PRODUCT_LIST_EMPTY);
         }

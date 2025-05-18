@@ -1,25 +1,27 @@
 package com.beautystore.adeline.dto.response;
 
+import com.beautystore.adeline.entity.Coupon;
+import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
-
+import java.time.LocalDateTime;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@Builder
 public class CouponResponse {
-    Long id;
-    String code;
-    BigDecimal discount;
-    BigDecimal maxDiscountAmount;
-    LocalDate expirationDate;
+    private Long id;
+    private String code;
+    private Coupon.CouponType type;
+    private BigDecimal discountValue;
+    private BigDecimal minOrderAmount;
+    private BigDecimal maxDiscountAmount;
+    private LocalDate startDate;
+    private LocalDate expirationDate;
+    private Integer usageLimit;
+    private Integer usedCount;
+    private Boolean active;
+    private Long applicableUserId;
+    private LocalDateTime createdAt;
 }

@@ -1,21 +1,21 @@
 package com.beautystore.adeline.dto.response;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import java.math.BigDecimal;
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class ProductResponse {
-    String name;
-    String description;
-    double price;
-    String categoryName;
-    String supplierName;
+    private Long id;
+    private String name;
+    private String description;
+    private BigDecimal price;
+    private String categoryName;
+    private String supplierName;
+    private List<String> imageUrls;
+    private Double averageRating;
+    // Các trường khác nếu cần
 }

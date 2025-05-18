@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.beautystore.adeline.dto.request.UserCreateRequest;
 import com.beautystore.adeline.dto.request.UserUpdateRequest;
@@ -83,14 +84,14 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public Long getUserIdFromSession(HttpSession session) throws AppException {
         String userEmail = (String) session.getAttribute("userEmail");
         if (userEmail == null) {
             throw new AppException(ErrorCode.USER_NOT_FOUND);
         }
-        return userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND))
-                .getId();
+        return userRepository.findIdByEmail(userEmail)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
     }
 
 }

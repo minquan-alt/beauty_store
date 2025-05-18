@@ -12,6 +12,7 @@ public enum ErrorCode {
     PASSWORD_INVALID(1005, "Password must be at least 8 characters"),
     INVALID_CREDENTIALS(1006, "Password is wrong"),
     USER_LIST_EMPTY(1007, "User list is empty"),
+    USER_NOT_LOGIN(1008, "User has not login"),
 
 
     CART_NOT_FOUND(2001, "Cart not found"),
@@ -21,13 +22,27 @@ public enum ErrorCode {
     QUANTITY_INVALID(2006, "Quantity must be greater than or equal to 0"),
     PRODUCT_ID_REQUIRED(2007, "Product ID is required"),
     PRODUCT_LIST_EMPTY(2008, "Product is empty"),
+    PRODUCT_REQUIRED(2009, "Product is required"),
 
     SUPPLIER_NOT_FOUND(3001, "Supplier not found"),
 
     CATEGORY_NOT_FOUND(4001, "Category not found"),
 
     COUPON_EXISTED(5001, "Coupon existed"),
-    COUPON_NOT_FOUND(5002,"Coupon not found");;
+    COUPON_NOT_FOUND(5002,"Coupon not found"),
+    COUPON_EXPIRED(5003, "Coupon is expired"),
+    COUPON_MIN_ORDER_NOT_MET(5004, "Coupon min is not met"),
+
+    ORDER_NOT_EXISTED(6001, "Order not existed"),
+    ORDER_NOT_FOUND(6002, "Order not existed"),
+    ORDER_NOT_IN_SESSION(6003, "Order has not created"),
+    ITEMS_NOT_EXISTED(6004, "Order has no items"),
+    UNIT_PRICE_REQUIRED(6005, "Unit price is required"),
+    PAYMENT_REQUIRED(6006, "Payment is required"),
+
+    ADDRESS_NOT_NULL(7001, "Address must not be null"),
+    ADDRESS_NOT_FOUND(7002, "Address not found"),
+    ;
 
     ErrorCode(int code, String message) {
         this.code = code;

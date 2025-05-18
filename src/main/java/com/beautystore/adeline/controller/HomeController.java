@@ -29,4 +29,9 @@ public class HomeController {
     public String cart() {
         return "cart";
     }
+
+    @GetMapping("/order")
+    public String order() {
+        return "order";
+    }
 }
