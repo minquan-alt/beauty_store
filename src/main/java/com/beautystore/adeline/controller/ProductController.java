@@ -17,8 +17,10 @@ import com.beautystore.adeline.dto.request.ProductCreateRequest;
 import com.beautystore.adeline.dto.request.ProductUpdateRequest;
 import com.beautystore.adeline.dto.response.ApiResponse;
 import com.beautystore.adeline.dto.response.GetProductImageResponse;
+import com.beautystore.adeline.dto.response.PagedResponse;
 import com.beautystore.adeline.dto.response.ProductResponse;
 import com.beautystore.adeline.services.ProductService;
+import org.springframework.data.domain.Page;
 
 @RestController
 @RequestMapping("/products")
@@ -34,13 +36,30 @@ public class ProductController {
     }
 
     @GetMapping
-    public ApiResponse<List<ProductResponse>> getProducts() {
-        ApiResponse<List<ProductResponse>> apiResponse = new ApiResponse<>();
-        apiResponse.setResult(productService.getAllProducts());
+    public ApiResponse<PagedResponse<ProductResponse>> getProducts(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        int actualPage = (page == null || page < 1) ? 1 : page;
+        int actualSize = (size == null || size < 1) ? productService.countProducts() : size;
 
+        Page<ProductResponse> productPage = productService.getProductsPage(actualPage - 1, actualSize);
+
+        PagedResponse<ProductResponse> pagedResponse = new PagedResponse<>(
+            productPage.getContent(),
+            new PagedResponse.Meta(
+                actualPage,
+                actualSize,
+                productPage.getTotalPages(),
+                productPage.getTotalElements()
+            )
+        );
+        ApiResponse<PagedResponse<ProductResponse>> apiResponse = new ApiResponse<>();
+        apiResponse.setResult(pagedResponse);
         return apiResponse;
     }
 
+    
+    
     @GetMapping("/{productId}")
     public ApiResponse<ProductResponse> getProduct(@PathVariable Long productId) {
         ApiResponse<ProductResponse> apiResponse = new ApiResponse<>();

@@ -172,70 +172,160 @@ function cancelQuantity() {
 }
 
 //Hiển thị product
-document.addEventListener("DOMContentLoaded", function () {
-  fetch("http://localhost:8080/products")
+// document.addEventListener("DOMContentLoaded", function () {
+//   fetch("http://localhost:8080/products")
+//     .then((res) => res.json())
+//     .then((data) => {
+//       const products = data.result.data;
+//       const list = document.querySelector(".product-list");
+//       products.forEach((product) => {
+//         const card = document.createElement("div");
+//         card.className = "col";
+//         card.innerHTML = `
+//           <div class="card shadow-sm">
+//             <img
+//               src="${
+//                 product.imageUrls && product.imageUrls[0]
+//                   ? product.imageUrls[0]
+//                   : "http://localhost:8080/assets/images/product/loading.png"
+//               }"
+//               class="card-img-top"
+//               style="height: 250px; object-fit: scale-down"
+//               alt="Product Image"
+//             />
+//             <div class="card-body">
+//               <div class="d-flex justify-content-between align-items-center mb-2">
+//                 <h5 class="card-title mb-0">${product.name}</h5>
+//                 <span class="text-primary fw-bold">$${product.price}</span>
+//               </div>
+//               <p class="card-text text-muted mb-3">
+//                 ${
+//                   product.description
+//                 }<a href="#" class="text-primary" id="moreBtn">More</a>
+//               </p>
+//               <div id="quantityContainer" class="align-items-center gap-2 mb-3" style="display: none">
+//                 <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(-1)">−</button>
+//                 <input type="number" id="quantityInput" class="form-control form-control-sm text-center" style="width: 60px" value="1" min="1" />
+//                 <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(1)">+</button>
+//                 <button class="btn btn-outline-danger btn-sm" onclick="cancelQuantity(this)">Cancel</button>
+//               </div>
+//               <div class="d-flex justify-content-between">
+//                 <button class="btn btn-outline-secondary btn-sm btn-add-to-cart" onclick="addToCart(this)">Add to Cart</button>
+//                 <button class="btn btn-secondary btn-buy-now" onclick="buyNow()">Buy Now</button>
+//               </div>
+//             </div>
+//           </div>
+//         `;
+
+//         list.appendChild(card);
+//       });
+//     })
+//     .catch((error) => {
+//       console.error("Failed to load products:", error);
+//     });
+// });
+
+let currentPage = 1;
+const pageSize = 12;
+
+function loadProducts(page = 1) {
+  fetch(`http://localhost:8080/products?page=${page}&size=${pageSize}`)
     .then((res) => res.json())
     .then((data) => {
-      const products = data.result;
-      const list = document.querySelector(".product-list");
+      const products = data.result.data;
+      const totalProducts = data.result.meta.total;
 
-      products.forEach((product) => {
-        // Tạo phần tử trước
-        const card = document.createElement("div");
-        card.className = "col";
-        // Placeholder ảnh tạm thời trước khi fetch ảnh thật
-        card.innerHTML = `
-          <div class="card shadow-sm">
-            <img
-              src="http://localhost:8080/assets/images/product/loading.png"
-              class="card-img-top"
-              style="height: 250px; object-fit: scale-down"
-              alt="Product Image"
-            />
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <h5 class="card-title mb-0">${product.name}</h5>
-                <span class="text-primary fw-bold">$${product.price}</span>
-              </div>
-              <p class="card-text text-muted mb-3">
-                ${product.description}<a href="#" class="text-primary" id="moreBtn">More</a>
-              </p>
-              <div id="quantityContainer" class="align-items-center gap-2 mb-3" style="display: none">
-                <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(-1)">−</button>
-                <input type="number" id="quantityInput" class="form-control form-control-sm text-center" style="width: 60px" value="1" min="1" />
-                <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(1)">+</button>
-                <button class="btn btn-outline-danger btn-sm" onclick="cancelQuantity(this)">Cancel</button>
-              </div>
-              <div class="d-flex justify-content-between">
-                <button class="btn btn-outline-secondary btn-sm btn-add-to-cart" onclick="addToCart(this)">Add to Cart</button>
-                <button class="btn btn-secondary btn-buy-now" onclick="buyNow()">Buy Now</button>
-              </div>
-            </div>
-          </div>
-        `;
-
-        list.appendChild(card);
-
-        // Gọi API lấy ảnh theo productId
-        fetch(`http://localhost:8080/products/${product.id}/images`)
-          .then((res) => res.json())
-          .then((imageData) => {
-            const images = imageData.result.images;
-            if (images && images.length > 0) {
-              const imageUrl = images[0].imageUrl;
-              const imgTag = card.querySelector("img");
-              imgTag.src = imageUrl;
-            }
-          })
-          .catch((err) => {
-            console.error(
-              `Error loading images for product ${product.id}:`,
-              err
-            );
-          });
-      });
+      renderProducts(products);
+      renderPagination(totalProducts, page);
     })
     .catch((error) => {
       console.error("Failed to load products:", error);
     });
+}
+
+function renderProducts(products) {
+  const list = document.querySelector(".product-list");
+  list.innerHTML = "";
+
+  products.forEach((product) => {
+    const card = document.createElement("div");
+    card.className = "col";
+    card.innerHTML = `
+      <div class="card shadow-sm">
+        <img
+          src="${
+            product.imageUrls && product.imageUrls[0]
+              ? product.imageUrls[0]
+              : "http://localhost:8080/assets/images/product/loading.png"
+          }"
+          class="card-img-top"
+          style="height: 250px; object-fit: scale-down"
+          alt="Product Image"
+        />
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="card-title mb-0">${product.name}</h5>
+            <span class="text-primary fw-bold">$${product.price}</span>
+          </div>
+          <p class="card-text text-muted mb-3">
+            ${
+              product.description
+            }<a href="#" class="text-primary" id="moreBtn">More</a>
+          </p>
+          <div id="quantityContainer" class="align-items-center gap-2 mb-3" style="display: none">
+            <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(-1)">−</button>
+            <input type="number" id="quantityInput" class="form-control form-control-sm text-center" style="width: 60px" value="1" min="1" />
+            <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(1)">+</button>
+            <button class="btn btn-outline-danger btn-sm" onclick="cancelQuantity(this)">Cancel</button>
+          </div>
+          <div class="d-flex justify-content-between">
+            <button class="btn btn-outline-secondary btn-sm btn-add-to-cart" onclick="addToCart(this)">Add to Cart</button>
+            <button class="btn btn-secondary btn-buy-now" onclick="buyNow()">Buy Now</button>
+          </div>
+        </div>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function renderPagination(totalItems, currentPage) {
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const paginationWrapper = document.querySelector(".pagination");
+  paginationWrapper.innerHTML = "";
+
+  const createPageLink = (label, page, isActive = false, disabled = false) => {
+    const a = document.createElement("a");
+    a.href = "#";
+    a.textContent = label;
+    if (isActive) a.classList.add("active");
+    if (disabled) a.classList.add("disabled");
+
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (!disabled && page !== currentPage) {
+        loadProducts(page);
+      }
+    });
+    return a;
+  };
+
+  // Previous button
+  paginationWrapper.appendChild(
+    createPageLink("«", currentPage - 1, false, currentPage === 1)
+  );
+
+  // Page numbers
+  for (let i = 1; i <= totalPages; i++) {
+    paginationWrapper.appendChild(createPageLink(i, i, i === currentPage));
+  }
+
+  // Next button
+  paginationWrapper.appendChild(
+    createPageLink("»", currentPage + 1, false, currentPage === totalPages)
+  );
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  loadProducts();
 });
