@@ -25,8 +25,11 @@ public enum ErrorCode {
     PRODUCT_REQUIRED(2009, "Product is required"),
 
     SUPPLIER_NOT_FOUND(3001, "Supplier not found"),
-
-    CATEGORY_NOT_FOUND(4001, "Category not found"),
+   
+    CATEGORY_EXISTED(4001, "Category existed"),
+    CATEGORY_LIST_EMPTY(4002, "Category is empty"),
+    CATEGORY_NOT_FOUND(4003, "Category not found"),
+    CATEGORY_HAS_PRODUCTS(4004, "Cannot delete category because it has associated products"),
 
     COUPON_EXISTED(5001, "Coupon existed"),
     COUPON_NOT_FOUND(5002,"Coupon not found"),
@@ -42,6 +45,8 @@ public enum ErrorCode {
 
     ADDRESS_NOT_NULL(7001, "Address must not be null"),
     ADDRESS_NOT_FOUND(7002, "Address not found"),
+    
+
     ;
 
     ErrorCode(int code, String message) {
