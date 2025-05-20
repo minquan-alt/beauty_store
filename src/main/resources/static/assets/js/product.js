@@ -171,7 +171,6 @@ function cancelQuantity() {
   addToCartBtn.textContent = "Add to Cart"; // Đổi lại tên nút
 }
 
-//Hiển thị product
 // document.addEventListener("DOMContentLoaded", function () {
 //   fetch("http://localhost:8080/products")
 //     .then((res) => res.json())
