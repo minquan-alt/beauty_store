@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpSession;
 
+
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
@@ -63,4 +64,9 @@ public class OrderController {
             .result(response)
             .build();
     }
+
+    // @PutMapping("/cancel/{orderId}")
+    // public ApiResponse<OrderResponse> cancelOrder(@PathVariable Long orderId) {
+    //     OrderResponse response = orderService.cancelOrder(orderId);
+    // }
 }
