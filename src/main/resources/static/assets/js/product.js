@@ -1,9 +1,9 @@
- const minPrice = document.getElementById("minPrice");
-    const maxPrice = document.getElementById("maxPrice");
-    const rangeTrack = document.querySelector(".range-track");
+const minPrice = document.getElementById("minPrice");
+const maxPrice = document.getElementById("maxPrice");
+const rangeTrack = document.querySelector(".range-track");
 
-    const minGap = 50; // Khoảng cách tối thiểu giữa hai nút
-    const maxValue = parseInt(maxPrice.max);
+const minGap = 50; // Khoảng cách tối thiểu giữa hai nút
+const maxValue = parseInt(maxPrice.max);
 
 function updateTrack() {
   let minValue = parseInt(minPrice.value);
@@ -94,81 +94,257 @@ window.addEventListener("load", function () {
   document.getElementById("loading").style.display = "none";
 });
 function increaseQty(btn) {
-    const input = btn.parentElement.querySelector('input[type="number"]');
-    let current = parseInt(input.value);
-    if (current < 99) {
-        input.value = current + 1;
-    }
+  const input = btn.parentElement.querySelector('input[type="number"]');
+  let current = parseInt(input.value);
+  if (current < 99) {
+    input.value = current + 1;
+  }
 }
 
 function decreaseQty(btn) {
-    const input = btn.parentElement.querySelector('input[type="number"]');
-    let current = parseInt(input.value);
-    if (current > 1) {
-        input.value = current - 1;
-    }
+  const input = btn.parentElement.querySelector('input[type="number"]');
+  let current = parseInt(input.value);
+  if (current > 1) {
+    input.value = current - 1;
+  }
 }
 
 function addToCart(btn) {
-    const card = btn.closest('.card-body');
-    const qtyContainer = card.querySelector('#quantityContainer');
-    const qtyInput = qtyContainer.querySelector('input');
+  const card = btn.closest(".card-body");
+  const qtyContainer = card.querySelector("#quantityContainer");
+  const qtyInput = qtyContainer.querySelector("input");
+  const cardForId = btn.closest(".card");
+  
 
-    if (qtyContainer.style.display === 'none') {
-        qtyContainer.style.display = 'flex'; // Hiện bộ chọn số lượng
-        btn.textContent = 'Confirm'; // Đổi tên nút
-    } else {
-        const quantity = parseInt(qtyInput.value);
-        Swal.fire({
-    title: 'Added to Cart!',
-    text: `Quantity: ${quantity} item(s)`,
-    icon: 'success',
-    confirmButtonText: 'OK',
-    timer: 2000,
-    showConfirmButton: false
-});
-        // Thêm xử lý gửi dữ liệu về server nếu cần
-        btn.textContent = 'Add to Cart'; // Reset nút
-        qtyContainer.style.display = 'none'; // Ẩn lại
-        qtyInput.value = 1; // Reset về 1
-    }
-    
-}
- let quantityVisible = false;
-
-    function toggleQuantity(button) {
-        const qtyContainer = document.getElementById("quantityContainer");
-        if (!quantityVisible) {
-            qtyContainer.style.display = "flex";
-            quantityVisible = true;
-            button.innerText = "✔ Added";
-        }
+  if (qtyContainer.style.display === "none") {
+    qtyContainer.style.display = "flex"; // Hiện bộ chọn số lượng
+    btn.textContent = "Confirm"; // Đổi tên nút
+  } else {
+    const quantity = parseInt(qtyInput.value);
+    var productId = null;
+    if (cardForId && cardForId.dataset.id) {
+      productId = cardForId.dataset.id;
     }
 
-    function changeQty(delta) {
-        const input = document.getElementById("quantityInput");
-        let current = parseInt(input.value);
-        current = isNaN(current) ? 1 : current + delta;
-        input.value = current < 1 ? 1 : current;
-    }
+    fetch("http://localhost:8080/cart/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ productId, quantity })
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data.result);
+      });
 
-    // Thêm sự kiện click cho nút "Buy Now"
-    function buyNow() {
+
     Swal.fire({
-        icon: 'success',
-        title: 'Added to Cart',
-        text: 'The product has been added to your cart.',
-        timer: 2000,
-        showConfirmButton: false
+      title: "Added to Cart!",
+      text: `Quantity: ${quantity} item(s)`,
+      icon: "success",
+      confirmButtonText: "OK",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+    // Thêm xử lý gửi dữ liệu về server nếu cần
+    btn.textContent = "Add to Cart"; // Reset nút
+    qtyContainer.style.display = "none"; // Ẩn lại
+    qtyInput.value = 1; // Reset về 1
+  }
+}
+let quantityVisible = false;
+
+function toggleQuantity(button) {
+  const qtyContainer = document.getElementById("quantityContainer");
+  if (!quantityVisible) {
+    qtyContainer.style.display = "flex";
+    quantityVisible = true;
+    button.innerText = "✔ Added";
+  }
+}
+
+function changeQty(delta) {
+  const input = document.getElementById("quantityInput");
+  let current = parseInt(input.value);
+  current = isNaN(current) ? 1 : current + delta;
+  input.value = current < 1 ? 1 : current;
+}
+
+// Thêm sự kiện click cho nút "Buy Now"
+function buyNow() {
+  Swal.fire({
+    icon: "success",
+    title: "Added to Cart",
+    text: "The product has been added to your cart.",
+    timer: 2000,
+    showConfirmButton: false,
+  });
+}
+
+function cancelQuantity() {
+  const qtyContainer = document.getElementById("quantityContainer");
+  const card = qtyContainer.closest(".card-body");
+  const addToCartBtn = card.querySelector(".btn-add-to-cart");
+
+  qtyContainer.style.display = "none"; // Ẩn phần nhập số lượng
+  addToCartBtn.textContent = "Add to Cart"; // Đổi lại tên nút
+}
+
+// document.addEventListener("DOMContentLoaded", function () {
+//   fetch("http://localhost:8080/products")
+//     .then((res) => res.json())
+//     .then((data) => {
+//       const products = data.result.data;
+//       const list = document.querySelector(".product-list");
+//       products.forEach((product) => {
+//         const card = document.createElement("div");
+//         card.className = "col";
+//         card.innerHTML = `
+//           <div class="card shadow-sm">
+//             <img
+//               src="${
+//                 product.imageUrls && product.imageUrls[0]
+//                   ? product.imageUrls[0]
+//                   : "http://localhost:8080/assets/images/product/loading.png"
+//               }"
+//               class="card-img-top"
+//               style="height: 250px; object-fit: scale-down"
+//               alt="Product Image"
+//             />
+//             <div class="card-body">
+//               <div class="d-flex justify-content-between align-items-center mb-2">
+//                 <h5 class="card-title mb-0">${product.name}</h5>
+//                 <span class="text-primary fw-bold">$${product.price}</span>
+//               </div>
+//               <p class="card-text text-muted mb-3">
+//                 ${
+//                   product.description
+//                 }<a href="#" class="text-primary" id="moreBtn">More</a>
+//               </p>
+//               <div id="quantityContainer" class="align-items-center gap-2 mb-3" style="display: none">
+//                 <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(-1)">−</button>
+//                 <input type="number" id="quantityInput" class="form-control form-control-sm text-center" style="width: 60px" value="1" min="1" />
+//                 <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(1)">+</button>
+//                 <button class="btn btn-outline-danger btn-sm" onclick="cancelQuantity(this)">Cancel</button>
+//               </div>
+//               <div class="d-flex justify-content-between">
+//                 <button class="btn btn-outline-secondary btn-sm btn-add-to-cart" onclick="addToCart(this)">Add to Cart</button>
+//                 <button class="btn btn-secondary btn-buy-now" onclick="buyNow()">Buy Now</button>
+//               </div>
+//             </div>
+//           </div>
+//         `;
+
+//         list.appendChild(card);
+//       });
+//     })
+//     .catch((error) => {
+//       console.error("Failed to load products:", error);
+//     });
+// });
+
+let currentPage = 1;
+const pageSize = 12;
+
+function loadProducts(page = 1) {
+  fetch(`http://localhost:8080/products?page=${page}&size=${pageSize}`)
+    .then((res) => res.json())
+    .then((data) => {
+      const products = data.result.data;
+      const totalProducts = data.result.meta.total;
+
+      renderProducts(products);
+      renderPagination(totalProducts, page);
+    })
+    .catch((error) => {
+      console.error("Failed to load products:", error);
     });
 }
 
+function renderProducts(products) {
+  const list = document.querySelector(".product-list");
+  list.innerHTML = "";
 
-function cancelQuantity() {
-    const qtyContainer = document.getElementById("quantityContainer");
-    const card = qtyContainer.closest('.card-body');
-    const addToCartBtn = card.querySelector('.btn-add-to-cart');
-
-    qtyContainer.style.display = 'none';     // Ẩn phần nhập số lượng
-    addToCartBtn.textContent = 'Add to Cart'; // Đổi lại tên nút
+  products.forEach((product) => {
+    const card = document.createElement("div");
+    card.className = "col";
+    card.innerHTML = `
+      <div class="card shadow-sm" data-id="${product.id}">
+        <img
+          src="${
+            product.imageUrls && product.imageUrls[0]
+              ? product.imageUrls[0]
+              : "http://localhost:8080/assets/images/product/loading.png"
+          }"
+          class="card-img-top"
+          style="height: 250px; object-fit: scale-down"
+          alt="Product Image"
+        />
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="card-title mb-0">${product.name}</h5>
+            <span class="text-primary fw-bold">$${product.price}</span>
+          </div>
+          <p class="card-text text-muted mb-3">
+            ${
+              product.description
+            }<a href="#" class="text-primary" id="moreBtn">More</a>
+          </p>
+          <div id="quantityContainer" class="align-items-center gap-2 mb-3" style="display: none">
+            <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(-1)">−</button>
+            <input type="number" id="quantityInput" class="form-control form-control-sm text-center" style="width: 60px" value="1" min="1" />
+            <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(1)">+</button>
+            <button class="btn btn-outline-danger btn-sm" onclick="cancelQuantity(this)">Cancel</button>
+          </div>
+          <div class="d-flex justify-content-between">
+            <button class="btn btn-outline-secondary btn-sm btn-add-to-cart" onclick="addToCart(this)">Add to Cart</button>
+            <button class="btn btn-secondary btn-buy-now" onclick="buyNow()">Buy Now</button>
+          </div>
+        </div>
+      </div>
+    `;
+    list.appendChild(card);
+  });
 }
+
+function renderPagination(totalItems, currentPage) {
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const paginationWrapper = document.querySelector(".pagination");
+  paginationWrapper.innerHTML = "";
+
+  const createPageLink = (label, page, isActive = false, disabled = false) => {
+    const a = document.createElement("a");
+    a.href = "#";
+    a.textContent = label;
+    if (isActive) a.classList.add("active");
+    if (disabled) a.classList.add("disabled");
+
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (!disabled && page !== currentPage) {
+        loadProducts(page);
+      }
+    });
+    return a;
+  };
+
+  // Previous button
+  paginationWrapper.appendChild(
+    createPageLink("«", currentPage - 1, false, currentPage === 1)
+  );
+
+  // Page numbers
+  for (let i = 1; i <= totalPages; i++) {
+    paginationWrapper.appendChild(createPageLink(i, i, i === currentPage));
+  }
+
+  // Next button
+  paginationWrapper.appendChild(
+    createPageLink("»", currentPage + 1, false, currentPage === totalPages)
+  );
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  loadProducts();
+});

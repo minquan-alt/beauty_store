@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.beautystore.adeline.dto.request.ProductCreateRequest;
 import com.beautystore.adeline.dto.request.ProductUpdateRequest;
+import com.beautystore.adeline.dto.response.GetProductImageResponse;
+import com.beautystore.adeline.dto.response.ProductImageResponse;
 import com.beautystore.adeline.dto.response.ProductResponse;
 import com.beautystore.adeline.entity.Product;
 import com.beautystore.adeline.exception.AppException;
@@ -14,7 +16,10 @@ import com.beautystore.adeline.repository.CategoryRepository;
 import com.beautystore.adeline.repository.ProductRepository;
 import com.beautystore.adeline.repository.SupplierRepository;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import lombok.RequiredArgsConstructor;
 
@@ -53,6 +58,16 @@ public class ProductService {
                 .map(productResponseMapper::toResponse)
                 .toList();
     };
+
+    public int countProducts() {
+        return (int) productRepository.count();
+    }
+
+    public Page<ProductResponse> getProductsPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Product> productPage = productRepository.findAll(pageable);
+        return productPage.map(productResponseMapper::toResponse);
+    }
 
     public ProductResponse getProductById(Long id) {
         Product product = productRepository.findById(id)
@@ -118,4 +133,21 @@ public class ProductService {
                 .map(productResponseMapper::toResponse)
                 .toList();
     }
+
+     public GetProductImageResponse getProductImages(Long id) {
+        Product product = productRepository.findById(id)
+            .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        List<ProductImageResponse> imageRes = product.getImages().stream()
+            .map(img -> ProductImageResponse.builder()
+                .id(img.getId())
+                .imageUrl(img.getImageUrl())
+                .build())
+            .toList();
+
+        return GetProductImageResponse.builder()
+            .images(imageRes)
+            .build();
+    }
+
 }

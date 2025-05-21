@@ -1,18 +1,22 @@
 package com.beautystore.adeline.services;
 
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import com.beautystore.adeline.dto.request.AddToCartRequest;
 import com.beautystore.adeline.dto.request.UpdateCartItemRequest;
+import com.beautystore.adeline.dto.response.AddCartResponse;
 import com.beautystore.adeline.dto.response.CartResponse;
-import com.beautystore.adeline.entity.*;
+import com.beautystore.adeline.entity.Cart;
+import com.beautystore.adeline.entity.CartItem;
+import com.beautystore.adeline.entity.Product;
+import com.beautystore.adeline.entity.User;
 import com.beautystore.adeline.exception.AppException;
 import com.beautystore.adeline.exception.ErrorCode;
 import com.beautystore.adeline.mapper.CartMapper;
 import com.beautystore.adeline.repository.CartRepository;
 import com.beautystore.adeline.repository.ProductRepository;
 import com.beautystore.adeline.repository.UserRepository;
-
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +50,10 @@ public class CartService {
     return buildCartResponse(cart.get());
   }
 
+  private AddCartResponse mapToAddCartResponse(long productId, int quantity) {
+    return new AddCartResponse(productId, quantity);
+  }
+
   private CartResponse buildCartResponse(Cart cart) {
     CartResponse response = cartMapper.toCartResponse(cart);
     response.setCartId(cart.getId());
@@ -59,7 +67,7 @@ public class CartService {
   }
 
   @Transactional
-  public CartResponse addToCart(Long userId, AddToCartRequest request) {
+  public AddCartResponse addToCart(AddToCartRequest request, long userId) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
@@ -87,7 +95,10 @@ public class CartService {
     cartItem.setQuantity(cartItem.getQuantity() + request.getQuantity());
     Cart savedCart = cartRepository.save(cart);
 
-    return buildCartResponse(savedCart);
+    AddCartResponse result = mapToAddCartResponse(request.getProductId(), request.getQuantity());
+    System.out.println("========== Result in Add Cart Response: " + result);
+
+    return result;
   }
 
   @Transactional

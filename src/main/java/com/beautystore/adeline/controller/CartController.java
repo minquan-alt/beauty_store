@@ -1,5 +1,13 @@
 package com.beautystore.adeline.controller;
 
+import com.beautystore.adeline.dto.request.AddToCartRequest;
+import com.beautystore.adeline.dto.request.UpdateCartItemRequest;
+import com.beautystore.adeline.dto.response.AddCartResponse;
+import com.beautystore.adeline.dto.response.ApiResponse;
+import com.beautystore.adeline.dto.response.CartResponse;
+import com.beautystore.adeline.services.CartService;
+import com.beautystore.adeline.services.UserService;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,13 +16,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.beautystore.adeline.dto.request.AddToCartRequest;
-import com.beautystore.adeline.dto.request.UpdateCartItemRequest;
-import com.beautystore.adeline.dto.response.ApiResponse;
-import com.beautystore.adeline.dto.response.CartResponse;
-import com.beautystore.adeline.services.CartService;
-import com.beautystore.adeline.services.UserService;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -39,15 +40,17 @@ public class CartController {
     return response;
   }
 
+
   @PostMapping("/add")
-  public ApiResponse<CartResponse> addToCart(
-      @Valid @RequestBody AddToCartRequest request,
-      HttpSession session) {
-    Long userId = userService.getUserIdFromSession(session);
-    ApiResponse<CartResponse> response = new ApiResponse<>();
-    response.setResult(cartService.addToCart(userId, request));
-    return response;
+  public ApiResponse<AddCartResponse> addToCart(@RequestBody AddToCartRequest request, HttpSession session) {
+      Long userId = userService.getUserIdFromSession(session);
+      AddCartResponse result = cartService.addToCart(request, userId);
+      ApiResponse<AddCartResponse> apiResponse = new ApiResponse<>();
+      apiResponse.setResult(result);
+
+      return apiResponse;
   }
+
 
   @PutMapping("/add/{productId}")
   public ApiResponse<CartResponse> updateCartItem(
