@@ -80,6 +80,13 @@ public CouponResponse updateCouponByID(CouponUpdateRequest request, Long id) {
     return this.couponMapper.toResponse(updatedCoupon);
 }
 
+// public boolean useCouponById(long id) {
+//     Coupon coupon = this.couponRepository.findById(id)
+//         .orElseThrow(() -> new AppException(ErrorCode.COUPON_NOT_FOUND));
+    
+    
+// }
+
     public void deleteCouponByID(Long id){
         this.couponRepository.deleteById(id);
     }

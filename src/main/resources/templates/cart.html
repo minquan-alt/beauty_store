@@ -30,58 +30,29 @@
     <div class="container mt-4">
       <!-- ✅ Giỏ hàng -->
       <div id="cart-container">
-        <h2>Giỏ hàng</h2>
+        <h2>Your cart</h2>
 
-        <!-- Sản phẩm 1 -->
-        <div class="container py-3 border-bottom product-item">
+        <div th:each="item: ${cart.items}" class="container py-3 border-bottom product-item">
           <div class="row">
             <div class="col-12 d-flex justify-content-between align-items-start">
-              <h4 class="fw-semibold">Dầu Gội Ginger Scalp Care Shampoo 250ML</h4>
-              <button class="btn btn-link text-danger p-0 btn-remove">
+              <h4 class="fw-semibold" th:text="${item.productName}">Product Name</h4>
+              <button class="btn btn-link text-danger p-0 btn-remove" th:attr="data-item-id=${item.productId}">
                 <i class="bi bi-x-lg"></i>
               </button>
             </div>
           </div>
           <div class="row align-items-center">
             <div class="col-1">
-              <img src="https://picsum.photos/200" alt="Dầu gội" class="img-fluid product-img" />
+              <img src="https://picsum.photos/200" alt="Product Image" class="img-fluid product-img" />
             </div>
-            <div class="col-9">
-              <select class="form-select w-auto quantity-select" aria-label="Chọn số lượng">
-                <option selected>1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-              </select>
-            </div>
-            <div class="col-2 text-end">
-              <p class="price mb-2 fw-semibold text-success">325.000VND</p>
-            </div>
-          </div>
-        </div>
 
-        <!-- Sản phẩm 2 -->
-        <div class="container py-3 border-bottom product-item">
-          <div class="row">
-            <div class="col-12 d-flex justify-content-between align-items-start">
-              <h4 class="fw-semibold">Sữa Rửa Mặt Hàn Quốc 150ML</h4>
-              <button class="btn btn-link text-danger p-0 btn-remove">
-                <i class="bi bi-x-lg"></i>
-              </button>
-            </div>
-          </div>
-          <div class="row align-items-center">
-            <div class="col-1">
-              <img src="https://picsum.photos/200/300" alt="Sữa rửa mặt" class="img-fluid product-img" />
-            </div>
             <div class="col-9">
-              <select class="form-select w-auto quantity-select" aria-label="Chọn số lượng">
-                <option selected>1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-              </select>
+              <input type="number" class="form-control w-auto quantity-select" th:attr="data-item-id=${item.productId}, data-unit-price=${item.unitPrice}" aria-label="Nhập số lượng" th:value="${item.quantity}" min="1">
+              <input type="hidden" class="unit-price" th:value="${item.unitPrice}" />
             </div>
+
             <div class="col-2 text-end">
-              <p class="price mb-2 fw-semibold text-success">325.000VND</p>
+              <p class="price mb-2 fw-semibold text-success products-price" th:text="${#numbers.formatDecimal(item.unitPrice * item.quantity, 1, 'COMMA', 2, 'POINT')} + ' $'">0$</p>
             </div>
           </div>
         </div>
@@ -93,33 +64,29 @@
       <input
         type="text"
         class="form-control border-0 border-bottom rounded-0"
-        placeholder="Nhập mã giảm giá (ví dụ: GIAM10)"
+        placeholder="Type the coupon (Ex: SUMMER10)"
         id="coupon-code"
         style="background-color: #f9f5ed; color: #004c3f;"
       />
-      <button
-        class="btn text-white ms-2"
-        style="background-color: #000000; width: 140px;"
-        id="apply-coupon"
-      >
-        Áp dụng
+      <button class="btn text-white ms-2" style="background-color: #000000; width: 140px;" id="apply-coupon">
+        Apply
       </button>
     </div>
   </div>
 
   <div class="row justify-content-end text-end">
     <div class="col-md-6">
-      <p class="mb-1"><strong>Tổng phụ:</strong> <span id="subtotal">0VND</span></p>
-      <p class="mb-1 text-success"><strong>Giảm giá:</strong> <span id="discount">0VND</span></p>
+      <p class="mb-1"><strong>Subtotal:</strong> <span id="subtotal"  th:text="${'$' + #numbers.formatDecimal(cart.totalCartPrice, 1, 'COMMA', 2, 'POINT')}">$0</span></p>
+      <p class="mb-1 text-success"><strong>Discount:</strong> <span id="discount">$0.00</span></p>
       <hr />
-      <h4><strong>Tổng cộng:</strong> <span id="cart-total">0VND</span></h4>
+      <h4><strong>Total:</strong> <span id="cart-total" th:text="${'$' + #numbers.formatDecimal(cart.totalCartPrice, 1, 'COMMA', 2, 'POINT')}"></span></h4>
     </div>
   </div>
 </div>
 
 <div class="text-end mt-4">
   <a href="/checkout.html" class="proceed-payment" style="text-decoration: none; background-color:black; padding:16px; color:white;">
-    Tiến hành thanh toán
+    Checkout
   </a>
 </div>
 

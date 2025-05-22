@@ -124,7 +124,7 @@ public class CartService {
     if (request.getQuantity() == 0) {
       cart.getCartItems().remove(cartItem.get());
     } else {
-      cartItem.get().setQuantity(cartItem.get().getQuantity() + request.getQuantity());
+      cartItem.get().setQuantity(request.getQuantity());
     }
 
     Cart savedCart = cartRepository.save(cart);
