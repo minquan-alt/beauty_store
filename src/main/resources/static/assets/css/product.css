@@ -1,14 +1,30 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 .container-fluid {
-  background-color: none;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.col-3, .col-9 {
+  min-height: 100vh;
+  height: auto !important;
+  flex-grow: 1;
 }
 .col-3 {
   background-color: black;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
+  
 }
 .custom-col {
   width: 20.83%; /* 2.5/12 * 100% */
   max-width: 20.83%;
   flex: 0 0 auto;
+  min-height: 100vh;
+  height: auto;
 }
 .col-9 {
   background-color: white !important;
@@ -443,9 +459,6 @@ input[type="number"] {
 .pagination a:hover:not(.active) {
   background-color: #ddd;
 }
-.row {
-  align-items: stretch;
-}
 
 .card {
   display: flex;
@@ -530,8 +543,9 @@ input[type="number"] {
 }
 .row {
   display: flex;
-  flex-wrap: wrap;
-  align-items: stretch; /* Cột đều chiều cao */
+  flex-grow: 1;
+  align-items: stretch;
+  min-height: 100vh;
 }
 
 .col-9 > .row > .col {
