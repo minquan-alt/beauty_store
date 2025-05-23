@@ -271,26 +271,29 @@ function renderProducts(products) {
     card.className = "col";
     card.innerHTML = `
       <div class="card shadow-sm" data-id="${product.id}">
-        <img
-          src="${
-            product.imageUrls && product.imageUrls[0]
-              ? product.imageUrls[0]
-              : "http://localhost:8080/assets/images/product/loading.png"
-          }"
-          class="card-img-top"
-          style="height: 250px; object-fit: scale-down"
-          alt="Product Image"
-        />
+        <div class="image-wrapper">  <!-- Thêm div này -->
+    <img
+      src="${
+        product.imageUrls && product.imageUrls[0]
+          ? product.imageUrls[0]
+          : 'http://localhost:8080/assets/images/product/loading.png'
+      }"
+      class="card-img-top"
+      style="height: 250px; object-fit: scale-down"
+      alt="Product Image"
+    />
+    <span class="price-badge">$${product.price}</span>  
+  </div>
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <h5 class="card-title mb-0">${product.name}</h5>
-            <span class="text-primary fw-bold">$${product.price}</span>
           </div>
-          <p class="card-text text-muted mb-3">
-            ${
-              product.description
-            }<a href="#" class="text-primary" id="moreBtn">More</a>
+          <p class="card-text text-muted mb-3" id="descriptionText">
+            ${product.description}..
+            
+            <a href="#" class="text-primary" id="moreBtn">More</a>
           </p>
+
           <div id="quantityContainer" class="align-items-center gap-2 mb-3" style="display: none">
             <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(-1)">−</button>
             <input type="number" id="quantityInput" class="form-control form-control-sm text-center" style="width: 60px" value="1" min="1" />
@@ -348,3 +351,5 @@ function renderPagination(totalItems, currentPage) {
 document.addEventListener("DOMContentLoaded", function () {
   loadProducts();
 });
+
+

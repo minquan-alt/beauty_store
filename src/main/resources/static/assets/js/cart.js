@@ -24,7 +24,7 @@ function updateCartTotal() {
     let subtotal = 0;
     document.querySelectorAll(".product-item").forEach((item) => {
         const quantity = parseInt(item.querySelector(".quantity-select").value);
-        const unitPrice = 325000;
+        const unitPrice = parseInt(item.getAttribute("data-price"));
         subtotal += quantity * unitPrice;
     });
 
@@ -56,7 +56,7 @@ document.querySelectorAll(".quantity-select").forEach((select) => {
         const quantity = parseInt(this.value);
         const productItem = this.closest(".product-item");
         const priceDisplay = productItem.querySelector(".price");
-        const unitPrice = 325000;
+        const unitPrice = parseInt(productItem.getAttribute("data-price"));
         const total = quantity * unitPrice;
         priceDisplay.innerText = formatVND(total);
         updateCartTotal();
