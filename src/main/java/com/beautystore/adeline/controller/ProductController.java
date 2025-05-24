@@ -1,5 +1,6 @@
 package com.beautystore.adeline.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,21 +46,17 @@ public class ProductController {
         Page<ProductResponse> productPage = productService.getProductsPage(actualPage - 1, actualSize);
 
         PagedResponse<ProductResponse> pagedResponse = new PagedResponse<>(
-            productPage.getContent(),
-            new PagedResponse.Meta(
-                actualPage,
-                actualSize,
-                productPage.getTotalPages(),
-                productPage.getTotalElements()
-            )
-        );
+                productPage.getContent(),
+                new PagedResponse.Meta(
+                        actualPage,
+                        actualSize,
+                        productPage.getTotalPages(),
+                        productPage.getTotalElements()));
         ApiResponse<PagedResponse<ProductResponse>> apiResponse = new ApiResponse<>();
         apiResponse.setResult(pagedResponse);
         return apiResponse;
     }
 
-    
-    
     @GetMapping("/{productId}")
     public ApiResponse<ProductResponse> getProduct(@PathVariable Long productId) {
         ApiResponse<ProductResponse> apiResponse = new ApiResponse<>();
@@ -88,13 +85,29 @@ public class ProductController {
     }
 
     @GetMapping("/searchByQuery")
-    public ApiResponse<List<ProductResponse>> searchProducts(
+    public ApiResponse<PagedResponse<ProductResponse>> searchProducts(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) Double minPrice,
-            @RequestParam(required = false) Double maxPrice,
-            @RequestParam(required = false) List<String> category) {
-        ApiResponse<List<ProductResponse>> apiResponse = new ApiResponse<>();
-        apiResponse.setResult(productService.searchProducts(keyword, minPrice, maxPrice, category));
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false) List<String> category,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+
+        int actualPage = (page == null || page < 1) ? 1 : page;
+        int actualSize = (size == null || size < 1) ? productService.countProducts() : size;
+
+        Page<ProductResponse> searchProductPage = productService.searchProducts(keyword, minPrice, maxPrice, category,
+                actualPage - 1, actualSize);
+
+        PagedResponse<ProductResponse> pagedResponse = new PagedResponse<>(
+                searchProductPage.getContent(),
+                new PagedResponse.Meta(
+                        actualPage,
+                        actualSize,
+                        searchProductPage.getTotalPages(),
+                        searchProductPage.getTotalElements()));
+        ApiResponse<PagedResponse<ProductResponse>> apiResponse = new ApiResponse<>();
+        apiResponse.setResult(pagedResponse);
         return apiResponse;
     }
 

@@ -1,5 +1,6 @@
 package com.beautystore.adeline.services;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.beautystore.adeline.dto.request.ProductCreateRequest;
@@ -115,39 +116,50 @@ public class ProductService {
         productRepository.deleteById(id);
     };
 
-    public List<ProductResponse> searchProducts(String keyword, Double minPrice, Double maxPrice,
-            List<String> categories) {
+    public Page<ProductResponse> searchProducts(String keyword,
+            BigDecimal minPrice,
+            BigDecimal maxPrice,
+            List<String> categories, int page, int size) {
 
-        String searchedKeyword = (keyword == null || keyword.trim().isEmpty()) ? null
-                : "%" + keyword.toLowerCase() + "%";
+        String searchedKeyword = null;
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            searchedKeyword = "%" + keyword.toLowerCase() + "%";
+        }
         List<String> searchedCategories = null;
         if (categories != null && !categories.isEmpty()) {
             searchedCategories = categories.stream().map(String::toLowerCase).toList();
         }
-        List<Product> products = productRepository.searchProducts(searchedKeyword, minPrice, maxPrice,
-                searchedCategories);
-        if (products.isEmpty()) {
-            throw new AppException(ErrorCode.PRODUCT_LIST_EMPTY);
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Product> productPage;
+
+        if (searchedKeyword == null && (searchedCategories == null || searchedCategories.isEmpty())) {
+            //Hận thằng js -_-
+            productPage = productRepository.searchByPriceOnly(minPrice, maxPrice, pageable);
+        } else {
+            productPage = productRepository.searchProducts(searchedKeyword, minPrice, maxPrice,
+                    searchedCategories, pageable);
         }
-        return products.stream()
-                .map(productResponseMapper::toResponse)
-                .toList();
+
+        return productPage.map(productResponseMapper::toResponse);
+
     }
 
-     public GetProductImageResponse getProductImages(Long id) {
+    public GetProductImageResponse getProductImages(Long id) {
         Product product = productRepository.findById(id)
-            .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         List<ProductImageResponse> imageRes = product.getImages().stream()
-            .map(img -> ProductImageResponse.builder()
-                .id(img.getId())
-                .imageUrl(img.getImageUrl())
-                .build())
-            .toList();
+                .map(img -> ProductImageResponse.builder()
+                        .id(img.getId())
+                        .imageUrl(img.getImageUrl())
+                        .build())
+                .toList();
 
         return GetProductImageResponse.builder()
-            .images(imageRes)
-            .build();
+                .images(imageRes)
+                .build();
     }
 
 }
