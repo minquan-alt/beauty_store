@@ -1,4 +1,4 @@
-<div class="col-9 flex-grow bg-danger" th:fragment="product-show">
+<div class="col-9 flex-grow product-show-col  bg-danger" th:fragment="product-show">
     <div class="row row-cols-1 row-cols-md-4 g-4 product-list" style="margin: auto">
       
     </div>
@@ -8,5 +8,23 @@
             <a href="#">&raquo;</a>
           </div>
     </div>
+      
+      <!-- Modal -->
+      <div class="modal fade" id="productDetailModalCenter" tabindex="-1" role="dialog" aria-labelledby="productDetailModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="productDetailModalLongTitle"></h5>
+              <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal"aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <div class="modal-body">
+        
+            </div>
+          </div>
+        </div>
+      </div>
+
 </div>
 
