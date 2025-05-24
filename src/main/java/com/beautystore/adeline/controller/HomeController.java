@@ -1,6 +1,7 @@
 package com.beautystore.adeline.controller;
 
 import com.beautystore.adeline.dto.response.CartResponse;
+import com.beautystore.adeline.exception.AppException;
 import com.beautystore.adeline.services.CartService;
 import com.beautystore.adeline.services.UserService;
 
@@ -42,7 +43,13 @@ public class HomeController {
 
     @GetMapping("/cart-view")
     public String cart(HttpSession session, Model model) {
-        Long userId = userService.getUserIdFromSession(session);
+        Long userId;
+        try {
+            userId = userService.getUserIdFromSession(session);
+        } catch (AppException e) {
+            return "signin";
+        }
+
         CartResponse cart = cartService.getCart(userId);
         model.addAttribute("cart", cart); 
         return "cart";
