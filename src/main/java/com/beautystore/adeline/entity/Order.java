@@ -93,9 +93,11 @@ public class Order {
     }
 
     public void calculateTotal() {
-        if (subtotal == null) {
-            subtotal = BigDecimal.ZERO;
-        }
+        if (subtotal == null) subtotal = BigDecimal.ZERO;
+        if (discount == null) discount = BigDecimal.ZERO;
+        if (shippingFee == null) shippingFee = BigDecimal.ZERO;
+        if (tax == null) tax = BigDecimal.ZERO;
+
         this.totalAmount = subtotal
                 .subtract(discount)
                 .add(shippingFee)

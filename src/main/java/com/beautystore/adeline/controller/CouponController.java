@@ -46,21 +46,21 @@ public class CouponController {
     @GetMapping("/{couponCode}")
     ApiResponse<CouponResponse> getCoupon(@PathVariable String couponCode) {
         ApiResponse<CouponResponse> apiResponse = new ApiResponse<>();
-        apiResponse.setResult(this.couponService.getCouponByCode(couponCode));
+        apiResponse.setResult(this.couponService.getCouponById(couponCode));
         return apiResponse;
     }
 
-    @PutMapping("/{couponId}")
-    ApiResponse<CouponResponse> updateCouponById(@RequestBody CouponUpdateRequest request, @PathVariable("couponId") Long couponId){
+    @PutMapping("/{code}")
+    ApiResponse<CouponResponse> updateCouponById(@RequestBody CouponUpdateRequest request, @PathVariable("code") String code){
         ApiResponse<CouponResponse> apiResponse = new ApiResponse<>();
-        apiResponse.setResult(this.couponService.updateCouponByID(request, couponId));
+        apiResponse.setResult(this.couponService.updateCouponById(request, code));
         return apiResponse;
     }
 
-    @DeleteMapping("/{couponId}")
-    ApiResponse<String> deleteCouponById(@PathVariable Long couponId){
+    @DeleteMapping("/{code}")
+    ApiResponse<String> deleteCouponById(@PathVariable String code){
         ApiResponse<String> apiResponse = new ApiResponse<>();
-        this.couponService.deleteCouponByID(couponId);
+        this.couponService.deleteCouponById(code);
         apiResponse.setResult("Coupon has been deleted");
         return apiResponse;
     }

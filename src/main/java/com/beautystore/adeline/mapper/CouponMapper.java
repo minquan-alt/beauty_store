@@ -19,9 +19,8 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         imports = {LocalDateTime.class})
 public interface CouponMapper {
-
     // Changed method name from toEntity to toCoupon
-    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "code", source = "code")
     @Mapping(target = "usedCount", constant = "0")
     @Mapping(target = "active", constant = "true")
     @Mapping(target = "createdAt", expression = "java(LocalDateTime.now())")

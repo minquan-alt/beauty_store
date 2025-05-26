@@ -22,10 +22,6 @@ public class Coupon {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "coupon_id")
-    private Long id;
-
     @Column(nullable = false, length = 50)
     private String code;
 
@@ -59,9 +55,11 @@ public class Coupon {
 
     @PositiveOrZero
     @Column(name = "used_count", nullable = false)
+    @Builder.Default
     private Integer usedCount = 0; 
 
     @Column(name = "is_active", nullable = false)
+    @Builder.Default
     private Boolean active = true;
 
     @ManyToOne(fetch = FetchType.LAZY)

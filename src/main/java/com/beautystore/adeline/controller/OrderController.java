@@ -50,7 +50,7 @@ public class OrderController {
     // Lấy đơn hàng hiện tại từ session
     @GetMapping("/current")
     public ApiResponse <OrderResponse> getCurrentOrder() {
-        OrderResponse order = orderService.getOrderFromSession(httpSession);
+        OrderResponse order = (OrderResponse) orderService.getOrderFromSession(httpSession);
         return ApiResponse.<OrderResponse> builder()
             .result(order)
             .build();

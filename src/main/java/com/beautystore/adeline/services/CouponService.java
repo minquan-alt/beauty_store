@@ -32,7 +32,7 @@ public class CouponService {
     @Autowired
     private final CouponMapper couponMapper;
 public CouponResponse createCoupon(CouponCreateRequest request) {
-    if(this.couponRepository.existsByCode(request.getCode()))
+    if(this.couponRepository.existsById(request.getCode()))
         throw new AppException(ErrorCode.COUPON_EXISTED);
     
     Coupon coupon = this.couponMapper.toCoupon(request);
@@ -44,23 +44,10 @@ public List<Coupon> getCoupons() {
     return this.couponRepository.findAll();
 }
 
-public CouponResponse getCouponByID(Long id) {
-    logger.info("Fetching coupon with id: {}", id);
-
-    Coupon coupon = this.couponRepository.findById(id)
-        .orElseThrow(() -> {
-            logger.error("Coupon not found with id: {}", id);
-            return new AppException(ErrorCode.COUPON_NOT_FOUND);
-        });
-    logger.info("Coupon found: {}", coupon);
-
-    return this.couponMapper.toResponse(coupon);
-}
-
-public CouponResponse getCouponByCode(String code) {
+public CouponResponse getCouponById(String code) {
     logger.info("Fetching coupon with code: {}", code);
 
-    Coupon coupon = this.couponRepository.findByCode(code)
+    Coupon coupon = this.couponRepository.findById(code)
         .orElseThrow(() -> {
             logger.error("Coupon not found with code: {}", code);
             return new AppException(ErrorCode.COUPON_NOT_FOUND);
@@ -70,8 +57,9 @@ public CouponResponse getCouponByCode(String code) {
     return this.couponMapper.toResponse(coupon);
 }
 
-public CouponResponse updateCouponByID(CouponUpdateRequest request, Long id) {
-    Coupon coupon = this.couponRepository.findById(id)
+
+public CouponResponse updateCouponById(CouponUpdateRequest request, String code) {
+    Coupon coupon = this.couponRepository.findById(code)
         .orElseThrow(() -> new AppException(ErrorCode.COUPON_NOT_FOUND));
     
     this.couponMapper.updateEntity(coupon, request);
@@ -87,8 +75,8 @@ public CouponResponse updateCouponByID(CouponUpdateRequest request, Long id) {
     
 // }
 
-    public void deleteCouponByID(Long id){
-        this.couponRepository.deleteById(id);
+    public void deleteCouponById(String code){
+        this.couponRepository.deleteById(code);
     }
 
 }

@@ -13,5 +13,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class CreateUserResponse {
+    @Builder.Default
     boolean success = true;
 }
