@@ -41,7 +41,8 @@ public class User {
     private String password;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(255) DEFAULT 'ROLE_USER'")
-    private String role;
+    @Builder.Default
+    private String role = "ROLE_USER";
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Address> addresses = new ArrayList<>();

@@ -3,37 +3,84 @@ let appliedDiscount = 0;
 function formatVND(number) {
     return number.toLocaleString("vi-VN") + "VND";
 }
-document.getElementById("apply-coupon").addEventListener("click", function () {
-    const code = document.getElementById("coupon-code").value.trim().toUpperCase();
 
-    if (code === "GIAM10") {
-        appliedDiscount = 100000;
-        alert("Áp dụng mã giảm thành công: GIAM10 (-100.000đ)");
-    } else if (code === "SALE50") {
-        appliedDiscount = 50000;
-        alert("Áp dụng mã SALE50 (-50.000đ)");
-    } else {
-        appliedDiscount = 0;
-        alert("Mã không hợp lệ hoặc đã hết hạn.");
+document.getElementById("apply-coupon").addEventListener("click", async function () {
+    const code = document.getElementById("coupon-code").value.trim().toUpperCase();
+    var shippingFee;
+    var discountTotalCart;
+    var totalCart = await fetch(`http://localhost:8080/cart`, {
+            method: "GET",
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.code == 1000) {
+                return data.result.totalCartPrice;
+            } else {
+                return null;
+            }
+        })
+        .catch(e => {
+            console.log("Error: ", e);
+        })
+    console.log("totalCart: ", totalCart)
+
+    if (code != null && code != "") {
+        await fetch(`http://localhost:8080/coupons/${code}`, {
+                method: "GET",
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data.type);
+                const result = data.result;
+                if (data.code == 1000) {
+                    if (result.type == "PERCENTAGE") {
+                        discountTotalCart = totalCart * (100 - result.discountValue) / 100;
+                        alert(`Applied coupon successfully: ${code} (-${totalCart - discountTotalCart} $)`);
+
+                    } else if (result.type == "FIXED_AMOUNT") {
+                        discountTotalCart = totalCart - result.discountValue;
+                        alert(`Applied coupon successfully: ${code} (-${totalCart - discountTotalCart} $)`);
+
+                    } else if (result.type == "FREE_SHIPPING") {
+                        discountTotalCart = totalCart - shippingFee;
+                        alert(`Applied coupon successfully: ${code} (-${totalCart - discountTotalCart} $)`);
+
+                    } else {
+                        alert("Coupon is expired or not existed.");
+                    }
+                }
+            })
+            .catch(e => {
+                console.log("Error: ", e);
+            })
+        console.log("Final discount total cart: ", discountTotalCart);
     }
 
-    updateCartTotal();
+    document.getElementById("subtotal").innerText = '$' + totalCart.toFixed(2);
+    document.getElementById("discount").innerText = '$' + (totalCart - discountTotalCart).toFixed(2);
+    document.getElementById("cart-total").innerText = '$' + discountTotalCart.toFixed(2);
 });
 
-function updateCartTotal() {
-    let subtotal = 0;
-    document.querySelectorAll(".product-item").forEach((item) => {
-        const quantity = parseInt(item.querySelector(".quantity-select").value);
-        const unitPrice = parseInt(item.getAttribute("data-price"));
-        subtotal += quantity * unitPrice;
-    });
+async function updateCartTotal() {
+    var totalCart = await fetch(`http://localhost:8080/cart`, {
+            method: "GET",
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.code == 1000) {
+                return data.result.totalCartPrice;
+            } else {
+                return null;
+            }
+        })
+        .catch(e => {
+            console.log("Error: ", e);
+        })
 
-    let totalAfterDiscount = subtotal - appliedDiscount;
-    if (totalAfterDiscount < 0) totalAfterDiscount = 0;
+    document.getElementById("subtotal").innerText = '$' + totalCart.toFixed(2);
+    // document.getElementById("discount").innerText = totalCart - discountTotalCart.toFixed(2);
+    document.getElementById("cart-total").innerText = '$' + totalCart.toFixed(2);
 
-    document.getElementById("subtotal").innerText = formatVND(subtotal);
-    document.getElementById("discount").innerText = formatVND(appliedDiscount);
-    document.getElementById("cart-total").innerText = formatVND(totalAfterDiscount);
 }
 
 function checkCartEmpty() {
@@ -51,27 +98,80 @@ function checkCartEmpty() {
 }
 
 // Gán sự kiện cho các dropdown chọn số lượng
-document.querySelectorAll(".quantity-select").forEach((select) => {
-    select.addEventListener("change", function () {
-        const quantity = parseInt(this.value);
-        const productItem = this.closest(".product-item");
-        const priceDisplay = productItem.querySelector(".price");
-        const unitPrice = parseInt(productItem.getAttribute("data-price"));
-        const total = quantity * unitPrice;
-        priceDisplay.innerText = formatVND(total);
-        updateCartTotal();
+document.querySelectorAll(".quantity-select").forEach((input) => {
+    input.addEventListener("change", function () {
+        const quantity = parseInt(this.value) || 1;
+        const unitPrice = parseFloat(this.dataset.unitPrice);
+        const itemId = this.dataset.itemId;
+
+        const total = unitPrice * quantity;
+
+        // Cập nhật UI
+        const priceDisplay = this.closest(".row").querySelector(".products-price");
+        priceDisplay.innerText = "$" + total.toFixed(2);
+
+        // Gửi dữ liệu cập nhật lên server
+        fetch(`/cart/update/${itemId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    quantity: quantity
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 1000) {
+                    updateCartTotal();
+                    document.getElementById("discount").innerText = '$0.00';
+                    document.getElementById("coupon-code").value = '';
+                } else {
+                    console.error("Lỗi cập nhật giỏ hàng:", data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Lỗi fetch:", error);
+            });
     });
 });
 
 // Gán sự kiện cho nút xoá sản phẩm
 document.querySelectorAll(".btn-remove").forEach((btn) => {
     btn.addEventListener("click", function () {
-        const productItem = this.closest(".product-item");
-        if (productItem) {
-            productItem.remove();
-            updateCartTotal();
-            checkCartEmpty();
-        }
+        Swal.fire({
+            title: "Delete this product from your cart ?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                const productItem = this.closest(".product-item");
+                const productId = this.dataset.itemId;
+
+                fetch(`http://localhost:8080/cart/clear/${productId}`, {
+                        method: "DELETE"
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.code == 1000) {
+                            console.log("Deleted cart item success");
+                            Swal.fire({
+                                title: "Deleted!",
+                                text: "Your file has been deleted.",
+                                icon: "success"
+                            });
+                            productItem.remove();
+                            updateCartTotal();
+                            checkCartEmpty();
+                        }
+                    })
+            }
+        });
     });
 });
 

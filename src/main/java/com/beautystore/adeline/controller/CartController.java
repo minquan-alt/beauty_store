@@ -52,7 +52,7 @@ public class CartController {
   }
 
 
-  @PutMapping("/add/{productId}")
+  @PutMapping("/update/{productId}")
   public ApiResponse<CartResponse> updateCartItem(
       @PathVariable Long productId,
       @Valid @RequestBody UpdateCartItemRequest request,

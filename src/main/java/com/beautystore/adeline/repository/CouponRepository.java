@@ -9,7 +9,5 @@ import org.springframework.stereotype.Repository;
 import com.beautystore.adeline.entity.Coupon;
 
 @Repository
-public interface CouponRepository extends JpaRepository<Coupon, Long> {
-    boolean existsByCode(String code);
-    Optional<Coupon> findByCode(String code);
+public interface CouponRepository extends JpaRepository<Coupon, String> {
 }

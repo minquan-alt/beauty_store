@@ -43,10 +43,19 @@ public enum ErrorCode {
     ITEMS_NOT_EXISTED(6004, "Order has no items"),
     UNIT_PRICE_REQUIRED(6005, "Unit price is required"),
     PAYMENT_REQUIRED(6006, "Payment is required"),
+    ORDER_IS_EXPIRED(6007, "Order is expired"),
+    ORDER_ID_NOT_IN_SESSION(6008, "OrderId not in session"),
+    PRODUCT_NOT_FOUND_IN_INVENTORY(6009, "Inventory does not have this product"),
+    STOCK_QUANTITY_NOT_ENOUGH(6010, "Stock quantity is not enough"),
+
 
     ADDRESS_NOT_NULL(7001, "Address must not be null"),
     ADDRESS_NOT_FOUND(7002, "Address not found"),
-    
+
+    PAYMENT_NOT_FOUND(8001, "There is no payments"),
+    PAYMENT_NOT_EXIST(8002, "Payment not exists"),
+    PAYMENT_PROCESS_ERROR(8003, "You met error in payment process"),
+
 
     ;
 

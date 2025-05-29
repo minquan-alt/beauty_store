@@ -9,6 +9,7 @@ import com.beautystore.adeline.dto.request.AddOrderRequest;
 import com.beautystore.adeline.dto.response.OrderResponse;
 import com.beautystore.adeline.entity.Address;
 import com.beautystore.adeline.entity.Coupon;
+import com.beautystore.adeline.entity.Inventory;
 import com.beautystore.adeline.entity.Order;
 import com.beautystore.adeline.entity.OrderDetail;
 import com.beautystore.adeline.entity.Product;
@@ -17,6 +18,7 @@ import com.beautystore.adeline.exception.AppException;
 import com.beautystore.adeline.exception.ErrorCode;
 import com.beautystore.adeline.repository.AddressRepository;
 import com.beautystore.adeline.repository.CouponRepository;
+import com.beautystore.adeline.repository.InventoryRepository;
 import com.beautystore.adeline.repository.OrderRepository;
 import com.beautystore.adeline.repository.ProductRepository;
 import com.beautystore.adeline.repository.UserRepository;
@@ -36,15 +38,36 @@ public class OrderService {
     private final AddressRepository addressRepository;
     private final ProductRepository productRepository;
     private final CouponRepository couponRepository;
+    private final InventoryRepository inventoryRepository;
 
-    public OrderService(OrderRepository orderRepository, UserService userService, UserRepository userRepository, AddressRepository addressRepository, ProductRepository productRepository, CouponRepository couponRepository) {
+    public OrderService(OrderRepository orderRepository, UserService userService, UserRepository userRepository, AddressRepository addressRepository, ProductRepository productRepository, CouponRepository couponRepository, InventoryRepository inventoryRepository) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
         this.productRepository = productRepository;
         this.couponRepository = couponRepository;
+        this.inventoryRepository = inventoryRepository;
     }
+
+    public class TempOrderSession {
+        private Long orderId;
+        private long expiryTime;
+
+        public TempOrderSession(Long orderId, long expiryTime) {
+            this.orderId = orderId;
+            this.expiryTime = expiryTime;
+        }
+
+        public Long getOrderId() {
+            return orderId;
+        }
+
+        public boolean isExpired() {
+            return System.currentTimeMillis() > expiryTime;
+        }
+    }
+
 
     public List<OrderResponse> getAllOrders() {
         return orderRepository.findAll().stream()
@@ -60,13 +83,18 @@ public class OrderService {
         return orderRepository.findByUserId(userId)
             .stream()
             .map(this::mapToResponse)
-            .toList();
+            .collect(Collectors.toList());
     }
 
     public OrderResponse getOrderFromSession(HttpSession session) {
-        Long orderId = (Long) session.getAttribute("orderId");
-        if (orderId == null) {
+        TempOrderSession temp = (TempOrderSession) session.getAttribute("orderSession");
+        if (temp == null) {
             throw new AppException(ErrorCode.ORDER_NOT_IN_SESSION);
+        }
+        Long orderId = (Long) temp.getOrderId();
+
+        if (orderId == null) {
+            throw new AppException(ErrorCode.ORDER_ID_NOT_IN_SESSION);
         }
         return orderRepository.findById(orderId)
                 .map(this::mapToResponse)
@@ -94,6 +122,15 @@ public class OrderService {
             .map((AddOrderRequest.OrderItemRequest itemRequest) -> { // Thêm explicit type
                 Product product = productRepository.findById(itemRequest.getProductId())
                         .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+                
+                Inventory inventory = inventoryRepository.findByProductId(itemRequest.getProductId())
+                        .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND_IN_INVENTORY));
+
+                int inventory_quantity =  inventory.getStockQuantity();
+                
+                if(itemRequest.getQuantity() > inventory_quantity) {
+                    throw new AppException(ErrorCode.STOCK_QUANTITY_NOT_ENOUGH);
+                }
 
                 return OrderDetail.builder()
                         .order(order)
@@ -127,8 +164,9 @@ public class OrderService {
 
         // 7. Lưu order
         Order savedOrder = orderRepository.save(order);
-        session.setAttribute("orderId", savedOrder.getId());
-
+        long expiryTime = System.currentTimeMillis() + 5 * 60 * 1000;
+        TempOrderSession temp = new TempOrderSession(savedOrder.getId(), expiryTime);
+        session.setAttribute("orderSession", temp);
         // 8. Map sang DTO
         return mapToResponse(savedOrder);
     }
@@ -162,7 +200,7 @@ public class OrderService {
             return order;
         }
 
-        Coupon coupon = couponRepository.findByCode(couponCode)
+        Coupon coupon = couponRepository.findById(couponCode)
                 .orElseThrow(() -> new AppException(ErrorCode.COUPON_NOT_FOUND));
 
         // Kiểm tra coupon còn hiệu lực
