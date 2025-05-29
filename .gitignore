@@ -37,3 +37,4 @@ sql/
 src/main/resources/application.properties
 .DS_Store
 
+*.DS_Store
