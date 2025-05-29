@@ -12,6 +12,9 @@ import com.beautystore.adeline.dto.request.PurchaseOrderRequest;
 import com.beautystore.adeline.dto.response.PurchaseOrderDetailResponse;
 import com.beautystore.adeline.dto.response.PurchaseOrderResponse;
 import com.beautystore.adeline.entity.PurchaseOrder;
+import com.beautystore.adeline.entity.PurchaseOrder.Status;
+import com.beautystore.adeline.exception.AppException;
+import com.beautystore.adeline.exception.ErrorCode;
 import com.beautystore.adeline.mapper.PurchaseOrderResponseMapper;
 import com.beautystore.adeline.repository.PurchaseOrderRepository;
 
@@ -98,5 +101,36 @@ public class PurchaseOrderService {
         Pageable pageable = PageRequest.of(page, size);
         Page<PurchaseOrder> purchaseOrderPage = purchaseOrderRepository.findAll(pageable);
         return purchaseOrderPage.map(purchaseOrderResponseMapper::toResponse);
+    }
+
+    public PurchaseOrderResponse updateOrderStatus(Long id, String status){
+        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id)
+            .orElseThrow(() -> new AppException(ErrorCode.PURCHASE_ORDER_NOT_EXISTED));
+
+        purchaseOrder.setStatus(Status.valueOf(status)); 
+        purchaseOrderRepository.save(purchaseOrder);
+
+        return PurchaseOrderResponse.builder()
+        .purchaseOrderId(purchaseOrder.getId())
+        .supplierName(purchaseOrder.getSupplier().getName())
+        .orderDate(purchaseOrder.getOrderDate())
+        .status(purchaseOrder.getStatus().name())
+        .items(purchaseOrder.getOrderDetails().stream().map(detail ->
+                PurchaseOrderDetailResponse.builder()
+                        .productId(detail.getProduct().getId())
+                        .productName(detail.getProduct().getName())
+                        .quantity(detail.getQuantity())
+                        .unitPrice(detail.getUnitPrice())
+                        .build()
+        ).toList())
+        .build();
+    }
+
+    public PurchaseOrderResponse getPurchaseOrderById(Long id){
+        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id)
+            .orElseThrow(() -> {
+                return new AppException(ErrorCode.PURCHASE_ORDER_NOT_FOUND);
+            });
+        return purchaseOrderResponseMapper.toResponse(purchaseOrder);
     }
 }

@@ -47,6 +47,8 @@ public enum ErrorCode {
     ADDRESS_NOT_NULL(7001, "Address must not be null"),
     ADDRESS_NOT_FOUND(7002, "Address not found"),
     
+    PURCHASE_ORDER_NOT_EXISTED(8001, "Purchase order not existed"),
+    PURCHASE_ORDER_NOT_FOUND(8002, "Purchase order not found"),
 
     ;
 
