@@ -43,4 +43,10 @@
     .navbar-brand.brand-name:hover {
         color: #ff6f61; /* Màu khi hover */
     }
-    
+    .quantity-select {
+  max-width: 90px;
+  text-align: center;
+  font-size: 14px;
+  padding: 6px 8px;
+  height: 36px;
+}
