@@ -112,6 +112,12 @@ public class PurchaseOrderService {
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id)
             .orElseThrow(() -> new AppException(ErrorCode.PURCHASE_ORDER_NOT_EXISTED));
 
+        if(purchaseOrder.getStatus() == Status.Completed){
+            throw new AppException(ErrorCode.PURCHASE_ORDER_COMPLETED);
+        }
+        if(purchaseOrder.getStatus() == Status.Cancelled){
+            throw new AppException(ErrorCode.PURCHASE_ORDER_CANCELLED);
+        }
         purchaseOrder.setStatus(Status.valueOf(status)); 
         purchaseOrderRepository.save(purchaseOrder);
 
