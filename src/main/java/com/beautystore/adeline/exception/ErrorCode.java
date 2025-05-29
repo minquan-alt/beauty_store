@@ -49,7 +49,8 @@ public enum ErrorCode {
     
     PURCHASE_ORDER_NOT_EXISTED(8001, "Purchase order not existed"),
     PURCHASE_ORDER_NOT_FOUND(8002, "Purchase order not found"),
-
+    PURCHASE_ORDER_COMPLETED(8003, "Purchase order has already been completed"),
+    PURCHASE_ORDER_CANCELLED(8004, "Purchase order has already been cancelled");
     ;
 
     ErrorCode(int code, String message) {

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.beautystore.adeline.dto.request.PurchaseOrderRequest;
+import com.beautystore.adeline.dto.request.PurchaseOrderUpdateRequest;
 import com.beautystore.adeline.dto.response.PurchaseOrderDetailResponse;
 import com.beautystore.adeline.dto.response.PurchaseOrderResponse;
 import com.beautystore.adeline.entity.PurchaseOrder;
@@ -17,6 +18,7 @@ import com.beautystore.adeline.exception.AppException;
 import com.beautystore.adeline.exception.ErrorCode;
 import com.beautystore.adeline.mapper.PurchaseOrderResponseMapper;
 import com.beautystore.adeline.repository.PurchaseOrderRepository;
+import com.beautystore.adeline.repository.SupplierRepository;
 
 import java.sql.Array;
 import java.sql.Struct;
@@ -37,6 +39,9 @@ public class PurchaseOrderService {
 
     @Autowired
     private  PurchaseOrderResponseMapper purchaseOrderResponseMapper;
+
+    @Autowired
+    private SupplierRepository supplierRepository;
 
 
     public PurchaseOrderResponse createPurchaseOrder(PurchaseOrderRequest request) {
@@ -132,5 +137,27 @@ public class PurchaseOrderService {
                 return new AppException(ErrorCode.PURCHASE_ORDER_NOT_FOUND);
             });
         return purchaseOrderResponseMapper.toResponse(purchaseOrder);
+    }
+
+    public PurchaseOrderResponse updatePurchaseOrder(PurchaseOrderUpdateRequest request, Long id){
+        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id)
+            .orElseThrow(() -> {
+                return new AppException(ErrorCode.PURCHASE_ORDER_NOT_FOUND);
+            });
+        if(purchaseOrder.getStatus() == Status.Completed){
+            throw new AppException(ErrorCode.PURCHASE_ORDER_COMPLETED);
+        }
+        if(purchaseOrder.getStatus() == Status.Cancelled){
+            throw new AppException(ErrorCode.PURCHASE_ORDER_CANCELLED);
+        }
+        if(request.getSupplier_id() != null){
+            if(!supplierRepository.existsById(request.getSupplier_id())){
+                throw new AppException(ErrorCode.SUPPLIER_NOT_FOUND);
+            }
+            purchaseOrder.setSupplier(supplierRepository.findById(request.getSupplier_id()).get());
+        }
+        
+        PurchaseOrder updatedPurchaseOrder = purchaseOrderRepository.save(purchaseOrder);
+        return purchaseOrderResponseMapper.toResponse(updatedPurchaseOrder);
     }
 }

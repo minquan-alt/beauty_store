@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.beautystore.adeline.dto.request.PurchaseOrderRequest;
+import com.beautystore.adeline.dto.request.PurchaseOrderUpdateRequest;
 import com.beautystore.adeline.dto.response.ApiResponse;
 import com.beautystore.adeline.dto.response.PagedResponse;
 import com.beautystore.adeline.dto.response.PurchaseOrderResponse;
@@ -61,6 +62,15 @@ public class PurchaseOrderController {
     public ApiResponse<PurchaseOrderResponse> getPurchaseOrder(@PathVariable Long purchaseOrderId){
         ApiResponse<PurchaseOrderResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(purchaseOrderService.getPurchaseOrderById(purchaseOrderId));
+        return apiResponse;
+    }
+
+    @PutMapping("/{purchaseOrderId}")
+    public ApiResponse<PurchaseOrderResponse> updatePurchaseOrder(
+            @RequestBody PurchaseOrderUpdateRequest request,
+            @PathVariable Long purchaseOrderId){
+        ApiResponse<PurchaseOrderResponse> apiResponse = new ApiResponse<>();
+        apiResponse.setResult(purchaseOrderService.updatePurchaseOrder(request, purchaseOrderId));
         return apiResponse;
     }
     
