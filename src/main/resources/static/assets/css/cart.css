@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;60...=swap');
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Parisienne&family=Sacramento&family=Satisfy&display=swap');
 .header-row {
         background-color: #f8f9fa;
         padding: 10px;
@@ -41,3 +43,4 @@
     .navbar-brand.brand-name:hover {
         color: #ff6f61; /* Màu khi hover */
     }
+    

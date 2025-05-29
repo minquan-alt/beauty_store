@@ -110,49 +110,39 @@ function decreaseQty(btn) {
 }
 
 function addToCart(btn) {
-  const card = btn.closest(".card-body");
-  const qtyContainer = card.querySelector("#quantityContainer");
-  const qtyInput = qtyContainer.querySelector("input");
-  const cardForId = btn.closest(".card");
-  
+  const card = btn.closest(".card");
+  const qtyContainer = card.querySelector(".quantity-container");
+  const qtyInput = qtyContainer.querySelector(".quantity-input");
 
   if (qtyContainer.style.display === "none") {
-    qtyContainer.style.display = "flex"; // Hiện bộ chọn số lượng
-    btn.textContent = "Confirm"; // Đổi tên nút
+    qtyContainer.style.display = "flex";
+    btn.textContent = "Confirm";
   } else {
     const quantity = parseInt(qtyInput.value);
-    var productId = null;
-    if (cardForId && cardForId.dataset.id) {
-      productId = cardForId.dataset.id;
-    }
+    const productId = card.dataset.id;
 
     fetch("http://localhost:8080/cart/add", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ productId, quantity })
     })
       .then(res => res.json())
-      .then(data => {
-        console.log(data.result);
-      });
-
+      .then(data => console.log(data.result));
 
     Swal.fire({
       title: "Added to Cart!",
       text: `Quantity: ${quantity} item(s)`,
       icon: "success",
-      confirmButtonText: "OK",
       timer: 2000,
       showConfirmButton: false,
     });
-    // Thêm xử lý gửi dữ liệu về server nếu cần
-    btn.textContent = "Add to Cart"; // Reset nút
-    qtyContainer.style.display = "none"; // Ẩn lại
-    qtyInput.value = 1; // Reset về 1
+
+    btn.textContent = "Add to Cart";
+    qtyContainer.style.display = "none";
+    qtyInput.value = 1;
   }
 }
+
 let quantityVisible = false;
 
 function toggleQuantity(button) {
@@ -164,12 +154,13 @@ function toggleQuantity(button) {
   }
 }
 
-function changeQty(delta) {
-  const input = document.getElementById("quantityInput");
+function changeQty(btn, delta) {
+  const input = btn.closest(".quantity-container").querySelector(".quantity-input");
   let current = parseInt(input.value);
   current = isNaN(current) ? 1 : current + delta;
   input.value = current < 1 ? 1 : current;
 }
+
 
 // Thêm sự kiện click cho nút "Buy Now"
 function buyNow() {
@@ -182,14 +173,15 @@ function buyNow() {
   });
 }
 
-function cancelQuantity() {
-  const qtyContainer = document.getElementById("quantityContainer");
-  const card = qtyContainer.closest(".card-body");
+function cancelQuantity(btn) {
+  const qtyContainer = btn.closest(".quantity-container");
+  const card = btn.closest(".card-body");
   const addToCartBtn = card.querySelector(".btn-add-to-cart");
 
-  qtyContainer.style.display = "none"; // Ẩn phần nhập số lượng
-  addToCartBtn.textContent = "Add to Cart"; // Đổi lại tên nút
+  qtyContainer.style.display = "none";
+  addToCartBtn.textContent = "Add to Cart";
 }
+
 
 // document.addEventListener("DOMContentLoaded", function () {
 //   fetch("http://localhost:8080/products")
@@ -294,12 +286,13 @@ function renderProducts(products) {
             <a href="#" class="text-primary" id="moreBtn">More</a>
           </p>
 
-          <div id="quantityContainer" class="align-items-center gap-2 mb-3" style="display: none">
-            <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(-1)">−</button>
-            <input type="number" id="quantityInput" class="form-control form-control-sm text-center" style="width: 60px" value="1" min="1" />
-            <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(1)">+</button>
-            <button class="btn btn-outline-danger btn-sm" onclick="cancelQuantity(this)">Cancel</button>
-          </div>
+          <div class="quantity-container align-items-center gap-2 mb-3" style="display: none;">
+  <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(this, -1)">−</button>
+  <input type="number" class="form-control form-control-sm text-center quantity-input" style="width: 60px" value="1" min="1" />
+  <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(this, 1)">+</button>
+  <button class="btn btn-outline-danger btn-sm" onclick="cancelQuantity(this)">Cancel</button>
+</div>
+
           <div class="d-flex justify-content-between">
             <button class="btn btn-outline-secondary btn-sm btn-add-to-cart" onclick="addToCart(this)">Add to Cart</button>
             <button class="btn btn-secondary btn-buy-now" onclick="buyNow()">Buy Now</button>
