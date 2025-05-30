@@ -12,21 +12,27 @@ import com.beautystore.adeline.dto.request.PurchaseOrderRequest;
 import com.beautystore.adeline.dto.request.PurchaseOrderUpdateRequest;
 import com.beautystore.adeline.dto.response.PurchaseOrderDetailResponse;
 import com.beautystore.adeline.dto.response.PurchaseOrderResponse;
+import com.beautystore.adeline.entity.Product;
 import com.beautystore.adeline.entity.PurchaseOrder;
 import com.beautystore.adeline.entity.PurchaseOrder.Status;
+import com.beautystore.adeline.entity.PurchaseOrderDetail;
 import com.beautystore.adeline.exception.AppException;
 import com.beautystore.adeline.exception.ErrorCode;
 import com.beautystore.adeline.mapper.PurchaseOrderResponseMapper;
+import com.beautystore.adeline.repository.ProductRepository;
 import com.beautystore.adeline.repository.PurchaseOrderRepository;
 import com.beautystore.adeline.repository.SupplierRepository;
 
 import java.sql.Array;
 import java.sql.Struct;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import oracle.jdbc.OracleConnection;
 import org.hibernate.Session;
 
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 
 @Service
 public class PurchaseOrderService {
@@ -42,6 +48,9 @@ public class PurchaseOrderService {
 
     @Autowired
     private SupplierRepository supplierRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
 
     public PurchaseOrderResponse createPurchaseOrder(PurchaseOrderRequest request) {
@@ -145,6 +154,7 @@ public class PurchaseOrderService {
         return purchaseOrderResponseMapper.toResponse(purchaseOrder);
     }
 
+    @Transactional
     public PurchaseOrderResponse updatePurchaseOrder(PurchaseOrderUpdateRequest request, Long id){
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id)
             .orElseThrow(() -> {
@@ -156,12 +166,33 @@ public class PurchaseOrderService {
         if(purchaseOrder.getStatus() == Status.Cancelled){
             throw new AppException(ErrorCode.PURCHASE_ORDER_CANCELLED);
         }
+
+        
         if(request.getSupplier_id() != null){
             if(!supplierRepository.existsById(request.getSupplier_id())){
                 throw new AppException(ErrorCode.SUPPLIER_NOT_FOUND);
             }
             purchaseOrder.setSupplier(supplierRepository.findById(request.getSupplier_id()).get());
+        } 
+
+        if(request.getItems() == null){
+            throw new AppException(ErrorCode.PURCHASE_ORDER_DETAIL_REQUIRED);
         }
+
+        purchaseOrder.getOrderDetails().clear();
+
+         List<PurchaseOrderDetail> newDetails = request.getItems().stream().map(item -> {
+            Product product = productRepository.findById(item.getProductId())
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+            PurchaseOrderDetail detail = new PurchaseOrderDetail();
+            detail.setProduct(product);
+            detail.setQuantity(item.getQuantity());
+            detail.setUnitPrice(item.getUnitPrice());
+            detail.setPurchaseOrder(purchaseOrder); 
+            return detail;
+        }).collect(Collectors.toList());
+
+    purchaseOrder.getOrderDetails().addAll(newDetails);
         
         PurchaseOrder updatedPurchaseOrder = purchaseOrderRepository.save(purchaseOrder);
         return purchaseOrderResponseMapper.toResponse(updatedPurchaseOrder);
