@@ -2,10 +2,17 @@ package com.beautystore.adeline.services;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import com.beautystore.adeline.dto.request.AddOrderRequest;
+import com.beautystore.adeline.dto.response.DashboardDataResponse;
 import com.beautystore.adeline.dto.response.OrderResponse;
 import com.beautystore.adeline.entity.Address;
 import com.beautystore.adeline.entity.Coupon;
@@ -13,6 +20,7 @@ import com.beautystore.adeline.entity.Inventory;
 import com.beautystore.adeline.entity.Order;
 import com.beautystore.adeline.entity.OrderDetail;
 import com.beautystore.adeline.entity.Product;
+import com.beautystore.adeline.entity.PurchaseOrder;
 import com.beautystore.adeline.entity.User;
 import com.beautystore.adeline.exception.AppException;
 import com.beautystore.adeline.exception.ErrorCode;
@@ -21,6 +29,7 @@ import com.beautystore.adeline.repository.CouponRepository;
 import com.beautystore.adeline.repository.InventoryRepository;
 import com.beautystore.adeline.repository.OrderRepository;
 import com.beautystore.adeline.repository.ProductRepository;
+import com.beautystore.adeline.repository.PurchaseOrderRepository;
 import com.beautystore.adeline.repository.UserRepository;
 
 import org.springframework.stereotype.Service;
@@ -28,7 +37,6 @@ import org.springframework.util.StringUtils;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
-
 
 @Service
 public class OrderService {
@@ -39,15 +47,62 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final CouponRepository couponRepository;
     private final InventoryRepository inventoryRepository;
+    private final PurchaseOrderRepository purchaseOrderRepository;
 
-    public OrderService(OrderRepository orderRepository, UserService userService, UserRepository userRepository, AddressRepository addressRepository, ProductRepository productRepository, CouponRepository couponRepository, InventoryRepository inventoryRepository) {
+    public OrderService(OrderRepository orderRepository, UserService userService, UserRepository userRepository, AddressRepository addressRepository, ProductRepository productRepository, CouponRepository couponRepository,InventoryRepository inventoryRepository, PurchaseOrderRepository purchaseOrderRepository) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
         this.productRepository = productRepository;
         this.couponRepository = couponRepository;
+        this.purchaseOrderRepository = purchaseOrderRepository;
         this.inventoryRepository = inventoryRepository;
+    }
+
+    public DashboardDataResponse getDashboardData(LocalDateTime startDate, LocalDateTime endDate) {
+        List<Order> orders = getOrdersByDateRange(startDate, endDate);
+
+        int totalOrders = orders.size();
+        int totalProductsSold = getTotalProductsSoldByDateRange(startDate, endDate);
+        BigDecimal totalAmount = getRealRevenue(orders);
+        BigDecimal totalSubTotal = getOriginalRevenue(orders);
+        BigDecimal totalCost = getTotalCost(orders);
+        BigDecimal totalProfit = totalAmount.subtract(totalCost);
+
+        Map<LocalDate, BigDecimal> dailyTotalAmount = new TreeMap<>();
+        Map<LocalDate, BigDecimal> dailySubTotal = new TreeMap<>();
+        Map<LocalDate, BigDecimal> dailyTotalProfit = new TreeMap<>();
+
+        for (Order order : orders) {
+            LocalDate orderDay = order.getOrderDate().toLocalDate();
+            dailyTotalAmount.merge(orderDay, order.getTotalAmount(), BigDecimal::add);
+            BigDecimal orderCost = getTotalCost(List.of(order));
+            BigDecimal orderProfit = order.getTotalAmount().subtract(orderCost);
+            dailySubTotal.merge(orderDay, order.getSubtotal(), BigDecimal::add);
+            dailyTotalProfit.merge(orderDay, orderProfit, BigDecimal::add);
+        }
+
+        List<String> dates = dailyTotalAmount.keySet().stream().map(LocalDate::toString).collect(Collectors.toList());
+        List<BigDecimal> chartTotalAmount = new ArrayList<>(dailyTotalAmount.values());
+        List<BigDecimal> chartSubTotal = new ArrayList<>(dailySubTotal.values());
+        List<BigDecimal> chartTotalProfit = new ArrayList<>(dailyTotalProfit.values());
+
+        Map<String, Object> chartData = new HashMap<>();
+        chartData.put("dates", dates);
+        chartData.put("chartTotalAmount", chartTotalAmount);
+        chartData.put("chartSubTotal", chartSubTotal);
+        chartData.put("chartTotalProfit", chartTotalProfit);
+
+        return DashboardDataResponse.builder()
+                .totalOrders(totalOrders)
+                .totalProductsSold(totalProductsSold)
+                .totalAmount(totalAmount)
+                .totalSubTotal(totalSubTotal)
+                .totalCost(totalCost)
+                .totalProfit(totalProfit)
+                .chartData(chartData)
+                .build();
     }
 
     public class TempOrderSession {
@@ -107,7 +162,7 @@ public class OrderService {
         Long userId = userService.getUserIdFromSession(session);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        
+
         // 2. Validate address
         Address address = addressRepository.findById(request.getAddressId())
                 .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
@@ -116,12 +171,11 @@ public class OrderService {
         Order order = new Order();
         order.setUser(user);
 
-
         // 4. Xử lý order items
         List<OrderDetail> orderItems = request.getItems().stream()
-            .map((AddOrderRequest.OrderItemRequest itemRequest) -> { // Thêm explicit type
-                Product product = productRepository.findById(itemRequest.getProductId())
-                        .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+                .map((AddOrderRequest.OrderItemRequest itemRequest) -> { // Thêm explicit type
+                    Product product = productRepository.findById(itemRequest.getProductId())
+                            .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
                 int product_quantity =  product.getQuantity();
                 
@@ -206,8 +260,8 @@ public class OrderService {
         }
 
         // Kiểm tra coupon có áp dụng cho đơn hàng này không
-        if (coupon.getMinOrderAmount() != null && 
-            order.getSubtotal().compareTo(coupon.getMinOrderAmount()) < 0) {
+        if (coupon.getMinOrderAmount() != null &&
+                order.getSubtotal().compareTo(coupon.getMinOrderAmount()) < 0) {
             throw new AppException(ErrorCode.COUPON_MIN_ORDER_NOT_MET);
         }
 
@@ -216,7 +270,7 @@ public class OrderService {
         if (coupon.getType() == Coupon.CouponType.PERCENTAGE) {
             discountAmount = order.getSubtotal()
                     .multiply(coupon.getValue().divide(BigDecimal.valueOf(100)));
-            
+
             if (coupon.getMaxDiscountAmount() != null) {
                 discountAmount = discountAmount.min(coupon.getMaxDiscountAmount());
             }
@@ -230,5 +284,42 @@ public class OrderService {
         order.calculateTotal();
 
         return order;
+    }
+
+    public List<Order> getOrdersByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+        return orderRepository.findByOrderDateBetween(startDate, endDate);
+    }
+
+    public int getTotalProductsSoldByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+        return orderRepository.findByOrderDateBetween(startDate, endDate).stream()
+                .flatMap(order -> order.getItems().stream())
+                .mapToInt(OrderDetail::getQuantity)
+                .sum();
+    }
+
+    // Giá đã giảm
+    public BigDecimal getRealRevenue(List<Order> orders) {
+        return orders.stream()
+                .map(Order::getTotalAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    // Giá gốc
+    public BigDecimal getOriginalRevenue(List<Order> orders) {
+        return orders.stream()
+                .map(Order::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public BigDecimal getTotalCost(List<Order> orders) {
+        return orders.stream()
+                .flatMap(order -> getPurchaseOrderByOrderId(order).stream())
+                .flatMap(po -> po.getOrderDetails().stream())
+                .map(pod -> pod.getUnitPrice())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public List<PurchaseOrder> getPurchaseOrderByOrderId(Order order) {
+        return purchaseOrderRepository.findByOrderId(order.getId());
     }
 }

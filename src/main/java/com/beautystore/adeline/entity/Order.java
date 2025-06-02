@@ -46,7 +46,7 @@ public class Order {
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coupon_code")
+    @JoinColumn(name = "coupon_code", referencedColumnName = "code")
     private Coupon coupon;
 
     @Enumerated(EnumType.STRING)
