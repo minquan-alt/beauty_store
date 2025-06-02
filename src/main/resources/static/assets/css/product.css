@@ -1,14 +1,30 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 .container-fluid {
-  background-color: none;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.col-3, .col-9 {
+  min-height: 100vh;
+  height: auto !important;
+  flex-grow: 1;
 }
 .col-3 {
   background-color: black;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
+  
 }
 .custom-col {
   width: 20.83%; /* 2.5/12 * 100% */
   max-width: 20.83%;
   flex: 0 0 auto;
+  min-height: 100vh;
+  height: auto;
 }
 .col-9 {
   background-color: white !important;
@@ -442,4 +458,190 @@ input[type="number"] {
 
 .pagination a:hover:not(.active) {
   background-color: #ddd;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card-body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  line-height: 1.2em;
+  max-height: 4.8em;
+}
+/* Container chứa input và nút Cancel */
+.quantity-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;   /* Đảm bảo chiều cao cố định cho hàng */
+}
+
+/* Input nhập số lượng */
+.quantity-container input[type="number"] {
+  width: 60px;               /* Chiều rộng cố định */
+  height: 36px;              /* Chiều cao đồng nhất */
+  padding: 0 10px;
+  font-size: 16px;
+  font-weight: bold;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  -moz-appearance: textfield;  /* Chrome, Firefox bỏ spinner mặc định */
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Nút Cancel */
+.quantity-container .btn-cancel {
+  height: 36px;              /* Chiều cao bằng input */
+  padding: 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #e5999b;            /* Màu đỏ nhẹ */
+  background-color: transparent;
+  border: 1px solid #e5999b;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: color 0.3s, border-color 0.3s;
+}
+
+.quantity-container .btn-cancel:hover {
+  color: white;
+  background-color: #e5999b;
+  border-color: #e5999b;
+}
+.quantity-container button,
+.quantity-container input[type="number"] {
+  height: 36px;
+  min-width: 40px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+  text-align: center;
+}
+.quantity-container input[type="number"] {
+  flex-shrink: 0;
+}
+
+.quantity-container button {
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.row {
+  display: flex;
+  flex-grow: 1;
+  align-items: stretch;
+  min-height: 100vh;
+}
+
+.col-9 > .row > .col {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+}
+.product-title-price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 0 10px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.product-title-price .product-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+  flex: 1 1 auto;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.product-title-price .product-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: #e63946;
+  flex-shrink: 0;
+  margin-left: 15px;
+  white-space: nowrap;
+}
+
+.product-title-price:hover .product-title {
+  color: #1d3557;
+  cursor: pointer;
+}
+
+.product-title-price .product-price:hover {
+  color: #a02525;
+  cursor: default;
+}
+.card-body .d-flex.justify-content-between.align-items-center {
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.card-body .card-title {
+  text-align: left !important;
+  font-size: 18px;
+  font-weight: 600;
+  color: #222222;
+  margin: 0;
+  flex: 1 1 auto;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.card-body .text-primary.fw-bold {
+  font-size: 20px;
+  font-weight: 700;
+  color: #e63946 !important; /* Màu đỏ nổi bật */
+  flex-shrink: 0;
+  margin-left: 15px;
+  white-space: nowrap;
+}
+
+.card-body .d-flex.justify-content-between.align-items-center:hover .card-title {
+  color: #1d3557;
+  cursor: pointer;
+}
+
+.card-body .text-primary.fw-bold:hover {
+  color: #a02525 !important;
+  cursor: default;
+}
+.image-wrapper {
+  position: relative; /* Gốc định vị cho badge */
+  display: inline-block; /* Giữ layout ảnh */
+  width: 100%; /* Cho badge phủ đúng ảnh */
+}
+
+.price-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(230, 57, 70, 0.85); /* Nền đỏ mờ */
+  color: white;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  z-index: 10;
+  pointer-events: none; /* Không ảnh hưởng tương tác chuột */
+  user-select: none;
 }

@@ -96,4 +96,19 @@ a {
 .hidden {
     display: none;
 }
+/* Bỏ gạch chân & hiệu ứng underline cho liên kết avatar */
+#userDropdown,
+#userDropdown:hover,
+#userDropdown:focus {
+  text-decoration: none !important;   /* Ẩn gạch chân mặc định */
+}
+
+/* Vô hiệu hoá pseudo-element underline đã định nghĩa ở .nav-link::after */
+#userDropdown::after,
+#userDropdown:hover::after,
+#userDropdown:focus::after {
+  content: none !important;           /* Không tạo gạch chân khi hover */
+  display: none !important;           /* Chắc chắn không xuất hiện */
+}
+
 

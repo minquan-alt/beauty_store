@@ -60,6 +60,13 @@ const searchForm = document.getElementById("searchForm");
 const searchInput = document.querySelector(".search-input");
 const searchIcon = document.querySelector(".search-icon");
 
+searchInput.addEventListener("keypress", function (e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    performSearch();
+  }
+});
+
 searchForm.addEventListener("submit", function (event) {
   event.preventDefault();
   performSearch();
@@ -69,12 +76,94 @@ searchIcon.addEventListener("click", function () {
   performSearch();
 });
 
-searchInput.addEventListener("keypress", function (e) {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    performSearch();
+function increaseQty(btn) {
+  const input = btn.parentElement.querySelector('input[type="number"]');
+  let current = parseInt(input.value);
+  if (current < 99) {
+    input.value = current + 1;
   }
-});
+}
+
+function decreaseQty(btn) {
+  const input = btn.parentElement.querySelector('input[type="number"]');
+  let current = parseInt(input.value);
+  if (current > 1) {
+    input.value = current - 1;
+  }
+}
+
+function addToCart(btn) {
+  const card = btn.closest(".card");
+  const qtyContainer = card.querySelector(".quantity-container");
+  const qtyInput = qtyContainer.querySelector(".quantity-input");
+
+  if (qtyContainer.style.display === "none") {
+    qtyContainer.style.display = "flex";
+    btn.textContent = "Confirm";
+  } else {
+    const quantity = parseInt(qtyInput.value);
+    const productId = card.dataset.id;
+
+    fetch("http://localhost:8080/cart/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ productId, quantity })
+    })
+      .then(res => res.json())
+      .then(data => console.log(data.result));
+
+    Swal.fire({
+      title: "Added to Cart!",
+      text: `Quantity: ${quantity} item(s)`,
+      icon: "success",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+
+    btn.textContent = "Add to Cart";
+    qtyContainer.style.display = "none";
+    qtyInput.value = 1;
+  }
+}
+
+var quantityVisible = false;
+
+function toggleQuantity(button) {
+  const qtyContainer = document.getElementById("quantityContainer");
+  if (!quantityVisible) {
+    qtyContainer.style.display = "flex";
+    quantityVisible = true;
+    button.innerText = "✔ Added";
+  }
+}
+
+function changeQty(btn, delta) {
+  const input = btn.closest(".quantity-container").querySelector(".quantity-input");
+  let current = parseInt(input.value);
+  current = isNaN(current) ? 1 : current + delta;
+  input.value = current < 1 ? 1 : current;
+}
+
+
+// Thêm sự kiện click cho nút "Buy Now"
+function buyNow() {
+  Swal.fire({
+    icon: "success",
+    title: "Added to Cart",
+    text: "The product has been added to your cart.",
+    timer: 2000,
+    showConfirmButton: false,
+  });
+}
+
+function cancelQuantity(btn) {
+  const qtyContainer = btn.closest(".quantity-container");
+  const card = btn.closest(".card-body");
+  const addToCartBtn = card.querySelector(".btn-add-to-cart");
+
+  qtyContainer.style.display = "none";
+  addToCartBtn.textContent = "Add to Cart";
+}
 
 let currentPage = 1;
 const pageSize = 12;
@@ -115,32 +204,36 @@ function renderProducts(products) {
     card.className = "col";
     card.innerHTML = `
       <div class="card shadow-sm" data-id="${product.id}">
-        <img
-          src="${
-            product.imageUrls && product.imageUrls[0]
-              ? product.imageUrls[0]
-              : "http://localhost:8080/assets/images/product/loading.png"
-          }"
-          class="card-img-top"
-          style="height: 250px; object-fit: scale-down"
-          alt="Product Image"
-        />
+        <div class="image-wrapper">  <!-- Thêm div này -->
+    <img
+      src="${
+        product.imageUrls && product.imageUrls[0]
+          ? product.imageUrls[0]
+          : 'http://localhost:8080/assets/images/product/loading.png'
+      }"
+      class="card-img-top"
+      style="height: 250px; object-fit: scale-down"
+      alt="Product Image"
+    />
+    <span class="price-badge">$${product.price}</span>  
+  </div>
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <h5 class="card-title mb-0">${product.name}</h5>
-            <span class="text-primary fw-bold">$${product.price}</span>
           </div>
-          <p class="card-text text-muted mb-3">
-            ${
-              product.description
-            }<a href="#" class="text-primary" id="moreBtn">More</a>
+          <p class="card-text text-muted mb-3" id="descriptionText">
+            ${product.description}..
+            
+            <a href="#" class="text-primary" id="moreBtn">More</a>
           </p>
-          <div id="quantityContainer" class="align-items-center gap-2 mb-3" style="display: none">
-            <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(-1)">−</button>
-            <input type="number" id="quantityInput" class="form-control form-control-sm text-center" style="width: 60px" value="1" min="1" />
-            <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(1)">+</button>
-            <button class="btn btn-outline-danger btn-sm" onclick="cancelQuantity(this)">Cancel</button>
-          </div>
+
+          <div class="quantity-container align-items-center gap-2 mb-3" style="display: none;">
+  <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(this, -1)">−</button>
+  <input type="number" class="form-control form-control-sm text-center quantity-input" style="width: 60px" value="1" min="1" />
+  <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(this, 1)">+</button>
+  <button class="btn btn-outline-danger btn-sm" onclick="cancelQuantity(this)">Cancel</button>
+</div>
+
           <div class="d-flex justify-content-between">
             <button class="btn btn-outline-secondary btn-sm btn-add-to-cart" onclick="addToCart(this)">Add to Cart</button>
             <button class="btn btn-secondary btn-buy-now" onclick="buyNow()">Buy Now</button>
@@ -285,99 +378,3 @@ window.addEventListener("load", function () {
   document.getElementById("loading").style.display = "none";
   loadProducts(); // Initial load of products
 });
-
-function increaseQty(btn) {
-  const input = btn.parentElement.querySelector('input[type="number"]');
-  let current = parseInt(input.value);
-  if (current < 99) {
-    input.value = current + 1;
-  }
-}
-
-function decreaseQty(btn) {
-  const input = btn.parentElement.querySelector('input[type="number"]');
-  let current = parseInt(input.value);
-  if (current > 1) {
-    input.value = current - 1;
-  }
-}
-
-function addToCart(btn) {
-  const card = btn.closest(".card-body");
-  const qtyContainer = card.querySelector("#quantityContainer");
-  const qtyInput = qtyContainer.querySelector("input");
-  const cardForId = btn.closest(".card");
-
-  if (qtyContainer.style.display === "none") {
-    qtyContainer.style.display = "flex"; // Hiện bộ chọn số lượng
-    btn.textContent = "Confirm"; // Đổi tên nút
-  } else {
-    const quantity = parseInt(qtyInput.value);
-    var productId = null;
-    if (cardForId && cardForId.dataset.id) {
-      productId = cardForId.dataset.id;
-    }
-
-    fetch("http://localhost:8080/cart/add", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ productId, quantity }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data.result);
-      });
-
-    Swal.fire({
-      title: "Added to Cart!",
-      text: `Quantity: ${quantity} item(s)`,
-      icon: "success",
-      confirmButtonText: "OK",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-    // Thêm xử lý gửi dữ liệu về server nếu cần
-    btn.textContent = "Add to Cart"; // Reset nút
-    qtyContainer.style.display = "none"; // Ẩn lại
-    qtyInput.value = 1; // Reset về 1
-  }
-}
-let quantityVisible = false;
-
-function toggleQuantity(button) {
-  const qtyContainer = document.getElementById("quantityContainer");
-  if (!quantityVisible) {
-    qtyContainer.style.display = "flex";
-    quantityVisible = true;
-    button.innerText = "✔ Added";
-  }
-}
-
-function changeQty(delta) {
-  const input = document.getElementById("quantityInput");
-  let current = parseInt(input.value);
-  current = isNaN(current) ? 1 : current + delta;
-  input.value = current < 1 ? 1 : current;
-}
-
-// Thêm sự kiện click cho nút "Buy Now"
-function buyNow() {
-  Swal.fire({
-    icon: "success",
-    title: "Added to Cart",
-    text: "The product has been added to your cart.",
-    timer: 2000,
-    showConfirmButton: false,
-  });
-}
-
-function cancelQuantity() {
-  const qtyContainer = document.getElementById("quantityContainer");
-  const card = qtyContainer.closest(".card-body");
-  const addToCartBtn = card.querySelector(".btn-add-to-cart");
-
-  qtyContainer.style.display = "none"; // Ẩn phần nhập số lượng
-  addToCartBtn.textContent = "Add to Cart"; // Đổi lại tên nút
-}

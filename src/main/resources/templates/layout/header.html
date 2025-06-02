@@ -31,11 +31,20 @@
             </a>
           
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+              <li>
+                <a class="dropdown-item d-flex align-items-center gap-2" href="/cart-view">
+                  <i class="bi bi-receipt"></i> My Orders
+                </a>
+              </li>
               <!-- Nếu là Admin, hiển thị Admin Dashboard -->
               <li th:if="${session.isAdmin == true}">
                 <a class="dropdown-item" th:href="@{/admin}">Admin Dashboard</a>
               </li>
-              <li><a class="dropdown-item" onclick="logoutUser()">Log Out</a></li>
+              <li>
+                  <a class="dropdown-item d-flex align-items-center gap-2" href="#" onclick="logoutUser()">
+                        <i class="bi bi-box-arrow-right"></i> Log Out
+                      </a>              
+              </li>
             </ul>
           </div>
           
