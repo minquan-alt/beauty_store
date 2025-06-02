@@ -92,25 +92,29 @@ function decreaseQty(btn) {
   }
 }
 
-function addToCart(btn) {
-  const card = btn.closest(".card");
-  const qtyContainer = card.querySelector(".quantity-container");
-  const qtyInput = qtyContainer.querySelector(".quantity-input");
+function addToCartAPI(productId, quantity) {
+  fetch("http://localhost:8080/cart/add", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ productId, quantity }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data.result);
+    });
+}
 
-  if (qtyContainer.style.display === "none") {
-    qtyContainer.style.display = "flex";
-    btn.textContent = "Confirm";
+function addToCart(btn, selector, productId, type) {
+  if (type == "card" && selector.style.display === "none") {
+    selector.style.display = "flex"; // Hiện bộ chọn số lượng
+    btn.textContent = "Confirm"; // Đổi tên nút
   } else {
+    const qtyInput = selector.querySelector("input");
     const quantity = parseInt(qtyInput.value);
-    const productId = card.dataset.id;
 
-    fetch("http://localhost:8080/cart/add", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ productId, quantity })
-    })
-      .then(res => res.json())
-      .then(data => console.log(data.result));
+    addToCartAPI(productId, quantity);
 
     Swal.fire({
       title: "Added to Cart!",
@@ -119,10 +123,12 @@ function addToCart(btn) {
       timer: 2000,
       showConfirmButton: false,
     });
-
-    btn.textContent = "Add to Cart";
-    qtyContainer.style.display = "none";
-    qtyInput.value = 1;
+    // Thêm xử lý gửi dữ liệu về server nếu cần
+    if (type == "card") {
+      btn.textContent = "Add to Cart"; // Reset nút
+      selector.style.display = "none"; // Ẩn lại
+    }
+    qtyInput.value = 1; // Reset về 1
   }
 }
 
@@ -138,7 +144,8 @@ function toggleQuantity(button) {
 }
 
 function changeQty(btn, delta) {
-  const input = btn.closest(".quantity-container").querySelector(".quantity-input");
+  const cardBody = btn.closest(".quantity-wrapped");
+  const input = cardBody.querySelector('input[type="number"]');
   let current = parseInt(input.value);
   current = isNaN(current) ? 1 : current + delta;
   input.value = current < 1 ? 1 : current;
@@ -146,7 +153,8 @@ function changeQty(btn, delta) {
 
 
 // Thêm sự kiện click cho nút "Buy Now"
-function buyNow() {
+function buyNow(productId, quantity = 1) {
+  addToCartAPI(productId, quantity);
   Swal.fire({
     icon: "success",
     title: "Added to Cart",
@@ -157,9 +165,9 @@ function buyNow() {
 }
 
 function cancelQuantity(btn) {
-  const qtyContainer = btn.closest(".quantity-container");
-  const card = btn.closest(".card-body");
-  const addToCartBtn = card.querySelector(".btn-add-to-cart");
+  const qtyContainer = btn.closest("#quantityContainer");
+  const cardBody = qtyContainer.closest(".card-body");
+  const addToCartBtn = cardBody.querySelector(".btn-add-to-cart");
 
   qtyContainer.style.display = "none";
   addToCartBtn.textContent = "Add to Cart";
@@ -201,46 +209,144 @@ function renderProducts(products) {
 
   products.forEach((product) => {
     const card = document.createElement("div");
-    card.className = "col";
+    card.className = "col card-wrapper";
     card.innerHTML = `
-      <div class="card shadow-sm" data-id="${product.id}">
-        <div class="image-wrapper">  <!-- Thêm div này -->
-    <img
-      src="${
-        product.imageUrls && product.imageUrls[0]
-          ? product.imageUrls[0]
-          : 'http://localhost:8080/assets/images/product/loading.png'
-      }"
-      class="card-img-top"
-      style="height: 250px; object-fit: scale-down"
-      alt="Product Image"
-    />
-    <span class="price-badge">$${product.price}</span>  
-  </div>
+      <div class="card shadow-sm view-product" data-id="${product.id}">
+        <img
+          src="${
+            product.imageUrls && product.imageUrls[0]
+              ? product.imageUrls[0]
+              : "http://localhost:8080/assets/images/product/loading.png"
+          }"
+          class="card-img-top"
+          style="height: 250px; object-fit: scale-down"
+          alt="Product Image"
+        />
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center mb-2">
-            <h5 class="card-title mb-0">${product.name}</h5>
+            <h5 class="card-title ellipsis  mb-0">${product.name}</h5>
+            <span class="text-primary fw-bold">$${product.price}</span>
           </div>
-          <p class="card-text text-muted mb-3" id="descriptionText">
-            ${product.description}..
-            
-            <a href="#" class="text-primary" id="moreBtn">More</a>
+          <p class="card-text text-muted mb-3 description-2-lines">
+            ${product.description}
           </p>
-
-          <div class="quantity-container align-items-center gap-2 mb-3" style="display: none;">
-  <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(this, -1)">−</button>
-  <input type="number" class="form-control form-control-sm text-center quantity-input" style="width: 60px" value="1" min="1" />
-  <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(this, 1)">+</button>
-  <button class="btn btn-outline-danger btn-sm" onclick="cancelQuantity(this)">Cancel</button>
-</div>
-
+          <div id="quantityContainer" class="quantity-wrapped align-items-center gap-2 mb-3" style="display: none">
+            <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(this,-1)">−</button>
+            <input type="number" id="quantityInput" class="form-control form-control-sm text-center" style="width: 60px" value="1" min="1" />
+            <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(this,1)">+</button>
+            <button class="btn btn-outline-danger btn-sm" onclick="cancelQuantity(this)">Cancel</button>
+          </div>
           <div class="d-flex justify-content-between">
-            <button class="btn btn-outline-secondary btn-sm btn-add-to-cart" onclick="addToCart(this)">Add to Cart</button>
-            <button class="btn btn-secondary btn-buy-now" onclick="buyNow()">Buy Now</button>
+            <button class="btn btn-outline-secondary btn-sm btn-add-to-cart" 
+                  onclick="addToCart(this, this.closest('.card-body').querySelector('#quantityContainer'),${
+                    product.id
+                  },'card')">Add to Cart</button>
+            <button class="btn btn-secondary btn-buy-now" onclick="buyNow(${
+              product.id
+            })">Buy Now</button>
           </div>
         </div>
       </div>
     `;
+
+    card.addEventListener("click", function (event) {
+      if (
+        event.target.closest("button") ||
+        event.target.closest("input") ||
+        event.target.closest(".btn-add-to-cart") ||
+        event.target.closest(".btn-buy-now") ||
+        event.target.closest("#quantityContainer") ||
+        event.target.closest("a#moreBtn")
+      ) {
+        return;
+      }
+      const modalBody = document.querySelector(
+        "#productDetailModalCenter .modal-body"
+      );
+      var imageHTML = product.imageUrls
+        .map((image) => {
+          return `
+          <div class="swiper-slide">
+            <img src="${image}" />
+          </div>
+        `;
+        })
+        .join("");
+
+      modalBody.innerHTML = `
+        <div class="container">
+                <div class="product-image">
+                  <div style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="swiper mySwiper2">
+                    <div class="swiper-wrapper">
+                      ${imageHTML}
+                    </div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                  </div>
+                  <div thumbsSlider="" class="swiper mySwiper">
+                    <div class="swiper-wrapper">
+                      ${imageHTML}
+                    </div>
+                  </div>
+                </div>
+                <div class="product-info">
+                  <h1 class="product-info-name">${product.name}</h1>
+                  <div class="product-info-description">
+                    ${product.description}
+                  </div>
+                  <div class="product-info-category_supplier">
+                    ${product.categoryName} <span class="divider"></span> ${product.supplierName}
+                  </div>
+
+                  <div class="price">
+                    $${product.price}
+                  </div>
+
+                  <div class="modal-quantity">
+                    <span>
+                      Quantity: 
+                    </span>
+                     <div class="modal-quantity-btn quantity-wrapped align-items-center gap-2">
+                      <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(this,-1)">−</button>
+                      <input type="number" id="quantityInput" class="form-control form-control-sm text-center" style="width: 60px" value="1" min="1" />
+                      <button class="btn btn-outline-secondary btn-sm" onclick="changeQty(this,1)">+</button>
+                    </div>
+                  </div>
+
+                  <div class="modal-buy-cart">
+                    <button class="btn modal-cart" onclick="addToCart(this, document.querySelector('.modal-quantity-btn.quantity-wrapped'),${product.id}, 'modal')"><i class="fa-solid fa-cart-shopping"></i> <span>Add To Cart</span></button>
+                    <button class="btn modal-buy" onclick="buyNow(${product.id})">Buy Now</button>
+                  </div>
+                  
+                </div>
+              </div>
+      `;
+
+      var swiper = new Swiper(".mySwiper", {
+        loop: false,
+        spaceBetween: 10,
+        slidesPerView: 4,
+        freeMode: true,
+        watchSlidesProgress: true,
+      });
+      var swiper2 = new Swiper(".mySwiper2", {
+        loop: true,
+        spaceBetween: 10,
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+        thumbs: {
+          swiper: swiper,
+        },
+      });
+
+      const modal = new bootstrap.Modal(
+        document.getElementById("productDetailModalCenter")
+      );
+      modal.show();
+    });
+
     list.appendChild(card);
   });
 }

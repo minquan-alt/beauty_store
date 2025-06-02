@@ -460,6 +460,216 @@ input[type="number"] {
   background-color: #ddd;
 }
 
+/* Modal container padding & layout */
+
+.modal-dialog {
+  max-width: 1000px;
+}
+
+#productDetailModalCenter .modal-body {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Container wrap */
+#productDetailModalCenter .container {
+  display: flex;
+  gap: 2rem;
+}
+
+.product-image {
+  width: 45%;
+}
+
+.product-info {
+  width: 55%;
+}
+
+/* Product image and Swiper carousel */
+.product-image {
+  flex: 1 1 45%;
+  max-width: 45%;
+}
+
+.product-image .swiper {
+  overflow: hidden;
+}
+
+.product-image img {
+  width: 100%;
+  height: 300px;
+  object-fit: contain;
+}
+
+/* Product info section */
+.product-info {
+  flex: 1 1 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.product-info-name {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.product-info-description {
+  font-size: 1rem;
+  color: #555;
+}
+
+.product-info-category_supplier {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.product-info-category_supplier .divider {
+  margin: 0 0.5rem;
+  border-left: 1px solid #ccc;
+  height: 12px;
+  display: inline-block;
+}
+
+.price {
+  font-size: 1.5rem;
+  color: #d9534f;
+  font-weight: bold;
+}
+
+/* Quantity section in modal */
+.modal-quantity {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.modal-quantity-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Modal action buttons */
+.modal-buy-cart {
+  display: flex;
+  gap: 1rem;
+}
+
+.modal-buy-cart .btn {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modal-cart {
+  background-color: white;
+  color: black;
+  border: 2px solid black;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modal-cart:hover {
+  background-color: #dcdcdc;
+  color: black;
+  border-color: #999999;
+}
+
+.modal-buy {
+  background-color: #000000;
+  color: white;
+  border: 2px solid white;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modal-buy:hover {
+  background-color: #333333;
+  color: white;
+  border-color: #ccc;
+}
+
+/* Swiper navigation buttons */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #333;
+}
+
+/* Swiper thumbnails */
+.mySwiper {
+  margin-top: 1rem;
+}
+
+.mySwiper .swiper-slide {
+  width: 80px;
+  height: 80px;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.mySwiper .swiper-slide-thumb-active {
+  opacity: 1;
+  border: 2px solid #007bff;
+}
+
+.mySwiper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  #productDetailModalCenter .container {
+    flex-direction: column;
+  }
+
+  .product-image,
+  .product-info {
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .product-image img {
+    height: 250px;
+  }
+}
+
+.ellipsis {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.description-2-lines {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  min-height: 3em;
+  line-height: 1.5em;
+}
+
+.close {
+  border: none;
+  background-color: #fff;
+}
+
+.modal-header {
+  border: none;
+}
+
 .card {
   display: flex;
   flex-direction: column;

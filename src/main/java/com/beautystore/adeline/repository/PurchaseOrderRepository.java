@@ -3,10 +3,11 @@ package com.beautystore.adeline.repository;
 import java.util.List;
 import java.util.Optional;
 
+import com.beautystore.adeline.entity.PurchaseOrder;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import com.beautystore.adeline.entity.PurchaseOrder;
 
 @Repository
 public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Long> {
@@ -14,14 +15,14 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
 
     
     @Query("""
-                SELECT po
-                FROM PurchaseOrder po
-                JOIN po.orderDetails pod
-                WHERE pod.product.id IN (
-                    SELECT od.product.id
-                    FROM OrderDetail od
-                    WHERE od.order.id = :orderId
-                )
-            """)
+            SELECT po
+            FROM PurchaseOrder po
+            JOIN po.orderDetails pod
+            WHERE pod.product.id IN (
+                SELECT od.product.id
+                FROM OrderDetail od
+                WHERE od.order.id = :orderId
+            )
+        """)
     List<PurchaseOrder> findByOrderId(Long orderId);
 }

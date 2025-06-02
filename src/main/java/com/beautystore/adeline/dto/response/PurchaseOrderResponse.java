@@ -1,6 +1,5 @@
 package com.beautystore.adeline.dto.response;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,12 +14,4 @@ public class PurchaseOrderResponse {
     private LocalDateTime orderDate;
     private String status;
     private List<PurchaseOrderDetailResponse> items;
-
-    @Data
-    @Builder
-    public static class PurchaseOrderDetailResponse {
-        private String productName;
-        private Integer quantity;
-        private BigDecimal unitPrice;
-    }
 }

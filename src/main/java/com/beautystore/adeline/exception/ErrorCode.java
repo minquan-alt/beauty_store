@@ -53,9 +53,15 @@ public enum ErrorCode {
     ADDRESS_NOT_NULL(7001, "Address must not be null"),
     ADDRESS_NOT_FOUND(7002, "Address not found"),
 
-    PAYMENT_NOT_FOUND(8001, "There is no payments"),
-    PAYMENT_NOT_EXIST(8002, "Payment not exists"),
-    PAYMENT_PROCESS_ERROR(8003, "You met error in payment process"),
+    PURCHASE_ORDER_NOT_EXISTED(8001, "Purchase order not existed"),
+    PURCHASE_ORDER_NOT_FOUND(8002, "Purchase order not found"),
+    PURCHASE_ORDER_COMPLETED(8003, "Purchase order has already been completed"),
+    PURCHASE_ORDER_CANCELLED(8004, "Purchase order has already been cancelled"),
+    PURCHASE_ORDER_DETAIL_REQUIRED(8005, "Items is required"),    
+    PAYMENT_NOT_EXIST(8006, "Payment not exists"),
+    PAYMENT_PROCESS_ERROR(8007, "You met error in payment process"),
+    PAYMENT_NOT_FOUND(8008, "There is no payments"),
+
 
 
     ;
