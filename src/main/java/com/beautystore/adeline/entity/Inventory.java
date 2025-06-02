@@ -1,6 +1,16 @@
 package com.beautystore.adeline.entity;
 
-import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,10 +24,14 @@ public class Inventory {
   @Column(name = "inventory_id")
   private Long id;
 
-  @OneToOne
-  @JoinColumn(name = "product_id", unique = true)
-  private Product product;
+  @Column(name = "inventory_name")
+  private String name;
 
-  @Column(name = "stock_quantity", nullable = false)
-  private Integer stockQuantity = 0;
+  @Column(name = "inventory_address")
+  private String address;
+
+  @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Product> products = new ArrayList<>();
+
+
 }

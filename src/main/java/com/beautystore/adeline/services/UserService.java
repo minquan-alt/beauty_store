@@ -1,10 +1,12 @@
 package com.beautystore.adeline.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,23 +35,28 @@ public class UserService {
 
     private final UserMapper userMapper;
 
-    public User createUser(UserCreateRequest request) {
+    public UserResponse createUser(UserCreateRequest request) {
         if (userRepository.existsByEmail(request.getEmail()))
             throw new AppException(ErrorCode.USER_EXISTED);
 
         User user = userMapper.toUser(request);
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        User result = userRepository.save(user);
+        return userMapper.toUserResponse(user);
     }
 
-    public List<User> getUsers() {
+    public List<UserResponse> getUsers() {
         List<User> users = userRepository.findAll();
         if (users.isEmpty()) {
             throw new AppException(ErrorCode.USER_LIST_EMPTY);
         }
-        return users;
+        return users
+            .stream()
+            .map(user -> userMapper.toUserResponse(user))
+            .collect(Collectors.toList());
     }
+
 
     // public UserResponse getUser(Long id) {
     // return userMapper.toUserResponse(userRepository.findById(id)
@@ -81,7 +88,11 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+        try {
+            userRepository.deleteById(id);
+        } catch (DataIntegrityViolationException ex) {
+            throw new AppException(ErrorCode.USER_HAS_DEPENDENCIES);
+        }
     }
 
     @Transactional(readOnly = true)

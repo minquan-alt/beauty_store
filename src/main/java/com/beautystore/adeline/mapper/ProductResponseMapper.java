@@ -13,8 +13,10 @@ import java.util.List;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ProductResponseMapper {
 
+    @Mapping(target = "quantity", ignore = true )
     @Mapping(target = "categoryName", source = "category.name")
     @Mapping(target = "supplierName", source = "supplier.name")
+    @Mapping(target = "inventoryName", source = "inventory.name")
     @Mapping(target = "imageUrls", 
              expression = "java(product.getImages() != null ? "
                         + "product.getImages().stream().map(img -> img.getImageUrl()).collect(java.util.stream.Collectors.toList()) "

@@ -122,13 +122,10 @@ public class OrderService {
             .map((AddOrderRequest.OrderItemRequest itemRequest) -> { // Thêm explicit type
                 Product product = productRepository.findById(itemRequest.getProductId())
                         .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
-                
-                Inventory inventory = inventoryRepository.findByProductId(itemRequest.getProductId())
-                        .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND_IN_INVENTORY));
 
-                int inventory_quantity =  inventory.getStockQuantity();
+                int product_quantity =  product.getQuantity();
                 
-                if(itemRequest.getQuantity() > inventory_quantity) {
+                if(itemRequest.getQuantity() > product_quantity) {
                     throw new AppException(ErrorCode.STOCK_QUANTITY_NOT_ENOUGH);
                 }
 
@@ -152,8 +149,8 @@ public class OrderService {
         order.setSubtotal(subtotal);
         order.setPaymentMethod(request.getPaymentInfo().getMethod());
         order.setNotes(request.getNotes());
-        order.setShippingFee(BigDecimal.valueOf(request.getPaymentInfo().getShippingFee()));
-        order.setTax(BigDecimal.valueOf(request.getPaymentInfo().getTax()));
+        order.setShippingFee(BigDecimal.valueOf( request.getPaymentInfo().getShippingFee() != null ? request.getPaymentInfo().getShippingFee() : 2.0 ));
+        order.setTax(BigDecimal.valueOf(request.getPaymentInfo().getTax() != null ? request.getPaymentInfo().getTax() : 0.0));
 
         // 6. Xử lý coupon
         if (StringUtils.hasText(request.getPaymentInfo().getCouponCode())) {

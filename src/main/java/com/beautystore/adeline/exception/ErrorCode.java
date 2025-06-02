@@ -13,6 +13,7 @@ public enum ErrorCode {
     INVALID_CREDENTIALS(1006, "Password is wrong"),
     USER_LIST_EMPTY(1007, "User list is empty"),
     USER_NOT_LOGIN(1008, "User has not login"),
+    USER_HAS_DEPENDENCIES(1009, "User cannot be deleted because they have associated coupon usage"),
 
 
     CART_NOT_FOUND(2001, "Cart not found"),

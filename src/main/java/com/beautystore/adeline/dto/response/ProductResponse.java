@@ -13,8 +13,10 @@ public class ProductResponse {
     private String name;
     private String description;
     private BigDecimal price;
+    private int quantity;
     private String categoryName;
     private String supplierName;
+    private String inventoryName;
     private List<String> imageUrls;
     private Double averageRating;
     // Các trường khác nếu cần

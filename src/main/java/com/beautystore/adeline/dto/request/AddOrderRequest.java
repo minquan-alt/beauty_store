@@ -36,10 +36,12 @@ public class AddOrderRequest {
         PaymentMethod method;
 
         @PositiveOrZero(message = "SHIPPING_FEE_INVALID")
-        Double shippingFee;
+        @Builder.Default
+        Double shippingFee = 2.0;
 
         @PositiveOrZero(message = "TAX_INVALID")
-        Double tax;
+        @Builder.Default
+        Double tax = 0.0;
 
         @Size(max = 20, message = "COUPON_CODE_TOO_LONG")
         String couponCode;

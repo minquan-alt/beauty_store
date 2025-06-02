@@ -31,17 +31,17 @@ public class UserController {
     
     // create user
     @PostMapping()
-    ApiResponse<User> createUser(@RequestBody @Valid UserCreateRequest request){
+    ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreateRequest request){
         System.out.println("Received request: " + request);
-        ApiResponse<User> apiResponse = new ApiResponse<>();
+        ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(userService.createUser(request));
         return apiResponse;
     }
     
     // read users
     @GetMapping()
-    ApiResponse<List<User>> getUsers() {
-        ApiResponse<List<User>> apiResponse = new ApiResponse<>();
+    ApiResponse<List<UserResponse>> getUsers() {
+        ApiResponse<List<UserResponse>> apiResponse = new ApiResponse<>();
         apiResponse.setResult(userService.getUsers());
         return apiResponse;
     }

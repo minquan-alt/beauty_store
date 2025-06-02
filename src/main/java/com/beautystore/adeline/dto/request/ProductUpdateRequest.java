@@ -20,4 +20,5 @@ public class ProductUpdateRequest {
     BigDecimal price;
     Long supplier_id;
     Long category_id;
+    Long inventory_id;
 }

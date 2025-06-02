@@ -17,5 +17,6 @@ public class ProductCreateRequest {
     String description;
     double price;
     long category_id;
+    long inventory_id;
     long supplier_id;
 }
