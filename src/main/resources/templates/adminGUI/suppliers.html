@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suppliers - Beauty Store Admin</title>
+  <!-- <link rel="stylesheet" href="style.css"> -->
+  <link rel="stylesheet" href="assets/css/admin/suppliers.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <nav class="col-md-2 d-none d-md-block sidebar py-4">
+      <div class="px-3">
+        <h4 class="mb-4">Beauty Admin</h4>
+        <ul class="nav flex-column">
+          <li class="nav-item mb-2"><a class="nav-link active" href="admin"><i class="bi bi-house-door"></i> Dashboard</a></li>
+          <li class="nav-item mb-2"><a class="nav-link" href="admin/product"><i class="bi bi-bag"></i> Products</a></li>
+          <li class="nav-item mb-2"><a class="nav-link" href="admin/order"><i class="bi bi-cart-check"></i> Orders</a></li>
+          <li class="nav-item mb-2"><a class="nav-link" href="admin/user"><i class="bi bi-people"></i> Users</a></li>
+          <li class="nav-item mb-2"><a class="nav-link" href="admin/inventory"><i class="bi bi-truck"></i> Inventory</a></li>
+          <li class="nav-item mb-2"><a class="nav-link" href="admin/supplier"><i class="bi bi-box-seam"></i> Suppliers</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="col-md-10 ms-sm-auto px-4 py-4">
+        <h2>Supplier Management</h2>
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        
+        <div class="d-flex">
+    <input type="text" id="searchSupplier" class="form-control me-2" placeholder="Search by name or contact...">
+    <select id="sortSupplier" class="form-select">
+      <option value="">Sort by</option>
+      <option value="name-asc">Name A-Z</option>
+      <option value="name-desc">Name Z-A</option>
+      <option value="id-asc">ID Asc</option>
+      <option value="id-desc">ID Desc</option>
+    </select>
+  </div>
+        <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
+          <i class="bi bi-plus-circle"></i> Add Supplier
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card-header bg-dark text-white">Supplier List</div>
+        <div class="card-body p-0">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Contact Info</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="supplierBody">
+              <!-- JS render -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end align-items-center gap-2 mt-3">
+  <button class="btn btn-outline-dark btn-sm" id="prevPageBtn">Previous</button>
+  <button class="btn btn-outline-dark btn-sm" id="nextPageBtn">Next</button>
+</div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Modal: Add Supplier -->
+<div class="modal fade" id="addSupplierModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title">Add Supplier</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="supplierName" class="form-control mb-2" placeholder="Supplier Name">
+        <textarea id="supplierContact" class="form-control mb-2" placeholder="Contact Info" rows="4"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark" id="saveSupplierBtn">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Confirm Delete Supplier -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">Confirm Deletion</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p class="mb-0">Are you sure you want to delete this supplier?</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Yes, Delete</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Alert -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="toastAlert" class="toast align-items-center text-bg-success border-0" role="alert">
+    <div class="d-flex">
+      <div class="toast-body" id="toastMessage">Success</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/admin/suppliers.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

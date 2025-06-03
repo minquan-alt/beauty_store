@@ -1,0 +1,50 @@
+.card-body h4 {
+  font-weight: bold;
+  font-size: 24px;
+  margin-top: 8px;
+  color: #212529;
+}
+
+.card-body h6 {
+  color: #555;
+  font-weight: 600;
+}
+
+.card-header h5 {
+  margin: 0;
+  font-weight: 600;
+  color: #343a40;
+}
+
+canvas {
+  max-width: 100%;
+}
+
+.card.revenue {
+  border-left: 5px solid #28a745;
+  background-color: #e8f9f1;
+  transition: 0.3s;
+}
+
+.card.orders {
+  border-left: 5px solid #ffc107;
+  background-color: #fffbe6;
+  transition: 0.3s;
+}
+
+.card.users {
+  border-left: 5px solid #17a2b8;
+  background-color: #e6f7fb;
+  transition: 0.3s;
+}
+
+.card.products {
+  border-left: 5px solid #6f42c1;
+  background-color: #f3edfa;
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+}

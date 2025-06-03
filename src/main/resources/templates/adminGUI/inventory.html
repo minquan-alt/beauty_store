@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inventory - Beauty Store Admin</title>
+  <!-- <link rel="stylesheet" href="assets/css/admin/style.css" /> -->
+  <!-- <link rel="stylesheet" href="assets/css/admin/inventory-transactions.css" /> -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <nav class="col-md-2 d-none d-md-block sidebar py-4">
+      <div class="px-3">
+        <h4 class="mb-4">Beauty Admin</h4>
+        <ul class="nav flex-column">
+          <li class="nav-item mb-2"><a class="nav-link active" href="admin"><i class="bi bi-house-door"></i> Dashboard</a></li>
+          <li class="nav-item mb-2"><a class="nav-link" href="admin/product"><i class="bi bi-bag"></i> Products</a></li>
+          <li class="nav-item mb-2"><a class="nav-link" href="admin/order"><i class="bi bi-cart-check"></i> Orders</a></li>
+          <li class="nav-item mb-2"><a class="nav-link" href="admin/user"><i class="bi bi-people"></i> Users</a></li>
+          <li class="nav-item mb-2"><a class="nav-link" href="admin/inventory"><i class="bi bi-truck"></i> Inventory</a></li>
+          <li class="nav-item mb-2"><a class="nav-link" href="admin/supplier"><i class="bi bi-box-seam"></i> Suppliers</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="col-md-10 ms-sm-auto px-4 py-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Inventory Management</h2>
+        <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addStockModal">
+          <i class="bi bi-plus-circle"></i> Add Inventory Record
+        </button>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-3"><input id="searchInput" type="text" class="form-control" placeholder="Search by Product ID or Supplier"></div>
+        <div class="col-md-2">
+          <select id="typeFilter" class="form-control">
+            <option value="">All Types</option>
+            <option value="IN">IN</option>
+            <option value="OUT">OUT</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <select id="sortField" class="form-control">
+            <option value="date">Sort by Date</option>
+            <option value="quantity">Sort by Quantity</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <select id="sortOrder" class="form-control">
+            <option value="desc">Descending</option>
+            <option value="asc">Ascending</option>
+          </select>
+        </div>
+        <div class="col-md-2"><button class="btn btn-dark w-100" id="applyFilter">Apply</button></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header bg-dark text-white">Inventory Records</div>
+        <div class="card-body p-0">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>ID</th>
+                <th>Product ID</th>
+                <th>Quantity</th>
+                <th>Date</th>
+                <th>Supplier</th>
+                <th>Type</th>
+                <th>Source</th>
+              </tr>
+            </thead>
+            <tbody id="stockTableBody">
+              <!-- JS render here -->
+            </tbody>
+          </table>
+        </div>
+        <div class="card-footer text-center">
+          <button id="prevPage" class="btn btn-outline-dark btn-sm">Previous</button>
+          <span id="pageInfo" class="mx-3">Page 1</span>
+          <button id="nextPage" class="btn btn-outline-dark btn-sm">Next</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Modal Add Stock -->
+<div class="modal fade" id="addStockModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title">Add Inventory Entry</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="number" class="form-control mb-2" id="productIdInput" placeholder="Product ID" />
+        <input type="number" class="form-control mb-2" id="quantityInput" placeholder="Quantity" />
+        <input type="text" class="form-control mb-2" id="supplierInput" placeholder="Supplier Name" />
+        <select class="form-control mb-2" id="transactionTypeInput">
+          <option value="IN">IN</option>
+          <option value="OUT">OUT</option>
+        </select>
+        <input type="text" class="form-control mb-2" id="sourceTypeInput" placeholder="Source (Order or Purchase_Order)" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark" id="saveStockBtn">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal View Detail -->
+<div class="modal fade" id="viewDetailModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title">Inventory Record Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Product ID:</strong> <span id="detailProductId"></span></p>
+        <p><strong>Quantity:</strong> <span id="detailQuantity"></span></p>
+        <p><strong>Date:</strong> <span id="detailDate"></span></p>
+        <p><strong>Supplier:</strong> <span id="detailSupplier"></span></p>
+        <p><strong>Type:</strong> <span id="detailType"></span></p>
+        <p><strong>Source:</strong> <span id="detailSource"></span></p>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal Edit Inventory -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-warning text-white">
+        <h5 class="modal-title">Edit Inventory Record</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editId" />
+        <input type="number" class="form-control mb-2" id="editProductId" placeholder="Product ID" readonly />
+        <input type="number" class="form-control mb-2" id="editQuantity" placeholder="Quantity" />
+        <input type="text" class="form-control mb-2" id="editSupplier" placeholder="Supplier Name" />
+        <select class="form-control mb-2" id="editTransactionType">
+          <option value="IN">IN</option>
+          <option value="OUT">OUT</option>
+        </select>
+        <input type="text" class="form-control mb-2" id="editSourceType" placeholder="Source (Order or Purchase_Order)" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" id="updateStockBtn">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="toastAlert" class="toast align-items-center text-bg-success border-0" role="alert">
+    <div class="d-flex">
+      <div class="toast-body" id="toastMessage">Success</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
+<!-- Modal Delete Confirmation -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">Confirm Delete</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this record?
+        <input type="hidden" id="deleteId">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Yes, Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/admin/inventory.js"></script>
+</body>
+</html>

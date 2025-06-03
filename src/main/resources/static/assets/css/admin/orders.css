@@ -1,0 +1,49 @@
+  #orderDetailModal .modal-content {
+    border-radius: 10px;
+  }
+  #orderDetailModal .modal-body {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  #orderDetailModal .table th,
+  #orderDetailModal .table td {
+    vertical-align: middle;
+  }
+  #orderDetailModal .table td {
+    font-weight: 500;
+  }
+ .status-select {
+    color: #333;
+    font-weight: 500;
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    padding: 2px 10px;
+    border-radius: 999px;
+    text-align: center;
+    width: auto;
+    min-width: 100px;
+  }
+
+  .status-pending {
+    background-color: #fff3cd !important;
+    color: #856404 !important;
+    border-color: #ffeeba !important;
+  }
+
+  .status-processing {
+    background-color: #dbeafe !important;
+    color: #1d4ed8 !important;
+    border-color: #bfdbfe !important;
+  }
+
+  .status-delivered {
+    background-color: #d1fae5 !important;
+    color: #065f46 !important;
+    border-color: #a7f3d0 !important;
+  }
+
+  .status-cancelled {
+    background-color: #f8d7da !important;
+    color: #842029 !important;
+    border-color: #f5c2c7 !important;
+  }
