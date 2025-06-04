@@ -48,3 +48,39 @@ canvas {
   transform: translateY(-3px);
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
 }
+
+/* Filter buttons */
+.btn-group .btn {
+  border-radius: 0;
+}
+
+.btn-group .btn:first-child {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.btn-group .btn:last-child {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.btn-group .btn.active {
+  background-color: #212529;
+  color: white;
+}
+
+/* Date range controls */
+.date-range {
+  background-color: #f8f9fa;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
+}
+
+.date-range input[type="datetime-local"] {
+  width: 200px;
+}
+
+.date-range .btn {
+  white-space: nowrap;
+}

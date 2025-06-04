@@ -64,42 +64,30 @@ public class OrderService {
         List<Order> orders = getOrdersByDateRange(startDate, endDate);
 
         int totalOrders = orders.size();
-        int totalProductsSold = getTotalProductsSoldByDateRange(startDate, endDate);
-        BigDecimal totalAmount = getRealRevenue(orders);
-        BigDecimal totalSubTotal = getOriginalRevenue(orders);
+        BigDecimal totalRevenue = getRealRevenue(orders);
         BigDecimal totalCost = getTotalCost(orders);
-        BigDecimal totalProfit = totalAmount.subtract(totalCost);
+        BigDecimal totalProfit = totalRevenue.subtract(totalCost);
 
-        Map<LocalDate, BigDecimal> dailyTotalAmount = new TreeMap<>();
-        Map<LocalDate, BigDecimal> dailySubTotal = new TreeMap<>();
-        Map<LocalDate, BigDecimal> dailyTotalProfit = new TreeMap<>();
+        // Chart data: date -> revenue, date -> profit
+        Map<String, Object> chartData = new HashMap<>();
+        //Map<String, BigDecimal> revenueByDate = new TreeMap<>();
+        Map<String, BigDecimal> profitByDate = new TreeMap<>();
 
         for (Order order : orders) {
-            LocalDate orderDay = order.getOrderDate().toLocalDate();
-            dailyTotalAmount.merge(orderDay, order.getTotalAmount(), BigDecimal::add);
+            String date = order.getOrderDate().toLocalDate().toString();
+            BigDecimal orderRevenue = order.getTotalAmount();
             BigDecimal orderCost = getTotalCost(List.of(order));
-            BigDecimal orderProfit = order.getTotalAmount().subtract(orderCost);
-            dailySubTotal.merge(orderDay, order.getSubtotal(), BigDecimal::add);
-            dailyTotalProfit.merge(orderDay, orderProfit, BigDecimal::add);
+            BigDecimal orderProfit = orderRevenue.subtract(orderCost);
+            //revenueByDate.merge(date, orderRevenue, BigDecimal::add);
+            profitByDate.merge(date, orderProfit, BigDecimal::add);
         }
 
-        List<String> dates = dailyTotalAmount.keySet().stream().map(LocalDate::toString).collect(Collectors.toList());
-        List<BigDecimal> chartTotalAmount = new ArrayList<>(dailyTotalAmount.values());
-        List<BigDecimal> chartSubTotal = new ArrayList<>(dailySubTotal.values());
-        List<BigDecimal> chartTotalProfit = new ArrayList<>(dailyTotalProfit.values());
-
-        Map<String, Object> chartData = new HashMap<>();
-        chartData.put("dates", dates);
-        chartData.put("chartTotalAmount", chartTotalAmount);
-        chartData.put("chartSubTotal", chartSubTotal);
-        chartData.put("chartTotalProfit", chartTotalProfit);
+        //chartData.put("revenue", revenueByDate);
+        chartData.put("profit", profitByDate);
 
         return DashboardDataResponse.builder()
                 .totalOrders(totalOrders)
-                .totalProductsSold(totalProductsSold)
-                .totalAmount(totalAmount)
-                .totalSubTotal(totalSubTotal)
-                .totalCost(totalCost)
+                .totalRevenue(totalRevenue)
                 .totalProfit(totalProfit)
                 .chartData(chartData)
                 .build();
@@ -321,5 +309,18 @@ public class OrderService {
 
     public List<PurchaseOrder> getPurchaseOrderByOrderId(Order order) {
         return purchaseOrderRepository.findByOrderId(order.getId());
+    }
+
+    public List<Map<String, Object>> getProfitChartData(LocalDateTime start, LocalDateTime end) {
+        var dashboardData = getDashboardData(start, end);
+        Map<String, BigDecimal> profitMap = (Map<String, BigDecimal>) dashboardData.getChartData().get("profit");
+        List<Map<String, Object>> chartData = new ArrayList<>();
+        for (String date : profitMap.keySet()) {
+            Map<String, Object> point = new HashMap<>();
+            point.put("label", date);
+            point.put("value", profitMap.get(date) != null ? profitMap.get(date) : BigDecimal.ZERO);
+            chartData.add(point);
+        }
+        return chartData;
     }
 }

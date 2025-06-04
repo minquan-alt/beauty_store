@@ -57,6 +57,9 @@ public class UserService {
             .collect(Collectors.toList());
     }
 
+    public int countUsers() {
+        return (int) userRepository.count();
+    }
 
     // public UserResponse getUser(Long id) {
     // return userMapper.toUserResponse(userRepository.findById(id)
