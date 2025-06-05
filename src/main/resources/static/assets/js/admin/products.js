@@ -1,87 +1,122 @@
-// --- Khởi tạo ---
-const STORAGE_KEY = "beauty_admin_products";
+let nextProductId = 1;
+// Math.max(...sampleProducts.map((p) => p.productId), 1000) + 1;
 
-// Load từ localStorage hoặc fallback về dữ liệu mẫu
-let sampleProducts = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
-  { productId: 1000, name: "Lipstick", category: "Makeup", price: 150000, image: "https://picsum.photos/seed/lipstick/60", description: "Matte lipstick" },
-  { productId: 1001, name: "Facial Cleanser", category: "Skincare", price: 120000, image: "https://picsum.photos/seed/cleanser/60", description: "Gentle facial wash" },
-  { productId: 1002, name: "Perfume", category: "Fragrance", price: 350000, image: "https://picsum.photos/seed/perfume/60", description: "Long-lasting fragrance" },
-  { productId: 1003, name: "Shampoo", category: "Haircare", price: 100000, image: "https://picsum.photos/seed/shampoo/60", description: "Anti-dandruff shampoo" },
-  { productId: 1004, name: "Eyeliner", category: "Makeup", price: 90000, image: "https://picsum.photos/seed/eyeliner/60", description: "Waterproof eyeliner" }
-];
-
-// Tìm ID cao nhất hiện tại để sinh ID mới
-let nextProductId = Math.max(...sampleProducts.map(p => p.productId), 1000) + 1;
-
-let currentPage = 0;
-const rowsPerPage = 5;
+let currentPage = 1;
+const pageSize = 2;
+let pages = 0;
 let deleteId = null;
+let categories = [];
 
-// --- Hàm tiện ích ---
-function saveToStorage() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(sampleProducts));
+function loadProducts(page = 1) {
+  isSearching = false;
+  fetch(`http://localhost:8080/products?page=${page}&size=${pageSize}`)
+    .then((res) => res.json())
+    .then((data) => {
+      const products = data.result.data;
+      pages = data.result.meta.pages;
+      renderProducts(products);
+      updatePrevNextButtons();
+    })
+    .catch((error) => {
+      console.error("Failed to load products:", error);
+    });
 }
 
-function renderProducts() {
-  const start = currentPage * rowsPerPage;
+function renderProducts(products) {
+  const start = currentPage * pageSize;
   const body = document.getElementById("product-table-body");
   body.innerHTML = "";
 
-  let productsToRender = [...sampleProducts];
+  let productsToRender = [...products];
 
   // Lọc theo tên
-  const searchText = document.getElementById("searchProduct").value.toLowerCase();
-  if (searchText) {
-    productsToRender = productsToRender.filter(p => p.name.toLowerCase().includes(searchText));
-  }
+  // const searchText = document
+  //   .getElementById("searchProduct")
+  //   .value.toLowerCase();
+  // if (searchText) {
+  //   productsToRender = productsToRender.filter((p) =>
+  //     p.name.toLowerCase().includes(searchText)
+  //   );
+  // }
 
   // Lọc theo danh mục
-  const filterCategory = document.getElementById("filterCategory").value.toLowerCase();
-  if (filterCategory) {
-    productsToRender = productsToRender.filter(p => p.category.toLowerCase() === filterCategory);
-  }
+  // const filterCategory = document
+  //   .getElementById("filterCategory")
+  //   .value.toLowerCase();
+  // if (filterCategory) {
+  //   productsToRender = productsToRender.filter(
+  //     (p) => p.category.toLowerCase() === filterCategory
+  //   );
+  // }
 
   // Sắp xếp
-  const sortValue = document.getElementById("sortSelect").value;
-  switch (sortValue) {
-    case "name-asc": productsToRender.sort((a, b) => a.name.localeCompare(b.name)); break;
-    case "name-desc": productsToRender.sort((a, b) => b.name.localeCompare(a.name)); break;
-    case "price-asc": productsToRender.sort((a, b) => a.price - b.price); break;
-    case "price-desc": productsToRender.sort((a, b) => b.price - a.price); break;
-  }
+  // const sortValue = document.getElementById("sortSelect").value;
+  // switch (sortValue) {
+  //   case "name-asc":
+  //     productsToRender.sort((a, b) => a.name.localeCompare(b.name));
+  //     break;
+  //   case "name-desc":
+  //     productsToRender.sort((a, b) => b.name.localeCompare(a.name));
+  //     break;
+  //   case "price-asc":
+  //     productsToRender.sort((a, b) => a.price - b.price);
+  //     break;
+  //   case "price-desc":
+  //     productsToRender.sort((a, b) => b.price - a.price);
+  //     break;
+  // }
 
-  // Phân trang
-  productsToRender.slice(start, start + rowsPerPage).forEach((p, i) => {
+  productsToRender.forEach((p, i) => {
     body.innerHTML += `
       <tr>
         <td>${start + i + 1}</td>
-        <td>${p.productId}</td>
-        <td><img src="${p.image}" alt="product" height="50"></td>
+        <td>${p.id}</td>
+        <td><img src="${p.imageUrls[0]}" alt="product" height="50"></td>
         <td>${p.name}</td>
-        <td>${p.category}</td>
+        <td>${p.categoryName}</td>
         <td>${p.price.toLocaleString()} đ</td>
         <td>
-          <button class="btn btn-sm btn-outline-primary me-2" onclick="showEditModal(${p.productId})"><i class="bi bi-pencil"></i></button>
-          <button class="btn btn-sm btn-danger" onclick="showDeleteModal(${p.productId})"><i class="bi bi-trash"></i></button>
+          <button class="btn btn-sm btn-outline-primary me-2" onclick="showEditModal(${
+            p.id
+          })"><i class="bi bi-pencil"></i></button>
+          <button class="btn btn-sm btn-danger" onclick="showDeleteModal(${
+            p.id
+          })"><i class="bi bi-trash"></i></button>
         </td>
       </tr>`;
   });
 }
-
 
 document.getElementById("sortSelect").addEventListener("change", () => {
   currentPage = 0;
   renderProducts();
 });
 
+function updatePrevNextButtons() {
+  const prevBtn = document.getElementById("prevPage");
+  const nextBtn = document.getElementById("nextPage");
+
+  if (currentPage <= 1) {
+    prevBtn.style.display = "none";
+  } else {
+    prevBtn.style.display = "inline-block";
+  }
+
+  if (currentPage >= pages) {
+    nextBtn.style.display = "none";
+  } else {
+    nextBtn.style.display = "inline-block";
+  }
+}
+
 document.getElementById("prevPage").onclick = () => {
   if (currentPage > 0) currentPage--;
-  renderProducts();
+  loadProducts(currentPage);
 };
 
 document.getElementById("nextPage").onclick = () => {
-  if ((currentPage + 1) * rowsPerPage < sampleProducts.length) currentPage++;
-  renderProducts();
+  if (currentPage + 1 <= pages) currentPage++;
+  loadProducts(currentPage);
 };
 
 function showToast(message, type = "success") {
@@ -97,141 +132,198 @@ function showToast(message, type = "success") {
 
 function showDeleteModal(productId) {
   deleteId = productId;
-  const modal = new bootstrap.Modal(document.getElementById("deleteConfirmModal"));
+  const modal = new bootstrap.Modal(
+    document.getElementById("deleteConfirmModal")
+  );
   modal.show();
 }
 
-document.getElementById("confirmDeleteBtn").onclick = () => {
-  const index = sampleProducts.findIndex(p => p.productId === deleteId);
-  if (index !== -1) {
-    sampleProducts.splice(index, 1);
-    saveToStorage();
-    renderProducts();
-    deleteId = null;
-    bootstrap.Modal.getInstance(document.getElementById("deleteConfirmModal")).hide();
-  }
-};
+async function loadCategories() {
+  const res = await fetch("http://localhost:8080/categories");
+  categories = (await res.json()).result;
+  const select = document.getElementById("filterCategory");
+  select.innerHTML = '<option value="">All Categories</option>';
+  categories.forEach((c) => {
+    const opt = document.createElement("option");
+    opt.value = c.name;
+    opt.textContent = c.name;
+    select.appendChild(opt);
+  });
+}
+
+// document.getElementById("confirmDeleteBtn").onclick = () => {
+//   const index = sampleProducts.findIndex((p) => p.productId === deleteId);
+//   if (index !== -1) {
+//     sampleProducts.splice(index, 1);
+//     saveToStorage();
+//     renderProducts();
+//     deleteId = null;
+//     bootstrap.Modal.getInstance(
+//       document.getElementById("deleteConfirmModal")
+//     ).hide();
+//   }
+// };
 
 function showEditModal(productId) {
-  const index = sampleProducts.findIndex(p => p.productId === productId);
-  const product = sampleProducts[index];
-  if (!product) return;
+  fetch(`http://localhost:8080/products/${productId}`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Không thể lấy dữ liệu sản phẩm");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      const product = data.result;
+      if (!product) return;
 
-  document.getElementById("editProductId").value = product.productId;
-  document.getElementById("editProductName").value = product.name;
-  document.getElementById("editProductCategory").value = product.category;
-  document.getElementById("editProductPrice").value = product.price;
-  document.getElementById("editProductDescription").value = product.description || "";
+      const select = document.getElementById("editProductCategory");
+      select.innerHTML = '<option value="">Select Category</option>';
+      categories.forEach((c) => {
+        const opt = document.createElement("option");
+        opt.value = c.name;
+        opt.textContent = c.name;
+        select.appendChild(opt);
+      });
 
-  const preview = document.getElementById("editPreviewImage");
-  preview.src = product.image;
-  preview.classList.remove("d-none");
+      document.getElementById("editProductId").value = product.id;
+      document.getElementById("editProductName").value = product.name;
+      document.getElementById("editProductCategory").value =
+        product.categoryName;
+      console.log(">>>category: ", product.categoryName);
+      document.getElementById("editProductPrice").value = product.price;
+      document.getElementById("editProductDescription").value =
+        product.description || "";
 
-  document.getElementById("updateProduct").dataset.index = index;
+      const preview = document.getElementById("editPreviewImage");
+      preview.src = product.imageUrls[0];
+      preview.classList.remove("d-none");
 
-  const modal = new bootstrap.Modal(document.getElementById("editProductModal"));
-  modal.show();
+      document.getElementById("updateProduct").dataset.productId = productId;
+
+      const modal = new bootstrap.Modal(
+        document.getElementById("editProductModal")
+      );
+      modal.show();
+    })
+    .catch((error) => {
+      console.error("Lỗi khi gọi API:", error);
+      alert("Không thể tải thông tin sản phẩm. Vui lòng thử lại sau.");
+    });
 }
 
-document.getElementById("updateProduct").addEventListener("click", function () {
-  const index = this.dataset.index;
-  const name = document.getElementById("editProductName").value.trim();
-  const category = document.getElementById("editProductCategory").value.trim();
-  const price = parseFloat(document.getElementById("editProductPrice").value);
-  const description = document.getElementById("editProductDescription").value.trim();
-  const imageFile = document.getElementById("editProductImageFile").files[0];
+// document.getElementById("updateProduct").addEventListener("click", function () {
+//   const index = this.dataset.index;
+//   const name = document.getElementById("editProductName").value.trim();
+//   const category = document.getElementById("editProductCategory").value.trim();
+//   const price = parseFloat(document.getElementById("editProductPrice").value);
+//   const description = document
+//     .getElementById("editProductDescription")
+//     .value.trim();
+//   const imageFile = document.getElementById("editProductImageFile").files[0];
 
-  if (!name || !category || isNaN(price)) return showToast("Please fill in all required fields!", "danger");
-  if (price < 0) return showToast("Price must not be negative!", "danger");
+//   if (!name || !category || isNaN(price))
+//     return showToast("Please fill in all required fields!", "danger");
+//   if (price < 0) return showToast("Price must not be negative!", "danger");
 
-  const update = (imageBase64) => {
-    sampleProducts[index] = {
-      ...sampleProducts[index],
-      name,
-      category,
-      price,
-      description,
-      image: imageBase64 || sampleProducts[index].image
-    };
-    saveToStorage();
-    renderProducts();
-    bootstrap.Modal.getInstance(document.getElementById("editProductModal")).hide();
-  };
+//   const update = (imageBase64) => {
+//     sampleProducts[index] = {
+//       ...sampleProducts[index],
+//       name,
+//       category,
+//       price,
+//       description,
+//       image: imageBase64 || sampleProducts[index].image,
+//     };
+//     saveToStorage();
+//     renderProducts();
+//     bootstrap.Modal.getInstance(
+//       document.getElementById("editProductModal")
+//     ).hide();
+//   };
 
-  if (imageFile) {
-    const reader = new FileReader();
-    reader.onload = (e) => update(e.target.result);
-    reader.readAsDataURL(imageFile);
-  } else {
-    update(null);
-  }
-});
+//   if (imageFile) {
+//     const reader = new FileReader();
+//     reader.onload = (e) => update(e.target.result);
+//     reader.readAsDataURL(imageFile);
+//   } else {
+//     update(null);
+//   }
+// });
 
-document.getElementById("editProductImageFile").addEventListener("change", function () {
-  const file = this.files[0];
-  const preview = document.getElementById("editPreviewImage");
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      preview.src = e.target.result;
-      preview.classList.remove("d-none");
-    };
-    reader.readAsDataURL(file);
-  } else {
-    preview.classList.add("d-none");
-    preview.src = "";
-  }
-});
+document
+  .getElementById("editProductImageFile")
+  .addEventListener("change", function () {
+    const file = this.files[0];
+    const preview = document.getElementById("editPreviewImage");
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        preview.src = e.target.result;
+        preview.classList.remove("d-none");
+      };
+      reader.readAsDataURL(file);
+    } else {
+      preview.classList.add("d-none");
+      preview.src = "";
+    }
+  });
 
-document.getElementById("productImageFile").addEventListener("change", function () {
-  const file = this.files[0];
-  const preview = document.getElementById("previewImage");
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      preview.src = e.target.result;
-      preview.classList.remove("d-none");
-    };
-    reader.readAsDataURL(file);
-  } else {
-    preview.classList.add("d-none");
-    preview.src = "";
-  }
-});
+document
+  .getElementById("productImageFile")
+  .addEventListener("change", function () {
+    const file = this.files[0];
+    const preview = document.getElementById("previewImage");
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        preview.src = e.target.result;
+        preview.classList.remove("d-none");
+      };
+      reader.readAsDataURL(file);
+    } else {
+      preview.classList.add("d-none");
+      preview.src = "";
+    }
+  });
 
-document.getElementById("saveProduct").addEventListener("click", () => {
-  const name = document.getElementById("productName").value.trim();
-  const category = document.getElementById("productCategory").value.trim();
-  const price = parseFloat(document.getElementById("productPrice").value);
-  const description = document.getElementById("productDescription").value.trim();
-  const imageFile = document.getElementById("productImageFile").files[0];
+// document.getElementById("saveProduct").addEventListener("click", () => {
+//   const name = document.getElementById("productName").value.trim();
+//   const category = document.getElementById("productCategory").value.trim();
+//   const price = parseFloat(document.getElementById("productPrice").value);
+//   const description = document
+//     .getElementById("productDescription")
+//     .value.trim();
+//   const imageFile = document.getElementById("productImageFile").files[0];
 
-  if (!name || !category || isNaN(price)) return showToast("Please fill in all required fields!", "danger");
-  if (price < 0) return showToast("Price must not be negative!", "danger");
+//   if (!name || !category || isNaN(price))
+//     return showToast("Please fill in all required fields!", "danger");
+//   if (price < 0) return showToast("Price must not be negative!", "danger");
 
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const newProduct = {
-      productId: nextProductId++,
-      name,
-      category,
-      price,
-      description,
-      image: e.target.result
-    };
-    sampleProducts.push(newProduct);
-    saveToStorage();
-    renderProducts();
-    resetForm();
-    bootstrap.Modal.getInstance(document.getElementById("addProductModal")).hide();
-  };
+//   const reader = new FileReader();
+//   reader.onload = (e) => {
+//     const newProduct = {
+//       productId: nextProductId++,
+//       name,
+//       category,
+//       price,
+//       description,
+//       image: e.target.result,
+//     };
+//     sampleProducts.push(newProduct);
+//     saveToStorage();
+//     renderProducts();
+//     resetForm();
+//     bootstrap.Modal.getInstance(
+//       document.getElementById("addProductModal")
+//     ).hide();
+//   };
 
-  if (imageFile) {
-    reader.readAsDataURL(imageFile);
-  } else {
-    showToast("Please choose an image!", "danger");
-  }
-});
+//   if (imageFile) {
+//     reader.readAsDataURL(imageFile);
+//   } else {
+//     showToast("Please choose an image!", "danger");
+//   }
+// });
 
 function resetForm() {
   document.getElementById("productName").value = "";
@@ -243,7 +335,10 @@ function resetForm() {
   document.getElementById("productDescription").value = "";
 }
 
-window.onload = renderProducts;
+window.addEventListener("load", function () {
+  loadProducts();
+  loadCategories();
+});
 document.getElementById("searchProduct").addEventListener("input", () => {
   currentPage = 0;
   renderProducts();

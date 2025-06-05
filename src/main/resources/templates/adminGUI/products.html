@@ -40,10 +40,6 @@
   </select>
   <select id="filterCategory" class="form-select w-auto">
   <option value="">All Categories</option>
-  <option value="skincare">Skincare</option>
-  <option value="makeup">Makeup</option>
-  <option value="haircare">Haircare</option>
-  <option value="fragrance">Fragrance</option>
 </select>
   <input type="text" id="searchProduct" class="form-control w-50" placeholder="Search by product name">
   <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addProductModal">
@@ -93,11 +89,16 @@
         <input type="text" id="productName" class="form-control mb-2" placeholder="Name">
         <select id="productCategory" class="form-select mb-2">
           <option value="">Select Category</option>
-          <option value="Skincare">Skincare</option>
-          <option value="Makeup">Makeup</option>
-          <option value="Haircare">Haircare</option>
-          <option value="Fragrance">Fragrance</option>
         </select>
+
+        <select id="productSupplier" class="form-select mb-2">
+          <option value="">Select Supplier</option>
+        </select>
+
+        <select id="productInventory" class="form-select mb-2">
+          <option value="">Select Inventory</option>
+        </select>
+
         <input type="number" id="productPrice" class="form-control mb-2" placeholder="Price">
         <input type="file" id="productImageFile" class="form-control mb-2" accept="image/*">
         <textarea id="productDescription" class="form-control mb-2" placeholder="Description" maxlength="200"></textarea>
@@ -128,10 +129,16 @@
         <label for="editProductCategory" class="form-label">Category</label>
         <select id="editProductCategory" class="form-select mb-2">
           <option value="">Select Category</option>
-          <option value="Skincare">Skincare</option>
-          <option value="Makeup">Makeup</option>
-          <option value="Haircare">Haircare</option>
-          <option value="Fragrance">Fragrance</option>
+        </select>
+
+        <label for="editProductSupplier" class="form-label">Supplier</label>
+        <select id="editProductSupplier" class="form-select mb-2">
+          <option value="">Select Supplier</option>
+        </select>
+
+        <label for="editProductInventory" class="form-label">Inventory</label>
+        <select id="editProductInventory" class="form-select mb-2">
+          <option value="">Select Inventory</option>
         </select>
 
         <label for="editProductPrice" class="form-label">Price</label>
@@ -180,7 +187,7 @@
   </div>
 </div>
 
-<script src="assets/js/admin/products.js"></script>
+<script src="/assets/js/admin/products.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
