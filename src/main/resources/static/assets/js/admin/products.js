@@ -2,7 +2,7 @@ let nextProductId = 1;
 // Math.max(...sampleProducts.map((p) => p.productId), 1000) + 1;
 
 let currentPage = 1;
-const pageSize = 2;
+const pageSize = 10;
 let pages = 0;
 let deleteId = null;
 let categories = [];
