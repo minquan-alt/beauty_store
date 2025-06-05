@@ -3,12 +3,15 @@ package com.beautystore.adeline.controller;
 import java.util.List;
 
 import com.beautystore.adeline.dto.request.AddOrderRequest;
+import com.beautystore.adeline.dto.request.OrderUpdateRequest;
 import com.beautystore.adeline.dto.response.ApiResponse;
 import com.beautystore.adeline.dto.response.OrderResponse;
 import com.beautystore.adeline.services.OrderService;
 import com.beautystore.adeline.services.UserService;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,8 +68,11 @@ public class OrderController {
             .build();
     }
 
-    // @PutMapping("/cancel/{orderId}")
-    // public ApiResponse<OrderResponse> cancelOrder(@PathVariable Long orderId) {
-    //     OrderResponse response = orderService.cancelOrder(orderId);
-    // }
+    @PatchMapping("/{orderId}")
+    public ApiResponse<OrderResponse> updateOrder(@RequestBody OrderUpdateRequest request, @PathVariable Long orderId) {
+        OrderResponse response = orderService.updateOrder(request, orderId);
+        ApiResponse<OrderResponse> apiResponse = new ApiResponse<>();
+        apiResponse.setResult(response);
+        return apiResponse;
+    }
 }

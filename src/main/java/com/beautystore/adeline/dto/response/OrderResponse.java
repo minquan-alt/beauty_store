@@ -11,9 +11,12 @@ import lombok.Data;
 @Builder
 public class OrderResponse {
     private Long orderId;
+    private String customerName;
     private LocalDateTime orderDate;
     private String status;
     private BigDecimal totalAmount;
+    private String paymentMethod;
+    private String address;
     private List<OrderItemResponse> items;
     
     @Data

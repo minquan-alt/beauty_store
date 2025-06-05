@@ -3,21 +3,21 @@ package com.beautystore.adeline.services;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import com.beautystore.adeline.dto.request.AddOrderRequest;
+import com.beautystore.adeline.dto.request.OrderUpdateRequest;
 import com.beautystore.adeline.dto.response.DashboardDataResponse;
 import com.beautystore.adeline.dto.response.OrderResponse;
 import com.beautystore.adeline.entity.Address;
 import com.beautystore.adeline.entity.Coupon;
-import com.beautystore.adeline.entity.Inventory;
 import com.beautystore.adeline.entity.Order;
+import com.beautystore.adeline.entity.Order.OrderStatus;
 import com.beautystore.adeline.entity.OrderDetail;
 import com.beautystore.adeline.entity.Product;
 import com.beautystore.adeline.entity.PurchaseOrder;
@@ -130,6 +130,13 @@ public class OrderService {
                 .toList();
     }
 
+    public OrderResponse updateOrder(OrderUpdateRequest request ,Long orderId) {
+        Order order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+        order.setStatus(OrderStatus.valueOf(request.getStatus()));
+        return mapToResponse(orderRepository.save(order));
+    }
+
     public List<OrderResponse> getAllMyOrders(HttpSession session) {
         Long userId = userService.getUserIdFromSession(session);
         if (userId == null) {
@@ -223,11 +230,16 @@ public class OrderService {
     }
 
     private OrderResponse mapToResponse(Order order) {
+        String address = "";
+        address = order.getAddress().getCountry() + ", " + order.getAddress().getCity() + ", " + order.getAddress().getStreet();
         return OrderResponse.builder()
                 .orderId(order.getId())
+                .customerName(order.getUser().getName())
                 .orderDate(order.getOrderDate())
                 .status(order.getStatus().name())
                 .totalAmount(order.getTotalAmount())
+                .paymentMethod(order.getPaymentMethod().toString())
+                .address(address)
                 .items(order.getItems().stream()
                         .map(this::mapToItemResponse)
                         .collect(Collectors.toList()))
