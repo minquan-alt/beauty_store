@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Settings - Adeline</title>
+    <link rel="stylesheet" href="/assets/css/settings.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="top-nav">
+            <button class="home-btn" onclick="goHome()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9,22 9,12 15,12 15,22"></polyline>
+                </svg>
+                Home
+            </button>
+            <div class="brand">Adeline</div>
+        </header>
+
+        <main class="profile-section">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <div class="avatar-circle">
+                        <div class="avatar-gradient"></div>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <button class="edit-avatar">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="header-content">
+                    <h1>Profile Settings</h1>
+                    <p>Manage your beauty profile and delivery preferences</p>
+                </div>
+            </div>
+
+            <section class="settings-section">
+                <div class="section-container">
+                    <div class="section-header">
+                        <h2>Personal Details</h2>
+                        <div class="section-line"></div>
+                    </div>
+                    
+                    <form class="user-info-form" id="userInfoForm">
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <input type="text" id="name" name="name"required>
+                                <label for="name">Full Name</label>
+                                <div class="input-border"></div>
+                            </div>
+                            <div class="input-group">
+                                <input type="email" id="email" name="email"required>
+                                <label for="email">Email Address</label>
+                                <div class="input-border"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary">Cancel</button>
+                            <button type="submit" class="btn btn-primary">
+                                <span class="btn-text">Save Changes</span>
+                                <div class="btn-loader"></div>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <section class="settings-section">
+                <div class="section-container">
+                    <div class="section-header">
+                        <h2>Delivery Addresses</h2>
+                        <div class="section-line"></div>
+                        <button class="add-address-btn" onclick="showAddAddressModal()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Add New Address
+                        </button>
+                    </div>
+                    
+                    <div class="addresses-list">
+                        <div class="address-card default-address">
+                            <div class="address-header">
+                                <div class="address-type">
+                                    <span class="default-badge">Default</span>
+                                </div>
+                                <div class="address-actions">
+                                    <button class="action-btn update-btn" onclick="showEditAddressModal(1)">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
+                                        Update
+                                    </button>
+                                    <button class="action-btn default-btn" onclick="setAsDefault(1)" style="display: none;">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="20,6 9,17 4,12"></polyline>
+                                        </svg>
+                                        Set as Default
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="address-details">
+                                <p class="street">123 Beauty Boulevard</p>
+                                <p class="location">New York, NY 10001</p>
+                                <p class="country">United States</p>
+                            </div>
+                        </div>
+
+                        <div class="address-card">
+                            <div class="address-header">
+                                <div class="address-type">
+                                </div>
+                                <div class="address-actions">
+                                    <button class="action-btn update-btn" onclick="showEditAddressModal(2)">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
+                                        Update
+                                    </button>
+                                    <button class="action-btn default-btn" onclick="setAsDefault(2)">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="20,6 9,17 4,12"></polyline>
+                                        </svg>
+                                        Set as Default
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="address-details">
+                                <p class="street">456 Corporate Center</p>
+                                <p class="location">Manhattan, NY 10005</p>
+                                <p class="country">United States</p>
+                            </div>
+                        </div>
+
+                        <div class="address-card">
+                            <div class="address-header">
+                                <div class="address-type">
+                                </div>
+                                <div class="address-actions">
+                                        <button class="action-btn update-btn" onclick="showEditAddressModal(3)">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
+                                        Update
+                                    </button>
+                                    <button class="action-btn default-btn" onclick="setAsDefault(3)">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="20,6 9,17 4,12"></polyline>
+                                        </svg>
+                                        Set as Default
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="address-details">
+                                <p class="street">789 Maple Street</p>
+                                <p class="location">Brooklyn, NY 11201</p>
+                                <p class="country">United States</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="notification" id="notification">
+        <div class="notification-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20,6 9,17 4,12"></polyline>
+            </svg>
+        </div>
+        <span id="notificationText">Profile updated successfully</span>
+    </div>
+
+    <div class="modal-overlay" id="addAddressModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Add New Address</h3>
+                <button class="close-modal" onclick="closeAddAddressModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <form class="modal-form">
+                <div class="form-grid">
+                    <div class="input-group full-width">
+                        <input type="text" id="newStreet" name="street" required>
+                        <label for="newStreet">Street Address</label>
+                        <div class="input-border"></div>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="newCity" name="city" required>
+                        <label for="newCity">City</label>
+                        <div class="input-border"></div>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="newPostal" name="postal" required>
+                        <label for="newPostal">Postal Code</label>
+                        <div class="input-border"></div>
+                    </div>
+                    <div class="select-group full-width">
+                        <select name="country" required>
+                            <option value="" disabled selected hidden></option>
+                            <option value="US">United States</option>
+                            <option value="CA">Canada</option>
+                            <option value="UK">United Kingdom</option>
+                            <option value="AU">Australia</option>
+                        </select>
+                        <label>Country</label>
+                        <div class="select-border"></div>
+                        <div class="select-arrow">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6,9 12,15 18,9"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddAddressModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Address</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="editAddressModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Edit Address</h3>
+                <button class="close-modal" onclick="closeEditAddressModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <form class="modal-form">
+                <div class="form-grid">
+                    <div class="input-group full-width">
+                        <input type="text" id="editStreet" name="street" required>
+                        <label for="editStreet">Street Address</label>
+                        <div class="input-border"></div>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="editCity" name="city" required>
+                        <label for="editCity">City</label>
+                        <div class="input-border"></div>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="editPostal" name="postal" required>
+                        <label for="editPostal">Postal Code</label>
+                        <div class="input-border"></div>
+                    </div>
+                    <div class="select-group full-width">
+                        <select name="country" required>
+                            <option value="" disabled selected hidden></option>
+                            <option value="US">United States</option>
+                            <option value="CA">Canada</option>
+                            <option value="UK">United Kingdom</option>
+                            <option value="AU">Australia</option>
+                        </select>
+                        <label>Country</label>
+                        <div class="select-border"></div>
+                        <div class="select-arrow">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6,9 12,15 18,9"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditAddressModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function goHome() {
+            window.location.href = '/';
+        }
+
+        document.querySelectorAll('.input-group input, .select-group select').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+
+            input.addEventListener('blur', function() {
+                if (!this.value.trim()) {
+                    this.parentElement.classList.remove('focused');
+                } else {
+                    this.parentElement.classList.add('filled');
+                }
+            });
+
+            if (input.value.trim()) {
+                input.parentElement.classList.add('focused', 'filled');
+            }
+        });
+
+        document.getElementById('userInfoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('.btn-primary');
+            
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+                showNotification('Personal details updated successfully');
+            }, 1500);
+        });
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        function editAddress(addressId) {
+            showNotification(`Editing address ${addressId}`);
+        }
+
+        function setAsDefault(addressId) {  
+            const currentDefault = document.querySelector('.default-address');
+            if (currentDefault) {
+                currentDefault.classList.remove('default-address');
+                const currentBadge = currentDefault.querySelector('.default-badge');
+                if (currentBadge) {
+                    currentBadge.remove();
+                }
+                const currentDefaultBtn = currentDefault.querySelector('.default-btn');
+                if (currentDefaultBtn) {
+                    currentDefaultBtn.style.display = 'flex';
+                }
+            }
+            
+            const addressCard = document.querySelector(`[onclick="setAsDefault(${addressId})"]`).closest('.address-card');
+            addressCard.classList.add('default-address');
+            
+            const addressType = addressCard.querySelector('.address-type');
+            const defaultBadge = document.createElement('span');
+            defaultBadge.className = 'default-badge';
+            defaultBadge.textContent = 'Default';
+            addressType.insertBefore(defaultBadge, addressType.firstChild);
+            
+            const defaultBtn = addressCard.querySelector('.default-btn');
+            if (defaultBtn) {
+                defaultBtn.style.display = 'none';
+            }
+            
+            showNotification('Default address updated successfully');
+        }
+
+        function showEditAddressModal(addressId) {
+            document.getElementById('editAddressModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeEditAddressModal() {
+            document.getElementById('editAddressModal').classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }   
+
+        function showAddAddressModal() {
+            document.getElementById('addAddressModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAddAddressModal() {
+            document.getElementById('addAddressModal').classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        document.querySelector('.modal-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            closeAddAddressModal();
+            showNotification('New address added successfully');
+        });
+
+        document.getElementById('addAddressModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAddAddressModal();
+            }
+        });
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.settings-section').forEach(section => {
+            observer.observe(section);
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.input-group input, .select-group select').forEach(input => {
+                if (input.value.trim()) {
+                    input.parentElement.classList.add('focused', 'filled');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

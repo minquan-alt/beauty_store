@@ -104,4 +104,11 @@ public class AdminController {
     String adminSupplier(){
         return "adminGUI/suppliers";
     }
+
+    
+    @GetMapping("/settings")
+    public String getSettings() {
+        return "settings";
+    }
+
 }

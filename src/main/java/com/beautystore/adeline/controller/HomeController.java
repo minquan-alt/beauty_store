@@ -59,4 +59,9 @@ public class HomeController {
     public String order() {
         return "order";
     }
+
+    @GetMapping("/payment")
+    public String payment() {
+        return "checkout";
+    }
 }
