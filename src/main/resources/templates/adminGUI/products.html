@@ -149,8 +149,9 @@
         <textarea id="editProductDescription" class="form-control mb-2" placeholder="Description"></textarea>
 
         <label for="editProductImageFile" class="form-label">Product Image</label>
-        <input type="file" id="editProductImageFile" class="form-control mb-2" accept="image/*">
-        <img id="editPreviewImage" class="img-thumbnail d-none" style="max-height: 150px;" alt="Preview" />
+        <input type="file" id="editProductImageFile" class="form-control mb-2" accept="image/*" multiple>
+        <!-- <img id="editPreviewImage" class="img-thumbnail d-none" style="max-height: 150px;" alt="Preview" /> -->
+        <div id="editPreviewContainer" class="d-flex flex-wrap"></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-dark" id="updateProduct">Update</button>

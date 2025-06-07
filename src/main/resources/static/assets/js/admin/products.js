@@ -6,6 +6,8 @@ const pageSize = 10;
 let pages = 0;
 let deleteId = null;
 let categories = [];
+let suppliers = [];
+let inventories = [];
 
 function loadProducts(page = 1) {
   isSearching = false;
@@ -137,6 +139,7 @@ function showDeleteModal(productId) {
   );
   modal.show();
 }
+
 async function loadCategories(selectId = "filterCategory") {
   const res = await fetch("http://localhost:8080/categories");
   const categories = (await res.json()).result;
@@ -159,10 +162,10 @@ async function loadCategories(selectId = "filterCategory") {
 
 async function loadSuppliers() {
   const res = await fetch("http://localhost:8080/suppliers");
-  categories = (await res.json()).result;
+  const allSuppliers = (await res.json()).result;
   const select = document.getElementById("productSupplier");
   select.innerHTML = '<option value="">Select Supplier</option>';
-  categories.forEach((c) => {
+  allSuppliers.forEach((c) => {
     const opt = document.createElement("option");
     opt.value = c.id;
     opt.textContent = c.name;
@@ -172,10 +175,10 @@ async function loadSuppliers() {
 
 async function loadInventories() {
   const res = await fetch("http://localhost:8080/inventories");
-  categories = (await res.json()).result;
+  let allCategories = (await res.json()).result;
   const select = document.getElementById("productInventory");
   select.innerHTML = '<option value="">Select Inventory</option>';
-  categories.forEach((c) => {
+  allCategories.forEach((c) => {
     const opt = document.createElement("option");
     opt.value = c.id;
     opt.textContent = c.name + " - " + c.address;
@@ -196,109 +199,268 @@ async function loadInventories() {
 //   }
 // };
 
-function showEditModal(productId) {
-  fetch(`http://localhost:8080/products/${productId}`)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Không thể lấy dữ liệu sản phẩm");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      const product = data.result;
-      if (!product) return;
+async function loadMasterData() {
+  try {
+    const [catRes, supRes, invRes] = await Promise.all([
+      fetch("http://localhost:8080/categories").then((r) => r.json()),
+      fetch("http://localhost:8080/suppliers").then((r) => r.json()),
+      fetch("http://localhost:8080/inventories").then((r) => r.json()),
+    ]);
 
-      const select = document.getElementById("editProductCategory");
-      select.innerHTML = '<option value="">Select Category</option>';
-      categories.forEach((c) => {
-        const opt = document.createElement("option");
-        opt.value = c.name;
-        opt.textContent = c.name;
-        select.appendChild(opt);
-      });
-
-      document.getElementById("editProductId").value = product.id;
-      document.getElementById("editProductName").value = product.name;
-      document.getElementById("editProductCategory").value =
-        product.categoryName;
-      console.log(">>>category: ", product.categoryName);
-      document.getElementById("editProductPrice").value = product.price;
-      document.getElementById("editProductDescription").value =
-        product.description || "";
-
-      const preview = document.getElementById("editPreviewImage");
-      preview.src = product.imageUrls[0];
-      preview.classList.remove("d-none");
-
-      document.getElementById("updateProduct").dataset.productId = productId;
-
-      const modal = new bootstrap.Modal(
-        document.getElementById("editProductModal")
-      );
-      modal.show();
-    })
-    .catch((error) => {
-      console.error("Lỗi khi gọi API:", error);
-      alert("Không thể tải thông tin sản phẩm. Vui lòng thử lại sau.");
-    });
+    categories = catRes.result || [];
+    suppliers = supRes.result || [];
+    inventories = invRes.result || [];
+  } catch (err) {
+    console.error("Lỗi khi nạp dữ liệu danh mục:", err);
+    alert("Không thể tải dữ liệu danh mục / kho / nhà cung cấp.");
+  }
 }
 
-// document.getElementById("updateProduct").addEventListener("click", function () {
-//   const index = this.dataset.index;
-//   const name = document.getElementById("editProductName").value.trim();
-//   const category = document.getElementById("editProductCategory").value.trim();
-//   const price = parseFloat(document.getElementById("editProductPrice").value);
-//   const description = document
-//     .getElementById("editProductDescription")
-//     .value.trim();
-//   const imageFile = document.getElementById("editProductImageFile").files[0];
+function renderSelect(selector, list, selectedName) {
+  const sel = document.getElementById(selector);
+  if (!sel) return;
 
-//   if (!name || !category || isNaN(price))
-//     return showToast("Please fill in all required fields!", "danger");
-//   if (price < 0) return showToast("Price must not be negative!", "danger");
+  if (!selectedName) {
+    sel.innerHTML = '<option value="">-- Select --</option>';
+  } else sel.innerHTML = "";
 
-//   const update = (imageBase64) => {
-//     sampleProducts[index] = {
-//       ...sampleProducts[index],
-//       name,
-//       category,
-//       price,
-//       description,
-//       image: imageBase64 || sampleProducts[index].image,
-//     };
-//     saveToStorage();
-//     renderProducts();
-//     bootstrap.Modal.getInstance(
-//       document.getElementById("editProductModal")
-//     ).hide();
-//   };
-
-//   if (imageFile) {
-//     const reader = new FileReader();
-//     reader.onload = (e) => update(e.target.result);
-//     reader.readAsDataURL(imageFile);
-//   } else {
-//     update(null);
-//   }
-// });
-
-document
-  .getElementById("editProductImageFile")
-  .addEventListener("change", function () {
-    const file = this.files[0];
-    const preview = document.getElementById("editPreviewImage");
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        preview.src = e.target.result;
-        preview.classList.remove("d-none");
-      };
-      reader.readAsDataURL(file);
-    } else {
-      preview.classList.add("d-none");
-      preview.src = "";
-    }
+  list.forEach((item) => {
+    const opt = document.createElement("option");
+    opt.value = item.name;
+    opt.textContent = item.name;
+    if (item.name === selectedName) opt.selected = true;
+    sel.appendChild(opt);
   });
+}
+
+let editImages = [];
+let editImagesLoading = false;
+
+async function showEditModal(productId) {
+  try {
+    if (!categories.length) await loadMasterData();
+
+    const res = await fetch(`http://localhost:8080/products/${productId}`);
+    if (!res.ok) throw new Error("Không thể lấy dữ liệu sản phẩm");
+    const { result: product } = await res.json();
+
+    renderSelect("editProductCategory", categories, product.categoryName);
+    renderSelect("editProductSupplier", suppliers, product.supplierName);
+    renderSelect("editProductInventory", inventories, product.inventoryName);
+
+    document.getElementById("editProductId").value = product.id;
+    document.getElementById("editProductName").value = product.name;
+    document.getElementById("editProductPrice").value = product.price;
+    document.getElementById("editProductDescription").value =
+      product.description ?? "";
+
+    editImages = [...product.imageUrls];
+    const editPreviewContainer = document.getElementById(
+      "editPreviewContainer"
+    );
+    editPreviewContainer.innerHTML = "";
+
+    (product.imageUrls || []).forEach((url, i) => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "image-preview-wrapper";
+      wrapper.dataset.index = i;
+
+      const img = document.createElement("img");
+      img.src = url;
+      img.className = "img-thumbnail";
+      img.style.maxHeight = "100px";
+
+      const actions = document.createElement("div");
+      actions.className = "preview-action";
+
+      const eyeIcon = document.createElement("i");
+      eyeIcon.className = "bi bi-eye-fill";
+      eyeIcon.title = "View";
+      eyeIcon.onclick = () => {
+        document.getElementById("modalImage").src = img.src;
+        new bootstrap.Modal(
+          document.getElementById("imagePreviewModal")
+        ).show();
+      };
+
+      const deleteIcon = document.createElement("i");
+      deleteIcon.className = "bi bi-x-circle-fill";
+      deleteIcon.title = "Remove";
+      deleteIcon.onclick = () => {
+        const idx = Number(wrapper.dataset.index);
+        editImages.splice(idx, 1);
+        wrapper.remove();
+        reIndexPreviews();
+        console.log(editImages);
+      };
+
+      actions.appendChild(eyeIcon);
+      actions.appendChild(deleteIcon);
+
+      wrapper.appendChild(img);
+      wrapper.appendChild(actions);
+      editPreviewContainer.appendChild(wrapper);
+    });
+    document.getElementById("updateProduct").dataset.productId = productId;
+
+    new bootstrap.Modal(document.getElementById("editProductModal")).show();
+  } catch (err) {
+    console.error("Lỗi khi gọi API:", err);
+    alert("Không thể tải thông tin sản phẩm. Vui lòng thử lại sau.");
+  }
+}
+
+function reIndexPreviews() {
+  const wrappers = document.querySelectorAll(
+    "#editPreviewContainer .image-preview-wrapper"
+  );
+  wrappers.forEach((w, i) => (w.dataset.index = i));
+}
+
+document.getElementById("updateProduct").addEventListener("click", async () => {
+  if (editImagesLoading)
+    return showToast("Please wait, image upload in progress…", "warning");
+
+  const productId = document.getElementById("updateProduct").dataset.productId;
+
+  const name = document.getElementById("editProductName").value.trim();
+  const category = document.getElementById("editProductCategory").value.trim();
+  const supplier = document.getElementById("editProductSupplier").value.trim();
+  const inventory = document
+    .getElementById("editProductInventory")
+    .value.trim();
+
+  const category_id = categories.find(
+    (c) => c.name.trim().toLowerCase() === category.toLowerCase()
+  ).id;
+
+  const supplier_id = suppliers.find(
+    (c) => c.name.trim().toLowerCase() === supplier.toLowerCase()
+  ).id;
+
+  const inventory_id = inventories.find(
+    (c) => c.name.trim().toLowerCase() === inventory.toLowerCase()
+  ).id;
+
+  const price = parseFloat(document.getElementById("editProductPrice").value);
+  const description = document
+    .getElementById("editProductDescription")
+    .value.trim();
+
+  if (!name || !category || !supplier || !inventory || isNaN(price))
+    return showToast("Please fill in all required fields!", "danger");
+  if (price < 0) return showToast("Price must not be negative!", "danger");
+  if (!editImages.length) return showToast("No images uploaded yet!", "danger");
+
+  try {
+    const productPayload = {
+      name,
+      price,
+      description,
+      category_id,
+      supplier_id,
+      inventory_id,
+      imageUrls: editImages,
+    };
+    console.log(productPayload);
+    const res = await fetch(`/products/${productId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(productPayload),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message ?? "Update product failed!");
+    }
+
+    showToast("Product updated successfully!");
+    loadProducts();
+    resetForm();
+    bootstrap.Modal.getInstance(
+      document.getElementById("editProductModal")
+    ).hide();
+  } catch (err) {
+    console.error(err);
+    showToast(err.message, "danger");
+  }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const editPreviewContainer = document.getElementById("editPreviewContainer");
+  const updateBtn = document.getElementById("updateProduct");
+
+  document
+    .getElementById("editProductImageFile")
+    .addEventListener("change", async function (e) {
+      const files = Array.from(e.target.files);
+      editPreviewContainer.innerHTML = "";
+      editImages = [];
+      if (!files.length) return;
+
+      files.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          const wrapper = document.createElement("div");
+          wrapper.className = "image-preview-wrapper";
+
+          const img = document.createElement("img");
+          img.src = evt.target.result;
+          img.className = "img-thumbnail";
+          img.style.maxHeight = "100px";
+
+          const actions = document.createElement("div");
+          actions.className = "preview-action";
+
+          const eyeIcon = document.createElement("i");
+          eyeIcon.className = "bi bi-eye-fill";
+          eyeIcon.title = "View";
+          eyeIcon.onclick = () => {
+            document.getElementById("modalImage").src = img.src;
+            new bootstrap.Modal(
+              document.getElementById("imagePreviewModal")
+            ).show();
+          };
+
+          const deleteIcon = document.createElement("i");
+          deleteIcon.className = "bi bi-x-circle-fill";
+          deleteIcon.title = "Remove";
+          deleteIcon.onclick = () => {
+            const index = wrapper.getAttribute("data-index");
+            editImages.splice(index, 1);
+            wrapper.remove();
+            updatePreviewIndexes();
+          };
+
+          actions.appendChild(eyeIcon);
+          actions.appendChild(deleteIcon);
+
+          wrapper.appendChild(img);
+          wrapper.appendChild(actions);
+          editPreviewContainer.appendChild(wrapper);
+        };
+        reader.readAsDataURL(file);
+      });
+
+      editImagesLoading = true;
+      updateBtn.disabled = true;
+      try {
+        const uploadPromises = files.map(uploadSingleFile);
+        const urls = await Promise.all(uploadPromises);
+        editImages = urls;
+        showToast("Images uploaded!", "success");
+        updatePreviewIndexes();
+      } catch (err) {
+        console.error(err);
+        showToast(err.message, "danger");
+        editImages = [];
+        editPreviewContainer.innerHTML = "";
+        document.getElementById("editProductImageFile").value = "";
+      } finally {
+        editImagesLoading = false;
+        updateBtn.disabled = false;
+      }
+    });
+});
 
 let selectedImageUrls = [];
 let uploadInProgress = false;
