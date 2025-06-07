@@ -409,11 +409,43 @@ document.addEventListener("DOMContentLoaded", () => {
       files.forEach((file) => {
         const reader = new FileReader();
         reader.onload = (evt) => {
+          const wrapper = document.createElement("div");
+          wrapper.className = "image-preview-wrapper";
+
           const img = document.createElement("img");
           img.src = evt.target.result;
-          img.className = "img-thumbnail me-2 mb-2";
+          img.className = "img-thumbnail";
           img.style.maxHeight = "100px";
-          previewContainer.appendChild(img);
+
+          const actions = document.createElement("div");
+          actions.className = "preview-action";
+
+          const eyeIcon = document.createElement("i");
+          eyeIcon.className = "bi bi-eye-fill"; // Bootstrap Icons
+          eyeIcon.title = "View";
+          eyeIcon.onclick = () => {
+            document.getElementById("modalImage").src = img.src;
+            new bootstrap.Modal(
+              document.getElementById("imagePreviewModal")
+            ).show();
+          };
+
+          const deleteIcon = document.createElement("i");
+          deleteIcon.className = "bi bi-x-circle-fill";
+          deleteIcon.title = "Remove";
+          deleteIcon.onclick = () => {
+            const index = wrapper.getAttribute("data-index");
+            selectedImageUrls.splice(index, 1);
+            wrapper.remove();
+            updatePreviewIndexes();
+          };
+
+          actions.appendChild(eyeIcon);
+          actions.appendChild(deleteIcon);
+
+          wrapper.appendChild(img);
+          wrapper.appendChild(actions);
+          previewContainer.appendChild(wrapper);
         };
         reader.readAsDataURL(file);
       });
@@ -426,6 +458,7 @@ document.addEventListener("DOMContentLoaded", () => {
         selectedImageUrls = urls;
         console.log(selectedImageUrls);
         showToast("Images uploaded!", "success");
+        updatePreviewIndexes();
       } catch (err) {
         console.error(err);
         showToast(err.message, "danger");
@@ -438,6 +471,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 });
+
+function updatePreviewIndexes() {
+  const wrappers = previewContainer.querySelectorAll(".image-preview-wrapper");
+  wrappers.forEach((w, i) => w.setAttribute("data-index", i));
+}
 
 document
   .getElementById("addProductModal")
