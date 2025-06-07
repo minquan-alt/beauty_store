@@ -27,6 +27,8 @@ public enum ErrorCode {
     ADD_CART_RESPONSE_NOT_FOUND(2010, "Error in add to cart"),
 
     SUPPLIER_NOT_FOUND(3001, "Supplier not found"),
+    SUPPLIER_LIST_EMPTY(3002,"Supplier is empty"),
+    SUPPLIER_HAS_PRODUCT(3003, "Cannot delete supplier because it has associated products"),
    
     CATEGORY_EXISTED(4001, "Category existed"),
     CATEGORY_LIST_EMPTY(4002, "Category is empty"),
