@@ -64,6 +64,10 @@ public enum ErrorCode {
     PAYMENT_PROCESS_ERROR(8007, "You met error in payment process"),
     PAYMENT_NOT_FOUND(8008, "There is no payments"),
 
+    INVENTORY_NOT_FOUND(9001, "Inventory not found"),
+    INVENTORY_HAS_PRODUCTS(9002, "Cannot delete inventory because it has associated products"),
+    INVENTORY_LIST_EMPTY(9003, "Inventory is empty")
+
 
 
     ;
