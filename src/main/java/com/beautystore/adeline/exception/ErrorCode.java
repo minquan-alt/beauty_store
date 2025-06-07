@@ -66,7 +66,11 @@ public enum ErrorCode {
 
     INVENTORY_NOT_FOUND(9001, "Inventory not found"),
     INVENTORY_HAS_PRODUCTS(9002, "Cannot delete inventory because it has associated products"),
-    INVENTORY_LIST_EMPTY(9003, "Inventory is empty")
+    INVENTORY_LIST_EMPTY(9003, "Inventory is empty"),
+
+    FILE_IS_EMPTY(10001, "File is empty"),
+    INVALID_FILE_SIZE(10002, "File size must be less than 2MB!"),
+    INVALID_FILE_TYPE(10003, "Only JPG, PNG, and WEBP images are allowed!")
 
 
 

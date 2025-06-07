@@ -2,7 +2,7 @@ let nextProductId = 1;
 // Math.max(...sampleProducts.map((p) => p.productId), 1000) + 1;
 
 let currentPage = 1;
-const pageSize = 2;
+const pageSize = 10;
 let pages = 0;
 let deleteId = null;
 let categories = [];
@@ -23,7 +23,7 @@ function loadProducts(page = 1) {
 }
 
 function renderProducts(products) {
-  const start = currentPage * pageSize;
+  const start = (currentPage - 1) * pageSize;
   const body = document.getElementById("product-table-body");
   body.innerHTML = "";
 
@@ -137,16 +137,48 @@ function showDeleteModal(productId) {
   );
   modal.show();
 }
-
-async function loadCategories() {
+async function loadCategories(selectId = "filterCategory") {
   const res = await fetch("http://localhost:8080/categories");
-  categories = (await res.json()).result;
-  const select = document.getElementById("filterCategory");
-  select.innerHTML = '<option value="">All Categories</option>';
+  const categories = (await res.json()).result;
+  const select = document.getElementById(selectId);
+  if (!select) return;
+
+  if (selectId === "filterCategory") {
+    select.innerHTML = '<option value="">All Categories</option>';
+  } else {
+    select.innerHTML = '<option value="">Select Category</option>';
+  }
+
   categories.forEach((c) => {
     const opt = document.createElement("option");
-    opt.value = c.name;
+    opt.value = c.id;
     opt.textContent = c.name;
+    select.appendChild(opt);
+  });
+}
+
+async function loadSuppliers() {
+  const res = await fetch("http://localhost:8080/suppliers");
+  categories = (await res.json()).result;
+  const select = document.getElementById("productSupplier");
+  select.innerHTML = '<option value="">Select Supplier</option>';
+  categories.forEach((c) => {
+    const opt = document.createElement("option");
+    opt.value = c.id;
+    opt.textContent = c.name;
+    select.appendChild(opt);
+  });
+}
+
+async function loadInventories() {
+  const res = await fetch("http://localhost:8080/inventories");
+  categories = (await res.json()).result;
+  const select = document.getElementById("productInventory");
+  select.innerHTML = '<option value="">Select Inventory</option>';
+  categories.forEach((c) => {
+    const opt = document.createElement("option");
+    opt.value = c.id;
+    opt.textContent = c.name + " - " + c.address;
     select.appendChild(opt);
   });
 }
@@ -286,44 +318,44 @@ document
     }
   });
 
-// document.getElementById("saveProduct").addEventListener("click", () => {
-//   const name = document.getElementById("productName").value.trim();
-//   const category = document.getElementById("productCategory").value.trim();
-//   const price = parseFloat(document.getElementById("productPrice").value);
-//   const description = document
-//     .getElementById("productDescription")
-//     .value.trim();
-//   const imageFile = document.getElementById("productImageFile").files[0];
+document.getElementById("saveProduct").addEventListener("click", () => {
+  const name = document.getElementById("productName").value.trim();
+  const category = document.getElementById("productCategory").value.trim();
+  const price = parseFloat(document.getElementById("productPrice").value);
+  const description = document
+    .getElementById("productDescription")
+    .value.trim();
+  const imageFile = document.getElementById("productImageFile").files[0];
 
-//   if (!name || !category || isNaN(price))
-//     return showToast("Please fill in all required fields!", "danger");
-//   if (price < 0) return showToast("Price must not be negative!", "danger");
+  if (!name || !category || isNaN(price))
+    return showToast("Please fill in all required fields!", "danger");
+  if (price < 0) return showToast("Price must not be negative!", "danger");
 
-//   const reader = new FileReader();
-//   reader.onload = (e) => {
-//     const newProduct = {
-//       productId: nextProductId++,
-//       name,
-//       category,
-//       price,
-//       description,
-//       image: e.target.result,
-//     };
-//     sampleProducts.push(newProduct);
-//     saveToStorage();
-//     renderProducts();
-//     resetForm();
-//     bootstrap.Modal.getInstance(
-//       document.getElementById("addProductModal")
-//     ).hide();
-//   };
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const newProduct = {
+      productId: nextProductId++,
+      name,
+      category,
+      price,
+      description,
+      image: e.target.result,
+    };
+    sampleProducts.push(newProduct);
+    saveToStorage();
+    renderProducts();
+    resetForm();
+    bootstrap.Modal.getInstance(
+      document.getElementById("addProductModal")
+    ).hide();
+  };
 
-//   if (imageFile) {
-//     reader.readAsDataURL(imageFile);
-//   } else {
-//     showToast("Please choose an image!", "danger");
-//   }
-// });
+  if (imageFile) {
+    reader.readAsDataURL(imageFile);
+  } else {
+    showToast("Please choose an image!", "danger");
+  }
+});
 
 function resetForm() {
   document.getElementById("productName").value = "";
@@ -335,9 +367,17 @@ function resetForm() {
   document.getElementById("productDescription").value = "";
 }
 
+document
+  .getElementById("addProductModal")
+  .addEventListener("shown.bs.modal", () => {
+    loadCategories("productCategory");
+    loadSuppliers();
+  });
+
 window.addEventListener("load", function () {
   loadProducts();
-  loadCategories();
+  loadCategories("filterCategory");
+  loadInventories();
 });
 document.getElementById("searchProduct").addEventListener("input", () => {
   currentPage = 0;
