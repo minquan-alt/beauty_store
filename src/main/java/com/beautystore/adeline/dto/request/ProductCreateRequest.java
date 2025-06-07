@@ -1,5 +1,7 @@
 package com.beautystore.adeline.dto.request;
 
+import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,4 +21,5 @@ public class ProductCreateRequest {
     long category_id;
     long inventory_id;
     long supplier_id;
+    List<String> imageUrls;
 }
