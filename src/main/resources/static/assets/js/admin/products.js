@@ -300,72 +300,144 @@ document
     }
   });
 
-document
-  .getElementById("productImageFile")
-  .addEventListener("change", function () {
-    const file = this.files[0];
-    const preview = document.getElementById("previewImage");
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        preview.src = e.target.result;
-        preview.classList.remove("d-none");
-      };
-      reader.readAsDataURL(file);
-    } else {
-      preview.classList.add("d-none");
-      preview.src = "";
-    }
-  });
+let selectedImageUrls = [];
+let uploadInProgress = false;
 
-document.getElementById("saveProduct").addEventListener("click", () => {
+async function uploadSingleFile(file) {
+  const formData = new FormData();
+  formData.append("fileImage", file);
+
+  const res = await fetch("/upload", { method: "POST", body: formData });
+  if (!res.ok) throw new Error("Upload failed!");
+
+  const json = await res.json();
+  console.log("Upload JSON:", json);
+
+  if (json.code !== 1000) {
+    throw new Error(json.message || "Upload error");
+  }
+
+  const imageUrl = json.result?.imageUrl;
+  if (!imageUrl) throw new Error("imageUrl missing in response!");
+  return imageUrl;
+}
+
+document.getElementById("saveProduct").addEventListener("click", async () => {
+  if (uploadInProgress)
+    return showToast("Please wait, image upload in progress…", "warning");
+
   const name = document.getElementById("productName").value.trim();
-  const category = document.getElementById("productCategory").value.trim();
+  const category_id = document.getElementById("productCategory").value;
+  const supplier_id = document.getElementById("productSupplier").value;
+  const inventory_id = document.getElementById("productInventory").value;
   const price = parseFloat(document.getElementById("productPrice").value);
   const description = document
     .getElementById("productDescription")
     .value.trim();
-  const imageFile = document.getElementById("productImageFile").files[0];
 
-  if (!name || !category || isNaN(price))
+  if (
+    !name ||
+    !category_id ||
+    !supplier_id ||
+    !inventory_id ||
+    isNaN(price) ||
+    !description
+  )
     return showToast("Please fill in all required fields!", "danger");
   if (price < 0) return showToast("Price must not be negative!", "danger");
+  if (!selectedImageUrls.length)
+    return showToast("No images uploaded yet!", "danger");
 
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const newProduct = {
-      productId: nextProductId++,
+  try {
+    const productPayload = {
       name,
-      category,
       price,
       description,
-      image: e.target.result,
+      category_id,
+      supplier_id,
+      inventory_id,
+      imageUrls: selectedImageUrls,
     };
-    sampleProducts.push(newProduct);
-    saveToStorage();
-    renderProducts();
+    console.log(productPayload);
+
+    const res = await fetch("/products", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(productPayload),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message ?? "Create product failed!");
+    }
+
+    showToast("Product created successfully!");
+    loadProducts();
     resetForm();
     bootstrap.Modal.getInstance(
       document.getElementById("addProductModal")
     ).hide();
-  };
-
-  if (imageFile) {
-    reader.readAsDataURL(imageFile);
-  } else {
-    showToast("Please choose an image!", "danger");
+  } catch (err) {
+    console.error(err);
+    showToast(err.message, "danger");
   }
 });
 
 function resetForm() {
   document.getElementById("productName").value = "";
   document.getElementById("productCategory").value = "";
+  document.getElementById("productSupplier").value = "";
+  document.getElementById("productInventory").value = "";
   document.getElementById("productPrice").value = "";
-  document.getElementById("productImageFile").value = "";
-  document.getElementById("previewImage").src = "";
-  document.getElementById("previewImage").classList.add("d-none");
   document.getElementById("productDescription").value = "";
+  document.getElementById("productImageFile").value = "";
+  document.getElementById("previewContainer").innerHTML = "";
+  selectedImageUrls = [];
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const previewContainer = document.getElementById("previewContainer");
+  const saveBtn = document.getElementById("saveProduct");
+
+  document
+    .getElementById("productImageFile")
+    .addEventListener("change", async (e) => {
+      const files = Array.from(e.target.files);
+      previewContainer.innerHTML = "";
+      selectedImageUrls = [];
+      if (!files.length) return;
+
+      files.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          const img = document.createElement("img");
+          img.src = evt.target.result;
+          img.className = "img-thumbnail me-2 mb-2";
+          img.style.maxHeight = "100px";
+          previewContainer.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+
+      uploadInProgress = true;
+      saveBtn.disabled = true;
+      try {
+        const uploadPromises = files.map(uploadSingleFile);
+        const urls = await Promise.all(uploadPromises);
+        selectedImageUrls = urls;
+        console.log(selectedImageUrls);
+        showToast("Images uploaded!", "success");
+      } catch (err) {
+        console.error(err);
+        showToast(err.message, "danger");
+        selectedImageUrls = [];
+        previewContainer.innerHTML = "";
+        document.getElementById("productImageFile").value = "";
+      } finally {
+        uploadInProgress = false;
+        saveBtn.disabled = false;
+      }
+    });
+});
 
 document
   .getElementById("addProductModal")

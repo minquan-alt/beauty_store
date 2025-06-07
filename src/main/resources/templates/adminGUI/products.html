@@ -100,9 +100,10 @@
         </select>
 
         <input type="number" id="productPrice" class="form-control mb-2" placeholder="Price">
-        <input type="file" id="productImageFile" class="form-control mb-2" accept="image/*">
+        <input type="file" id="productImageFile" class="form-control mb-2" accept="image/*" multiple>
         <textarea id="productDescription" class="form-control mb-2" placeholder="Description" maxlength="200"></textarea>
-        <img id="previewImage" class="img-thumbnail d-none" style="max-height: 150px;" alt="Preview" />
+        <!-- <img id="previewImage" class="img-thumbnail d-none" style="max-height: 150px;" alt="Preview" multiple/> -->
+        <div id="previewContainer" class="d-flex flex-wrap"></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-dark" id="saveProduct">Save</button>
