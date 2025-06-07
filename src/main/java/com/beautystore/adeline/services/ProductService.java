@@ -9,13 +9,17 @@ import com.beautystore.adeline.dto.response.GetProductImageResponse;
 import com.beautystore.adeline.dto.response.ProductImageResponse;
 import com.beautystore.adeline.dto.response.ProductResponse;
 import com.beautystore.adeline.entity.Product;
+import com.beautystore.adeline.entity.ProductImage;
 import com.beautystore.adeline.exception.AppException;
 import com.beautystore.adeline.exception.ErrorCode;
 import com.beautystore.adeline.mapper.ProductMapper;
 import com.beautystore.adeline.mapper.ProductResponseMapper;
 import com.beautystore.adeline.repository.CategoryRepository;
+import com.beautystore.adeline.repository.InventoryRepository;
 import com.beautystore.adeline.repository.ProductRepository;
 import com.beautystore.adeline.repository.SupplierRepository;
+
+import jakarta.transaction.Transactional;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -31,6 +35,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final SupplierRepository supplierRepository;
+    private final InventoryRepository inventoryRepository;
     private final ProductResponseMapper productResponseMapper;
     private final ProductMapper productMapper;
 
@@ -79,38 +84,45 @@ public class ProductService {
         return productResponseMapper.toResponse(product);
     };
 
-    public ProductResponse updateProduct(ProductUpdateRequest request, Long id) {
+    @Transactional
+    public ProductResponse updateProduct(ProductUpdateRequest request, Long productId) {
 
-        Product product = productRepository.findById(id)
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
-        if (request.getSupplier_id() != null) {
-            if (!supplierRepository.existsById(request.getSupplier_id())) {
-                throw new AppException(ErrorCode.SUPPLIER_NOT_FOUND);
-            }
-            product.setSupplier(supplierRepository.findById(request.getSupplier_id()).get());
-        }
+        productResponseMapper.updateProduct(product, request);
 
-        if (request.getCategory_id() != null) {
-            if (!categoryRepository.existsById(request.getCategory_id())) {
-                throw new AppException(ErrorCode.CATEGORY_NOT_FOUND);
-            }
-            product.setCategory(categoryRepository.findById(request.getCategory_id()).get());
-        }
+        if (request.getCategory_id() != null)
+            product.setCategory(categoryRepository.getReferenceById(request.getCategory_id()));
 
-        if (request.getName() != null) {
-            product.setName(request.getName());
-        }
-        if (request.getDescription() != null) {
-            product.setDescription(request.getDescription());
-        }
-        if (request.getPrice() != null) {
-            product.setPrice(request.getPrice());
-        }
+        if (request.getSupplier_id() != null)
+            product.setSupplier(supplierRepository.getReferenceById(request.getSupplier_id()));
 
-        Product updatedProduct = productRepository.save(product);
-        return productResponseMapper.toResponse(updatedProduct);
-    };
+        if (request.getInventory_id() != null)
+            product.setInventory(inventoryRepository.getReferenceById(request.getInventory_id()));
+
+        refreshImages(product, request.getImageUrls());
+
+        productRepository.save(product);
+        return productResponseMapper.toResponse(product);
+    }
+
+    private void refreshImages(Product product, List<String> newUrls) {
+
+        product.getImages().clear();
+
+        if (newUrls == null || newUrls.isEmpty()) return;
+
+        newUrls.stream()
+               .filter(url -> url != null && !url.isBlank())
+               .map(String::trim)
+               .forEach(url -> {
+                   ProductImage img = new ProductImage();
+                   img.setImageUrl(url);
+                   img.setProduct(product);          
+                   product.getImages().add(img);
+               });
+    }
 
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
