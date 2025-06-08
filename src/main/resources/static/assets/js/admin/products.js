@@ -1,6 +1,3 @@
-let nextProductId = 1;
-// Math.max(...sampleProducts.map((p) => p.productId), 1000) + 1;
-
 let currentPage = 1;
 const pageSize = 10;
 let pages = 0;
@@ -9,140 +6,21 @@ let categories = [];
 let suppliers = [];
 let inventories = [];
 
-async function loadProducts(page = 1) {
-  isSearching = false;
-
-  try {
-    const response = await fetch(
-      `http://localhost:8080/products?page=${page}&size=${pageSize}`
-    );
-    const data = await response.json();
-
-    const products = data.result.data;
-    pages = data.result.meta.pages;
-
-    renderProducts(products);
-    updatePrevNextButtons();
-  } catch (error) {
-    console.error("Failed to load products:", error);
-  }
-}
-function renderProducts(products) {
-  const start = (currentPage - 1) * pageSize;
-  const body = document.getElementById("product-table-body");
-  body.innerHTML = "";
-
-  let productsToRender = [...products];
-
-  // Lọc theo tên
-  // const searchText = document
-  //   .getElementById("searchProduct")
-  //   .value.toLowerCase();
-  // if (searchText) {
-  //   productsToRender = productsToRender.filter((p) =>
-  //     p.name.toLowerCase().includes(searchText)
-  //   );
-  // }
-
-  // Lọc theo danh mục
-  // const filterCategory = document
-  //   .getElementById("filterCategory")
-  //   .value.toLowerCase();
-  // if (filterCategory) {
-  //   productsToRender = productsToRender.filter(
-  //     (p) => p.category.toLowerCase() === filterCategory
-  //   );
-  // }
-
-  // Sắp xếp
-  // const sortValue = document.getElementById("sortSelect").value;
-  // switch (sortValue) {
-  //   case "name-asc":
-  //     productsToRender.sort((a, b) => a.name.localeCompare(b.name));
-  //     break;
-  //   case "name-desc":
-  //     productsToRender.sort((a, b) => b.name.localeCompare(a.name));
-  //     break;
-  //   case "price-asc":
-  //     productsToRender.sort((a, b) => a.price - b.price);
-  //     break;
-  //   case "price-desc":
-  //     productsToRender.sort((a, b) => b.price - a.price);
-  //     break;
-  // }
-
-  productsToRender.forEach((p, i) => {
-    body.innerHTML += `
-      <tr>
-        <td>${start + i + 1}</td>
-        <td>${p.id}</td>
-        <td><img src="${p.imageUrls[0]}" alt="product" height="50"></td>
-        <td>${p.name}</td>
-        <td>${p.categoryName}</td>
-        <td>${p.price.toLocaleString()} đ</td>
-        <td>
-          <button class="btn btn-sm btn-outline-primary me-2" onclick="showEditModal(${
-            p.id
-          })"><i class="bi bi-pencil"></i></button>
-          <button class="btn btn-sm btn-danger" onclick="showDeleteModal(${
-            p.id
-          })"><i class="bi bi-trash"></i></button>
-        </td>
-      </tr>`;
-  });
-}
-
-document.getElementById("sortSelect").addEventListener("change", () => {
-  currentPage = 0;
-  renderProducts();
+/***************************************************************************************************************************/
+/**
+ * Khi refresh trang
+ */
+window.addEventListener("load", function () {
+  loadProducts();
+  loadCategories("filterCategory");
+  loadInventories();
+  loadSuppliers();
 });
 
-function updatePrevNextButtons() {
-  const prevBtn = document.getElementById("prevPage");
-  const nextBtn = document.getElementById("nextPage");
-
-  if (currentPage <= 1) {
-    prevBtn.style.display = "none";
-  } else {
-    prevBtn.style.display = "inline-block";
-  }
-
-  if (currentPage >= pages) {
-    nextBtn.style.display = "none";
-  } else {
-    nextBtn.style.display = "inline-block";
-  }
-}
-
-document.getElementById("prevPage").onclick = () => {
-  if (currentPage > 0) currentPage--;
-  loadProducts(currentPage);
-};
-
-document.getElementById("nextPage").onclick = () => {
-  if (currentPage + 1 <= pages) currentPage++;
-  loadProducts(currentPage);
-};
-
-function showToast(message, type = "success") {
-  const toastElement = document.getElementById("toastAlert");
-  const toastBody = document.getElementById("toastMessage");
-
-  toastElement.className = `toast align-items-center text-bg-${type} border-0`;
-  toastBody.textContent = message;
-
-  const toast = new bootstrap.Toast(toastElement);
-  toast.show();
-}
-
-function showDeleteModal(productId) {
-  deleteId = productId;
-  const modal = new bootstrap.Modal(
-    document.getElementById("deleteConfirmModal")
-  );
-  modal.show();
-}
-
+/***************************************************************************************************************************/
+/**
+ * Load các category, supplier, inventory để cho thẻ select
+ */
 async function loadCategories(selectId = "filterCategory") {
   const res = await fetch("http://localhost:8080/categories");
   const categories = (await res.json()).result;
@@ -189,32 +67,6 @@ async function loadInventories() {
   });
 }
 
-document.getElementById("confirmDeleteBtn").onclick = async () => {
-  if (!deleteId) return;
-
-  try {
-    const response = await fetch(`/products/${deleteId}`, {
-      method: "DELETE",
-      headers: {
-        Accept: "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Lỗi xoá: ${response.status}`);
-    }
-
-    await loadProducts();
-    deleteId = null;
-
-    const modalEl = document.getElementById("deleteConfirmModal");
-    bootstrap.Modal.getInstance(modalEl).hide();
-  } catch (err) {
-    console.error(err);
-    alert("Xóa sản phẩm thất bại. Vui lòng thử lại hoặc kiểm tra kết nối.");
-  }
-};
-
 async function loadMasterData() {
   try {
     const [catRes, supRes, invRes] = await Promise.all([
@@ -244,14 +96,218 @@ function renderSelect(selector, list, selectedName) {
     const opt = document.createElement("option");
     opt.value = item.name;
     opt.textContent = item.name;
+    if (selector == "editProductInventory")
+      opt.textContent = item.name + " - " + item.address;
     if (item.name === selectedName) opt.selected = true;
     sel.appendChild(opt);
   });
 }
 
+/***************************************************************************************************************************/
+/**
+ * Tạo product
+ */
+let selectedImageUrls = [];
+let uploadInProgress = false;
+
+//Khi mở modal lên
+document
+  .getElementById("addProductModal")
+  .addEventListener("shown.bs.modal", () => {
+    loadCategories("productCategory");
+  });
+
+//Nhấn nút save
+document.getElementById("saveProduct").addEventListener("click", async () => {
+  if (uploadInProgress)
+    return showToast("Please wait, image upload in progress…", "warning");
+
+  const name = document.getElementById("productName").value.trim();
+  const category_id = document.getElementById("productCategory").value;
+  const supplier_id = document.getElementById("productSupplier").value;
+  const inventory_id = document.getElementById("productInventory").value;
+  const price = parseFloat(document.getElementById("productPrice").value);
+  const description = document
+    .getElementById("productDescription")
+    .value.trim();
+
+  if (
+    !name ||
+    !category_id ||
+    !supplier_id ||
+    !inventory_id ||
+    isNaN(price) ||
+    !description
+  )
+    return showToast("Please fill in all required fields!", "danger");
+  if (price < 0) return showToast("Price must not be negative!", "danger");
+  if (!selectedImageUrls.length)
+    return showToast("No images uploaded yet!", "danger");
+
+  try {
+    const productPayload = {
+      name,
+      price,
+      description,
+      category_id,
+      supplier_id,
+      inventory_id,
+      imageUrls: selectedImageUrls,
+    };
+    console.log(productPayload);
+
+    const res = await fetch("/products", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(productPayload),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message ?? "Create product failed!");
+    }
+
+    showToast("Product created successfully!");
+    await loadProducts();
+    resetForm();
+    bootstrap.Modal.getInstance(
+      document.getElementById("addProductModal")
+    ).hide();
+  } catch (err) {
+    console.error(err);
+    showToast(err.message, "danger");
+  }
+});
+
+//Xử lý phần image
+document.addEventListener("DOMContentLoaded", () => {
+  const previewContainer = document.getElementById("previewContainer");
+  const saveBtn = document.getElementById("saveProduct");
+
+  document
+    .getElementById("productImageFile")
+    .addEventListener("change", async (e) => {
+      const files = Array.from(e.target.files);
+      previewContainer.innerHTML = "";
+      selectedImageUrls = [];
+      if (!files.length) return;
+
+      files.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          const wrapper = document.createElement("div");
+          wrapper.className = "image-preview-wrapper";
+
+          const img = document.createElement("img");
+          img.src = evt.target.result;
+          img.className = "img-thumbnail";
+          img.style.maxHeight = "100px";
+
+          const actions = document.createElement("div");
+          actions.className = "preview-action";
+
+          const eyeIcon = document.createElement("i");
+          eyeIcon.className = "bi bi-eye-fill";
+          eyeIcon.title = "View";
+          eyeIcon.onclick = () => {
+            document.getElementById("modalImage").src = img.src;
+            new bootstrap.Modal(
+              document.getElementById("imagePreviewModal")
+            ).show();
+          };
+
+          const deleteIcon = document.createElement("i");
+          deleteIcon.className = "bi bi-x-circle-fill";
+          deleteIcon.title = "Remove";
+          deleteIcon.onclick = () => {
+            const index = wrapper.getAttribute("data-index");
+            selectedImageUrls.splice(index, 1);
+            wrapper.remove();
+            updatePreviewIndexes();
+          };
+
+          actions.appendChild(eyeIcon);
+          actions.appendChild(deleteIcon);
+
+          wrapper.appendChild(img);
+          wrapper.appendChild(actions);
+          previewContainer.appendChild(wrapper);
+        };
+        reader.readAsDataURL(file);
+      });
+
+      uploadInProgress = true;
+      saveBtn.disabled = true;
+      try {
+        const uploadPromises = files.map(uploadSingleFile);
+        const urls = await Promise.all(uploadPromises);
+        selectedImageUrls = urls;
+        console.log(selectedImageUrls);
+        showToast("Images uploaded!", "success");
+        updatePreviewIndexes();
+      } catch (err) {
+        console.error(err);
+        showToast(err.message, "danger");
+        selectedImageUrls = [];
+        previewContainer.innerHTML = "";
+        document.getElementById("productImageFile").value = "";
+      } finally {
+        uploadInProgress = false;
+        saveBtn.disabled = false;
+      }
+    });
+});
+
+function updatePreviewIndexes() {
+  const wrappers = previewContainer.querySelectorAll(".image-preview-wrapper");
+  wrappers.forEach((w, i) => w.setAttribute("data-index", i));
+}
+
+/***************************************************************************************************************************/
+/**
+ * Xóa product
+ */
+function showDeleteModal(productId) {
+  deleteId = productId;
+  const modal = new bootstrap.Modal(
+    document.getElementById("deleteConfirmModal")
+  );
+  modal.show();
+}
+
+document.getElementById("confirmDeleteBtn").onclick = async () => {
+  if (!deleteId) return;
+
+  try {
+    const response = await fetch(`/products/${deleteId}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Lỗi xoá: ${response.status}`);
+    }
+
+    await loadProducts();
+    deleteId = null;
+
+    const modalEl = document.getElementById("deleteConfirmModal");
+    bootstrap.Modal.getInstance(modalEl).hide();
+  } catch (err) {
+    console.error(err);
+    alert("Xóa sản phẩm thất bại. Vui lòng thử lại hoặc kiểm tra kết nối.");
+  }
+};
+
+/***************************************************************************************************************************/
+/**
+ * Cập nhật product
+ */
 let editImages = [];
 let editImagesLoading = false;
 
+//Khi mở modal
 async function showEditModal(productId) {
   try {
     if (!categories.length) await loadMasterData();
@@ -326,13 +382,7 @@ async function showEditModal(productId) {
   }
 }
 
-function reIndexPreviews() {
-  const wrappers = document.querySelectorAll(
-    "#editPreviewContainer .image-preview-wrapper"
-  );
-  wrappers.forEach((w, i) => (w.dataset.index = i));
-}
-
+//Khi nhấn update
 document.getElementById("updateProduct").addEventListener("click", async () => {
   if (editImagesLoading)
     return showToast("Please wait, image upload in progress…", "warning");
@@ -356,7 +406,7 @@ document.getElementById("updateProduct").addEventListener("click", async () => {
 
   const inventory_id = inventories.find(
     (c) => c.name.trim().toLowerCase() === inventory.toLowerCase()
-  ).id;
+  )?.id;
 
   const price = parseFloat(document.getElementById("editProductPrice").value);
   const description = document
@@ -401,6 +451,7 @@ document.getElementById("updateProduct").addEventListener("click", async () => {
   }
 });
 
+//Xử lý image
 document.addEventListener("DOMContentLoaded", () => {
   const editPreviewContainer = document.getElementById("editPreviewContainer");
   const updateBtn = document.getElementById("updateProduct");
@@ -478,9 +529,165 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-let selectedImageUrls = [];
-let uploadInProgress = false;
+function reIndexPreviews() {
+  const wrappers = document.querySelectorAll(
+    "#editPreviewContainer .image-preview-wrapper"
+  );
+  wrappers.forEach((w, i) => (w.dataset.index = i));
+}
 
+/***************************************************************************************************************************/
+/**
+ * Filter và Sort
+ */
+
+//Debounce
+const debouncedLoadProducts = debounce(() => {
+  currentPage = 1;
+  loadProducts(1);
+}, 400);
+
+//Search sản phẩm với debounce
+document
+  .getElementById("searchProduct")
+  .addEventListener("input", debouncedLoadProducts);
+
+//Filter theo category
+document.getElementById("filterCategory").addEventListener("change", () => {
+  currentPage = 1;
+  loadProducts();
+});
+
+//Sort
+document.getElementById("sortSelect").addEventListener("change", () => {
+  currentPage = 1;
+  loadProducts();
+});
+
+/***************************************************************************************************************************/
+/**
+ * Helper function
+ *
+ */
+
+//Hiển thị toast
+function showToast(message, type = "success") {
+  const toastElement = document.getElementById("toastAlert");
+  const toastBody = document.getElementById("toastMessage");
+
+  toastElement.className = `toast align-items-center text-bg-${type} border-0`;
+  toastBody.textContent = message;
+
+  const toast = new bootstrap.Toast(toastElement);
+  toast.show();
+}
+
+//Kỹ thuật debounce
+function debounce(func, delay) {
+  let timeoutId;
+  return function (...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func.apply(this, args), delay);
+  };
+}
+
+//Call api để lấy danh sách product
+async function loadProducts(page = 1) {
+  isSearching = false;
+
+  const sortValue = document.getElementById("sortSelect").value;
+  const categoryId = document.getElementById("filterCategory").value;
+  const name = document.getElementById("searchProduct").value.trim();
+
+  let sort = "";
+  if (sortValue === "price-asc") sort = "price";
+  else if (sortValue === "price-desc") sort = "-price";
+  else if (sortValue === "name-asc") sort = "name";
+  else if (sortValue === "name-desc") sort = "-name";
+
+  const queryParams = new URLSearchParams({
+    page,
+    size: pageSize,
+  });
+
+  if (name !== "") queryParams.append("name", name);
+  if (categoryId !== "") queryParams.append("category_id", categoryId);
+  if (sort !== "") queryParams.append("sort", sort);
+
+  try {
+    const response = await fetch(
+      `http://localhost:8080/products/search?${queryParams.toString()}`
+    );
+    const data = await response.json();
+
+    const products = data.result.data;
+    pages = data.result.meta.pages;
+
+    renderProducts(products);
+    updatePrevNextButtons();
+  } catch (error) {
+    console.error("Failed to load products:", error);
+  }
+}
+
+//Product table
+function renderProducts(products) {
+  const start = (currentPage - 1) * pageSize;
+  const body = document.getElementById("product-table-body");
+  body.innerHTML = "";
+
+  let productsToRender = [...products];
+
+  productsToRender.forEach((p, i) => {
+    body.innerHTML += `
+      <tr>
+        <td>${start + i + 1}</td>
+        <td>${p.id}</td>
+        <td><img src="${p.imageUrls[0]}" alt="product" height="50"></td>
+        <td>${p.name}</td>
+        <td>${p.categoryName}</td>
+        <td>${p.price.toLocaleString()} đ</td>
+        <td>
+          <button class="btn btn-sm btn-outline-primary me-2" onclick="showEditModal(${
+            p.id
+          })"><i class="bi bi-pencil"></i></button>
+          <button class="btn btn-sm btn-danger" onclick="showDeleteModal(${
+            p.id
+          })"><i class="bi bi-trash"></i></button>
+        </td>
+      </tr>`;
+  });
+}
+
+//Xử lý phần pagination
+function updatePrevNextButtons() {
+  const prevBtn = document.getElementById("prevPage");
+  const nextBtn = document.getElementById("nextPage");
+
+  if (currentPage <= 1) {
+    prevBtn.style.display = "none";
+  } else {
+    prevBtn.style.display = "inline-block";
+  }
+
+  if (currentPage >= pages) {
+    nextBtn.style.display = "none";
+  } else {
+    nextBtn.style.display = "inline-block";
+  }
+}
+
+document.getElementById("prevPage").onclick = () => {
+  if (currentPage > 0) currentPage--;
+  loadProducts(currentPage);
+};
+
+document.getElementById("nextPage").onclick = () => {
+  if (currentPage + 1 <= pages) currentPage++;
+  loadProducts(currentPage);
+};
+
+//Upload ảnh
 async function uploadSingleFile(file) {
   const formData = new FormData();
   formData.append("fileImage", file);
@@ -500,66 +707,7 @@ async function uploadSingleFile(file) {
   return imageUrl;
 }
 
-document.getElementById("saveProduct").addEventListener("click", async () => {
-  if (uploadInProgress)
-    return showToast("Please wait, image upload in progress…", "warning");
-
-  const name = document.getElementById("productName").value.trim();
-  const category_id = document.getElementById("productCategory").value;
-  const supplier_id = document.getElementById("productSupplier").value;
-  const inventory_id = document.getElementById("productInventory").value;
-  const price = parseFloat(document.getElementById("productPrice").value);
-  const description = document
-    .getElementById("productDescription")
-    .value.trim();
-
-  if (
-    !name ||
-    !category_id ||
-    !supplier_id ||
-    !inventory_id ||
-    isNaN(price) ||
-    !description
-  )
-    return showToast("Please fill in all required fields!", "danger");
-  if (price < 0) return showToast("Price must not be negative!", "danger");
-  if (!selectedImageUrls.length)
-    return showToast("No images uploaded yet!", "danger");
-
-  try {
-    const productPayload = {
-      name,
-      price,
-      description,
-      category_id,
-      supplier_id,
-      inventory_id,
-      imageUrls: selectedImageUrls,
-    };
-    console.log(productPayload);
-
-    const res = await fetch("/products", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(productPayload),
-    });
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.message ?? "Create product failed!");
-    }
-
-    showToast("Product created successfully!");
-    await loadProducts();
-    resetForm();
-    bootstrap.Modal.getInstance(
-      document.getElementById("addProductModal")
-    ).hide();
-  } catch (err) {
-    console.error(err);
-    showToast(err.message, "danger");
-  }
-});
-
+//Reset lại form sau khi create, update
 function resetForm() {
   document.getElementById("productName").value = "";
   document.getElementById("productCategory").value = "";
@@ -571,108 +719,3 @@ function resetForm() {
   document.getElementById("previewContainer").innerHTML = "";
   selectedImageUrls = [];
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  const previewContainer = document.getElementById("previewContainer");
-  const saveBtn = document.getElementById("saveProduct");
-
-  document
-    .getElementById("productImageFile")
-    .addEventListener("change", async (e) => {
-      const files = Array.from(e.target.files);
-      previewContainer.innerHTML = "";
-      selectedImageUrls = [];
-      if (!files.length) return;
-
-      files.forEach((file) => {
-        const reader = new FileReader();
-        reader.onload = (evt) => {
-          const wrapper = document.createElement("div");
-          wrapper.className = "image-preview-wrapper";
-
-          const img = document.createElement("img");
-          img.src = evt.target.result;
-          img.className = "img-thumbnail";
-          img.style.maxHeight = "100px";
-
-          const actions = document.createElement("div");
-          actions.className = "preview-action";
-
-          const eyeIcon = document.createElement("i");
-          eyeIcon.className = "bi bi-eye-fill"; // Bootstrap Icons
-          eyeIcon.title = "View";
-          eyeIcon.onclick = () => {
-            document.getElementById("modalImage").src = img.src;
-            new bootstrap.Modal(
-              document.getElementById("imagePreviewModal")
-            ).show();
-          };
-
-          const deleteIcon = document.createElement("i");
-          deleteIcon.className = "bi bi-x-circle-fill";
-          deleteIcon.title = "Remove";
-          deleteIcon.onclick = () => {
-            const index = wrapper.getAttribute("data-index");
-            selectedImageUrls.splice(index, 1);
-            wrapper.remove();
-            updatePreviewIndexes();
-          };
-
-          actions.appendChild(eyeIcon);
-          actions.appendChild(deleteIcon);
-
-          wrapper.appendChild(img);
-          wrapper.appendChild(actions);
-          previewContainer.appendChild(wrapper);
-        };
-        reader.readAsDataURL(file);
-      });
-
-      uploadInProgress = true;
-      saveBtn.disabled = true;
-      try {
-        const uploadPromises = files.map(uploadSingleFile);
-        const urls = await Promise.all(uploadPromises);
-        selectedImageUrls = urls;
-        console.log(selectedImageUrls);
-        showToast("Images uploaded!", "success");
-        updatePreviewIndexes();
-      } catch (err) {
-        console.error(err);
-        showToast(err.message, "danger");
-        selectedImageUrls = [];
-        previewContainer.innerHTML = "";
-        document.getElementById("productImageFile").value = "";
-      } finally {
-        uploadInProgress = false;
-        saveBtn.disabled = false;
-      }
-    });
-});
-
-function updatePreviewIndexes() {
-  const wrappers = previewContainer.querySelectorAll(".image-preview-wrapper");
-  wrappers.forEach((w, i) => w.setAttribute("data-index", i));
-}
-
-document
-  .getElementById("addProductModal")
-  .addEventListener("shown.bs.modal", () => {
-    loadCategories("productCategory");
-    loadSuppliers();
-  });
-
-window.addEventListener("load", function () {
-  loadProducts();
-  loadCategories("filterCategory");
-  loadInventories();
-});
-document.getElementById("searchProduct").addEventListener("input", () => {
-  currentPage = 0;
-  renderProducts();
-});
-
-document.getElementById("filterCategory").addEventListener("change", () => {
-  currentPage = 0;
-  renderProducts();
-});

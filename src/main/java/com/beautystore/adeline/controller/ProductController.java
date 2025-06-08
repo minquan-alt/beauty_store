@@ -118,4 +118,30 @@ public class ProductController {
         return apiResponse;
     }
 
+    @GetMapping("/search")
+    public ApiResponse<PagedResponse<ProductResponse>> adminSearch(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String name,
+            @RequestParam(name = "category_id", required = false) Long categoryId,
+            @RequestParam(required = false) String sort) {
+
+        int actualPage = (page == null || page < 1) ? 1 : page;
+        int actualSize = (size == null || size < 1) ? productService.countProducts() : size;
+
+        Page<ProductResponse> productPage = productService.getProductsPageWithFilterSort(
+            actualPage - 1, actualSize, name, categoryId, sort);
+
+        PagedResponse<ProductResponse> pagedResponse = new PagedResponse<>(
+                productPage.getContent(),
+                new PagedResponse.Meta(
+                        actualPage,
+                        actualSize,
+                        productPage.getTotalPages(),
+                        productPage.getTotalElements()));
+        ApiResponse<PagedResponse<ProductResponse>> apiResponse = new ApiResponse<>();
+        apiResponse.setResult(pagedResponse);
+        return apiResponse;
+    }
+
 }
