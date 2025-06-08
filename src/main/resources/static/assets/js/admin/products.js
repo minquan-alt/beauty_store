@@ -9,21 +9,24 @@ let categories = [];
 let suppliers = [];
 let inventories = [];
 
-function loadProducts(page = 1) {
+async function loadProducts(page = 1) {
   isSearching = false;
-  fetch(`http://localhost:8080/products?page=${page}&size=${pageSize}`)
-    .then((res) => res.json())
-    .then((data) => {
-      const products = data.result.data;
-      pages = data.result.meta.pages;
-      renderProducts(products);
-      updatePrevNextButtons();
-    })
-    .catch((error) => {
-      console.error("Failed to load products:", error);
-    });
-}
 
+  try {
+    const response = await fetch(
+      `http://localhost:8080/products?page=${page}&size=${pageSize}`
+    );
+    const data = await response.json();
+
+    const products = data.result.data;
+    pages = data.result.meta.pages;
+
+    renderProducts(products);
+    updatePrevNextButtons();
+  } catch (error) {
+    console.error("Failed to load products:", error);
+  }
+}
 function renderProducts(products) {
   const start = (currentPage - 1) * pageSize;
   const body = document.getElementById("product-table-body");
@@ -186,18 +189,31 @@ async function loadInventories() {
   });
 }
 
-// document.getElementById("confirmDeleteBtn").onclick = () => {
-//   const index = sampleProducts.findIndex((p) => p.productId === deleteId);
-//   if (index !== -1) {
-//     sampleProducts.splice(index, 1);
-//     saveToStorage();
-//     renderProducts();
-//     deleteId = null;
-//     bootstrap.Modal.getInstance(
-//       document.getElementById("deleteConfirmModal")
-//     ).hide();
-//   }
-// };
+document.getElementById("confirmDeleteBtn").onclick = async () => {
+  if (!deleteId) return;
+
+  try {
+    const response = await fetch(`/products/${deleteId}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Lỗi xoá: ${response.status}`);
+    }
+
+    await loadProducts();
+    deleteId = null;
+
+    const modalEl = document.getElementById("deleteConfirmModal");
+    bootstrap.Modal.getInstance(modalEl).hide();
+  } catch (err) {
+    console.error(err);
+    alert("Xóa sản phẩm thất bại. Vui lòng thử lại hoặc kiểm tra kết nối.");
+  }
+};
 
 async function loadMasterData() {
   try {
@@ -374,7 +390,7 @@ document.getElementById("updateProduct").addEventListener("click", async () => {
     }
 
     showToast("Product updated successfully!");
-    loadProducts();
+    await loadProducts();
     resetForm();
     bootstrap.Modal.getInstance(
       document.getElementById("editProductModal")
@@ -533,7 +549,7 @@ document.getElementById("saveProduct").addEventListener("click", async () => {
     }
 
     showToast("Product created successfully!");
-    loadProducts();
+    await loadProducts();
     resetForm();
     bootstrap.Modal.getInstance(
       document.getElementById("addProductModal")
