@@ -4,6 +4,7 @@ import com.beautystore.adeline.dto.request.AuthenticationRequest;
 import com.beautystore.adeline.entity.User;
 import com.beautystore.adeline.exception.AppException;
 import com.beautystore.adeline.exception.ErrorCode;
+import com.beautystore.adeline.mapper.UserMapper;
 import com.beautystore.adeline.repository.UserRepository;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,7 +20,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
 public class AuthenticationService {
-    UserRepository userRepository;
+    private UserRepository userRepository;
+    private UserMapper userMapper;
+
 
     public User authenticate(AuthenticationRequest request, HttpSession session) {
         User user = userRepository.findByEmail(request.getEmail())
@@ -28,6 +31,7 @@ public class AuthenticationService {
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new AppException(ErrorCode.INVALID_CREDENTIALS);
         }
+        session.setAttribute("user", userMapper.toUserResponse(user));
         session.setAttribute("userId", user.getId());
         return user;
     }

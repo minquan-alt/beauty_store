@@ -17,4 +17,5 @@ public class UserResponse {
     Long id;
     String name;
     String email;
+    String phone;
 }

@@ -4,6 +4,39 @@ function formatVND(number) {
     return number.toLocaleString("vi-VN") + "VND";
 }
 
+async function goToPayment() {
+    var addOrderRequest = {};
+    var paymentInfo = {};
+
+    const addressId = document.getElementById('delivery-address').value;
+    const notes = document.getElementById('order-notes').value.trim();
+    const couponCode = document.getElementById('coupon-code').value.trim();
+
+    addOrderRequest["addressId"] = addressId;
+    addOrderRequest["notes"] = notes;
+    paymentInfo["couponCode"] = couponCode;
+    addOrderRequest["paymentInfo"] = paymentInfo;
+
+    await fetch(`/api/orders/add`, {
+        method: "POST",
+        headers: {
+            'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify(addOrderRequest)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.code == 1000) {
+            console.log("Add order successfully")
+            window.location.href = "/payment";
+        } else {
+            alert("Error: " + data.message);
+        }
+    })
+    .catch()
+    console.log(addOrderRequest);
+}
+
 document.getElementById("apply-coupon").addEventListener("click", async function () {
     const code = document.getElementById("coupon-code").value.trim().toUpperCase();
     var shippingFee;
@@ -98,16 +131,17 @@ function checkCartEmpty() {
 }
 
 // Gán sự kiện cho các dropdown chọn số lượng
-document.querySelectorAll(".quantity-select").forEach((input) => {
+document.querySelectorAll("input[type='number']").forEach((input) => {
     input.addEventListener("change", function () {
         const quantity = parseInt(this.value) || 1;
-        const unitPrice = parseFloat(this.dataset.unitPrice);
-        const itemId = this.dataset.itemId;
+        const unitPrice = parseFloat(this.getAttribute('data-unit-price'));
+        const itemId = this.getAttribute('data-item-id'); 
+
 
         const total = unitPrice * quantity;
 
         // Cập nhật UI
-        const priceDisplay = this.closest(".row").querySelector(".products-price");
+        const priceDisplay = this.closest(".product-item").querySelector(".products-price");
         priceDisplay.innerText = "$" + total.toFixed(2);
 
         // Gửi dữ liệu cập nhật lên server

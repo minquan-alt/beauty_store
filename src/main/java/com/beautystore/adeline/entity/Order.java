@@ -23,11 +23,7 @@ public class Order {
         Returned,      // Đã trả hàng
     }
 
-    public enum PaymentMethod {
-        Cash,           // Thanh toán khi nhận hàng
-        Momo,           // Momo
-        BankTransfer,   // Chuyển khoản
-    }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,17 +59,13 @@ public class Order {
     private BigDecimal discount = BigDecimal.ZERO;
 
     @Column(name = "shipping_fee", nullable = false, precision = 10, scale = 2)
-    private BigDecimal shippingFee = BigDecimal.ZERO;
+    private BigDecimal shippingFee = BigDecimal.valueOf(2);
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal tax = BigDecimal.ZERO;
 
     @Column(name = "total_amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalAmount;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "payment_method", length = 20)
-    private PaymentMethod paymentMethod;
 
     @Lob
     private String notes;

@@ -1,7 +1,8 @@
 package com.beautystore.adeline.dto.request;
 
 
-import com.beautystore.adeline.entity.Order.PaymentMethod;
+
+import com.beautystore.adeline.entity.Payment.PaymentMethod;
 
 import lombok.AccessLevel;
 import lombok.Builder;

@@ -2,6 +2,12 @@ package com.beautystore.adeline.controller;
 
 import java.util.List;
 
+import com.beautystore.adeline.dto.request.UserCreateRequest;
+import com.beautystore.adeline.dto.request.UserUpdateRequest;
+import com.beautystore.adeline.dto.response.ApiResponse;
+import com.beautystore.adeline.dto.response.UserResponse;
+import com.beautystore.adeline.services.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,13 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.beautystore.adeline.dto.request.UserCreateRequest;
-import com.beautystore.adeline.dto.request.UserUpdateRequest;
-import com.beautystore.adeline.dto.response.ApiResponse;
-import com.beautystore.adeline.dto.response.UserResponse;
-import com.beautystore.adeline.entity.User;
-import com.beautystore.adeline.services.UserService;
-
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @RestController
@@ -55,9 +55,10 @@ public class UserController {
     }
 
     // update user
-    @PutMapping("/{userId}")
-    ApiResponse<UserResponse> updateUser(@RequestBody UserUpdateRequest request,@PathVariable("userId") Long userId){
+    @PutMapping("/update-user")
+    ApiResponse<UserResponse> updateUser(@RequestBody UserUpdateRequest request, HttpSession session){
         ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
+        Long userId = userService.getUserIdFromSession(session);
         apiResponse.setResult(userService.updateUser(request, userId));
         return apiResponse;
     }

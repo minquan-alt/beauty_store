@@ -3,8 +3,6 @@ package com.beautystore.adeline.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.beautystore.adeline.entity.Order.PaymentMethod;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -31,6 +29,12 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 public class Payment {
+
+    public enum PaymentMethod {
+        Cash,
+        Momo,
+        BankTransfer,
+    }
 
     public enum PaymentStatus {
         Pending, Completed, Failed

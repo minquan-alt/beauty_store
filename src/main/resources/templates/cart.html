@@ -1,64 +1,63 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Your Shopping Cart</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
-    <link rel="stylesheet" href="assets/css/cart.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  </head>
-  <body>
-    <header>
-      <div class="row header-row" style="background-color: black; color: white;">
-        <div class="col col-2" style="font-size: 18px; margin-top: 20px">
-          <i class="bi bi-chevron-left"></i>
-          <a class="text-white text-decoration-none" href="/product">Product</a>
-        </div>
-         <div class="col col-8 brand-name"><a class="navbar-brand brand-name " href="/">Adeline</a></div>
+<head>
+  <meta charset="UTF-8" />
+  <title>Your Shopping Cart</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="assets/css/cart.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        <!-- <div class="" style="font-size: 29px">adeline</div> -->
+</head>
+
+<body>
+  <header>
+    <div class="row header-row" style="background-color: black; color: white;">
+      <div class="col col-2" style="font-size: 18px; margin-top: 20px">
+        <i class="bi bi-chevron-left"></i>
+        <a class="text-white text-decoration-none" href="/product">Product</a>
       </div>
-    </header>
+      <div class="col col-8 brand-name"><a class="navbar-brand brand-name " href="/">Adeline</a></div>
 
-    <div class="freeship-row d-flex justify-content-center align-items-center" style="background-color: rgba(0, 0, 0, 0.74); height: 50px; color: white">
-      Free shipping on all orders for members
+      <!-- <div class="" style="font-size: 29px">adeline</div> -->
     </div>
+  </header>
 
-    <div class="container mt-4">
-      <!-- ✅ Giỏ hàng -->
-      <div id="cart-container">
-        <h2>Your cart</h2>
+  <div class="freeship-row d-flex justify-content-center align-items-center"
+    style="background-color: rgba(0, 0, 0, 0.74); height: 50px; color: white">
+    Free shipping on all orders for members
+  </div>
 
-<div th:each="item: ${cart.items}" class="container py-4 border-bottom product-item">
-  <div class="d-flex justify-content-between align-items-center">
+  <div class="container mt-4">
+    <!-- ✅ Giỏ hàng -->
+    <div id="cart-container">
+      <h2>Your cart</h2>
 
-    <!-- Ảnh -->
-    <div class="d-flex align-items-center gap-3" style="min-width: 300px;">
-      <img src="https://picsum.photos/200" alt="Product Image"
-           style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;" />
-      <div>
-        <h5 class="fw-bold mb-2" th:text="${item.productName}">Product Name</h5>
-        <input type="number"
-               class="form-control text-center"
-               style="width: 60px; font-size: 14px; padding: 4px 6px;"
-               th:attr="data-item-id=${item.productId}, data-unit-price=${item.unitPrice}"
-               th:value="${item.quantity}"
-               min="1" />
-        <input type="hidden" class="unit-price" th:value="${item.unitPrice}" />
-      </div>
-    </div>
+      <div th:each="item: ${cart.items}" class="container py-4 border-bottom product-item">
+        <div class="d-flex justify-content-between align-items-center">
 
-    <!-- Giá + Nút xóa -->
-    <div class="text-end d-flex flex-column align-items-end justify-content-between" style="height: 100px;">
-      <button class="btn btn-link text-danger p-0 btn-remove"
-              th:attr="data-item-id=${item.productId}">
-        <i class="bi bi-x-lg fs-5"></i>
-      </button>
-      <p class="mb-0 fw-semibold text-success products-price"
-         th:text="${#numbers.formatDecimal(item.unitPrice * item.quantity, 1, 'COMMA', 2, 'POINT')} + ' $'">
+          <!-- Ảnh -->
+          <div class="d-flex align-items-center gap-3" style="min-width: 300px;">
+            <img src="https://picsum.photos/200" alt="Product Image"
+              style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;" />
+            <div>
+              <h5 class="fw-bold mb-2" th:text="${item.productName}">Product Name</h5>
+              <input type="number" class="form-control text-center"
+                style="width: 60px; font-size: 14px; padding: 4px 6px;"
+                th:attr="data-item-id=${item.productId}, data-unit-price=${item.unitPrice}" th:value="${item.quantity}"
+                min="1" />
+              <input type="hidden" class="unit-price" th:value="${item.unitPrice}" />
+            </div>
+          </div>
+
+          <!-- Giá + Nút xóa -->
+          <div class="text-end d-flex flex-column align-items-end justify-content-between" style="height: 100px;">
+            <button class="btn btn-link text-danger p-0 btn-remove" th:attr="data-item-id=${item.productId}">
+              <i class="bi bi-x-lg fs-5"></i>
+            </button>
+            <p class="mb-0 fw-semibold text-success products-price" th:text="${#numbers.formatDecimal(item.unitPrice * item.quantity, 1, 'COMMA', 2, 'POINT')} + ' $'">
         0$
       </p>
     </div>
@@ -66,11 +65,64 @@
   </div>
 </div>
 
+<div class="mb-4 p-3" style="background-color: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
+        <div class="row align-items-center mb-3">
+          <div class="col-md-10">
+            <h5 class="mb-0">
+              <i class="bi bi-geo-alt-fill text-primary me-2"></i>
+              Delivery Address
+            </h5>
+          </div>
+          <div class="col-md-2">
+            <a th:href="@{/settings}" class="btn btn-outline-primary w-100">
+              <i class="bi bi-plus-circle me-1"></i>
+              Add New
+            </a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <select class="form-select" id="delivery-address" name="deliveryAddress">
+              <option value="" disabled>Choose delivery address</option>
+              <option th:each="address : ${addresses}" th:value="${address.id}" th:selected="${address.default}"
+                th:text="${address.street + ', ' + address.city + ', ' + address.postalCode + ', ' + address.country}">
+                Address details
+              </option>
+            </select>
+          </div>
+        </div>
+        <!-- Hiển thị địa chỉ đã chọn -->
+        <div id="selected-address-info" class="mt-3 p-2"
+          style="background-color: white; border-radius: 4px; border: 1px solid #e0e0e0; display: none;">
+          <small class="text-muted">Selected address:</small>
+          <p class="mb-0 fw-medium" id="address-details"></p>
+        </div>
+      </div>
 
-
-
-
-
+      <!-- NEW: Additional Note Section -->
+      <div class="mb-4 p-3" style="background-color: #fff8e1; border-radius: 8px; border: 1px solid #ffc107;">
+        <div class="row align-items-center mb-3">
+          <div class="col-12">
+            <h5 class="mb-0">
+              <i class="bi bi-pencil-square text-warning me-2"></i>
+              Order Notes
+            </h5>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <textarea 
+              class="form-control" 
+              id="order-notes" 
+              name="orderNotes" 
+              rows="3" 
+              placeholder="Add special instructions for your order (gift wrapping, delivery preferences, etc.)..."
+              style="resize: vertical; min-height: 80px;">
+            </textarea>
+            <small class="text-muted mt-1 d-block">Maximum 500 characters</small>
+          </div>
+        </div>
+      </div>
 <!-- Tổng & Mã giảm giá -->
 <div class="mt-4 " style="background-color: #f8f9fa; border-radius: 8px;">
   <div class="row mb-3">
@@ -98,11 +150,11 @@
   </div>
 </div>
 <div class="text-end">
-  <a th:href="@{/payment}"
-   class="btn btn-dark rounded-pill px-4 py-2 fw-semibold">
-   Checkout
-</a>
+  <button type="button" onclick="goToPayment()" class="btn btn-dark rounded-pill px-4 py-2 fw-semibold">
+    Checkout
+</button>
 </div>
+
 
       </div>
 

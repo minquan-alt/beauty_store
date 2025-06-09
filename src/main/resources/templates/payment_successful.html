@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Payment Successful</title>
+  <!-- Nhúng SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+  <script th:inline="javascript">
+    // Lấy orderId từ Thymeleaf
+
+    // Hiện SweetAlert
+    Swal.fire({
+      icon: 'success',
+      title: 'Thanh toán thành công!',
+      html: `Đơn hàng đã được hoàn tất.`,
+      showCancelButton: true,
+      confirmButtonText: 'Về trang chủ',
+      cancelButtonText: 'Tiếp tục mua sắm',
+      allowOutsideClick: false,
+      allowEscapeKey: false
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Về trang chủ
+        window.location.href = '/'
+      } else {
+        // Tiếp tục mua sắm (VD: trang danh sách sản phẩm)
+        window.location.href = /*[[ @{/products} ]]*/ '/product';
+      }
+    });
+  </script>
+</body>
+</html>

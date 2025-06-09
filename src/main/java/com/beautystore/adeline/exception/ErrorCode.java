@@ -61,6 +61,9 @@ public enum ErrorCode {
     PAYMENT_NOT_EXIST(8006, "Payment not exists"),
     PAYMENT_PROCESS_ERROR(8007, "You met error in payment process"),
     PAYMENT_NOT_FOUND(8008, "There is no payments"),
+    PAYMENT_EXISTS(8009, "Payment is existing"),
+    PAYMENT_CREATION_FAILED(8010, "Failed to create payment"),
+    ERROR_IN_CREATE_SIGNATURE(8011, "Error creating signature"),
 
 
 

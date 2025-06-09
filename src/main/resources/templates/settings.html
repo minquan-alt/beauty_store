@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,21 +49,26 @@
                         <h2>Personal Details</h2>
                         <div class="section-line"></div>
                     </div>
-                    
+
                     <form class="user-info-form" id="userInfoForm">
                         <div class="form-grid">
                             <div class="input-group">
-                                <input type="text" id="name" name="name"required>
+                                <input th:value="${user.name}" type="text" id="name" name="name" required>
                                 <label for="name">Full Name</label>
                                 <div class="input-border"></div>
                             </div>
                             <div class="input-group">
-                                <input type="email" id="email" name="email"required>
+                                <input th:value="${user.email}" type="email" id="email" name="email" required>
                                 <label for="email">Email Address</label>
                                 <div class="input-border"></div>
                             </div>
+                            <div class="input-group">
+                                <input th:value="${user.phone}" type="text" id="phone" name="phone" required>
+                                <label for="phone">Phone Number</label>
+                                <div class="input-border"></div>
+                            </div>
                         </div>
-                        
+
                         <div class="form-actions">
                             <button type="button" class="btn btn-secondary">Cancel</button>
                             <button type="submit" class="btn btn-primary">
@@ -81,30 +86,39 @@
                         <h2>Delivery Addresses</h2>
                         <div class="section-line"></div>
                         <button class="add-address-btn" onclick="showAddAddressModal()">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
                                 <line x1="12" y1="5" x2="12" y2="19"></line>
                                 <line x1="5" y1="12" x2="19" y2="12"></line>
                             </svg>
                             Add New Address
                         </button>
                     </div>
-                    
+
                     <div class="addresses-list">
-                        <div class="address-card default-address">
+                        <div th:each="address : ${addresses}"
+                            th:if="${address != null}"
+                            th:class="${address.default} ? 'address-card default-address' : 'address-card'">
                             <div class="address-header">
                                 <div class="address-type">
-                                    <span class="default-badge">Default</span>
+                                    <span th:if="${address.default}" class="default-badge">Default</span>
                                 </div>
                                 <div class="address-actions">
-                                    <button class="action-btn update-btn" onclick="showEditAddressModal(1)">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <!-- Update button - always visible -->
+                                    <button class="action-btn update-btn"
+                                        th:onclick="'showEditAddressModal(' + ${address.id} + ')'">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2">
                                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                             <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                         </svg>
                                         Update
                                     </button>
-                                    <button class="action-btn default-btn" onclick="setAsDefault(1)" style="display: none;">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <!-- Set as Default button - only show if not already default -->
+                                    <button th:if="${not address.default}" class="action-btn default-btn"
+                                        th:onclick="'setAsDefault(' + ${address.id} + ')'">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2">
                                             <polyline points="20,6 9,17 4,12"></polyline>
                                         </svg>
                                         Set as Default
@@ -112,65 +126,16 @@
                                 </div>
                             </div>
                             <div class="address-details">
-                                <p class="street">123 Beauty Boulevard</p>
-                                <p class="location">New York, NY 10001</p>
-                                <p class="country">United States</p>
+                                <p class="street" th:text="'Address: ' + ${address.street}">Street Address</p>
+                                <p class="location" th:text="'City: ' + ${address.city + ', ' + address.postalCode}">City, Postal Code</p>
+                                <p class="country" th:text="'Country: ' + ${address.country}">Country</p>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="address-card">
-                            <div class="address-header">
-                                <div class="address-type">
-                                </div>
-                                <div class="address-actions">
-                                    <button class="action-btn update-btn" onclick="showEditAddressModal(2)">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                            <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                        </svg>
-                                        Update
-                                    </button>
-                                    <button class="action-btn default-btn" onclick="setAsDefault(2)">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <polyline points="20,6 9,17 4,12"></polyline>
-                                        </svg>
-                                        Set as Default
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="address-details">
-                                <p class="street">456 Corporate Center</p>
-                                <p class="location">Manhattan, NY 10005</p>
-                                <p class="country">United States</p>
-                            </div>
-                        </div>
-
-                        <div class="address-card">
-                            <div class="address-header">
-                                <div class="address-type">
-                                </div>
-                                <div class="address-actions">
-                                        <button class="action-btn update-btn" onclick="showEditAddressModal(3)">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                            <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                        </svg>
-                                        Update
-                                    </button>
-                                    <button class="action-btn default-btn" onclick="setAsDefault(3)">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <polyline points="20,6 9,17 4,12"></polyline>
-                                        </svg>
-                                        Set as Default
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="address-details">
-                                <p class="street">789 Maple Street</p>
-                                <p class="location">Brooklyn, NY 11201</p>
-                                <p class="country">United States</p>
-                            </div>
-                        </div>
+                    <div th:if="${addresses == null or #lists.isEmpty(addresses)}" 
+                        style="text-align: center; padding: 40px; color: #6b7280;">
+                        <p>No delivery addresses found. Add your first address to get started.</p>
                     </div>
                 </div>
             </section>
@@ -197,7 +162,7 @@
                     </svg>
                 </button>
             </div>
-            <form class="modal-form">
+            <form class="modal-form" id="addAdressForm">
                 <div class="form-grid">
                     <div class="input-group full-width">
                         <input type="text" id="newStreet" name="street" required>
@@ -210,17 +175,18 @@
                         <div class="input-border"></div>
                     </div>
                     <div class="input-group">
-                        <input type="text" id="newPostal" name="postal" required>
+                        <input type="text" id="newPostal" name="postalCode" required>
                         <label for="newPostal">Postal Code</label>
                         <div class="input-border"></div>
                     </div>
                     <div class="select-group full-width">
                         <select name="country" required>
                             <option value="" disabled selected hidden></option>
-                            <option value="US">United States</option>
-                            <option value="CA">Canada</option>
-                            <option value="UK">United Kingdom</option>
-                            <option value="AU">Australia</option>
+                            <option value="United States">United States</option>
+                            <option value="Canada">Canada</option>
+                            <option value="United Kingdom">United Kingdom</option>
+                            <option value="Australia">Australia</option>
+                            <option value="Viet Nam">Viet Nam</option>
                         </select>
                         <label>Country</label>
                         <div class="select-border"></div>
@@ -250,30 +216,47 @@
                     </svg>
                 </button>
             </div>
-            <form class="modal-form">
+            <form class="modal-form" th:action="@{/address/update}" method="put" id="editAddressForm">
+                <input type="hidden" id="editAddressId" name="id" th:value="${editAddress != null ? editAddress.id : ''}">
+
                 <div class="form-grid">
                     <div class="input-group full-width">
-                        <input type="text" id="editStreet" name="street" required>
+                        <input 
+                            type="text" 
+                            id="editStreet" name="street"
+                            required
+                            th:value="${editAddress != null ? editAddress.street : ''}">
                         <label for="editStreet">Street Address</label>
                         <div class="input-border"></div>
                     </div>
                     <div class="input-group">
-                        <input type="text" id="editCity" name="city" required>
+                        <input
+                            type="text" 
+                            id="editCity" 
+                            name="city" 
+                            th:value="${editAddress != null ? editAddress.city : ''}"
+                            required>
                         <label for="editCity">City</label>
                         <div class="input-border"></div>
                     </div>
                     <div class="input-group">
-                        <input type="text" id="editPostal" name="postal" required>
+                        <input 
+                            type="text" 
+                            id="editPostal" 
+                            name="postalCode"
+                            th:value="${editAddress != null ? editAddress.postalCode : ''}"
+                            required>
                         <label for="editPostal">Postal Code</label>
                         <div class="input-border"></div>
                     </div>
                     <div class="select-group full-width">
-                        <select name="country" required>
-                            <option value="" disabled selected hidden></option>
-                            <option value="US">United States</option>
-                            <option value="CA">Canada</option>
-                            <option value="UK">United Kingdom</option>
-                            <option value="AU">Australia</option>
+                        <select id="editCountry" name="country" required>
+                            <option value="" disabled th:selected="${editAddress == null}" hidden></option>
+                            <option value="United States" th:selected="${editAddress != null and editAddress.country == 'United States'}">United States</option>
+                            <option value="Canada" th:selected="${editAddress != null and editAddress.country == 'Canada'}">Canada</option>
+                            <option value="United Kingdom" th:selected="${editAddress != null and editAddress.country == 'United Kingdom'}">United Kingdom</option>
+                            <option value="Australia" th:selected="${editAddress != null and editAddress.country == 'Australia'}">Australia</option>
+                            <option value="Viet Nam" th:selected="${editAddress != null and editAddress.country == 'Viet Nam'}">Viet Nam</option>
                         </select>
                         <label>Country</label>
                         <div class="select-border"></div>
@@ -315,20 +298,137 @@
             }
         });
 
-        document.getElementById('userInfoForm').addEventListener('submit', function(e) {
+        document.getElementById('userInfoForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
+
+            const form = this;
             const submitBtn = this.querySelector('.btn-primary');
             
             submitBtn.classList.add('loading');
             submitBtn.disabled = true;
-            
-            setTimeout(() => {
+
+            const formData = new FormData(form);
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+
+            try {
+                const response = await fetch("http://localhost:8080/users/update-user", {
+                    method: "PUT",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(jsonData)
+                });
+
+                if(response.ok) {
+                    showNotification('Personal details updated successfully');
+                } else {
+                    showNotification('Something went wrong. Please try again.', 'error');
+                }
+            } catch (error) {
+                showNotification('Network error. Please try again.', 'error');
+                console.error(error);
+            } finally {
                 submitBtn.classList.remove('loading');
                 submitBtn.disabled = false;
-                showNotification('Personal details updated successfully');
-            }, 1500);
+            }
         });
+
+        document.getElementById("editAddressForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const form = this;
+            const submitBtn = this.querySelector('.btn-primary');
+
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            var message;
+
+            const formData = new FormData(form);
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            })
+            console.log(jsonData);
+
+            fetch("/address/update", {
+                method: "PUT",
+                headers: {
+                    "Content-Type" : 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code == 1000) {
+                    console.log(data.result)
+                    message = "Updated address successfully"
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    message = "Updated address failed:" + data.message;
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                showNotification("Updated address failed: " + error);
+            })
+            .finally(() => {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+                
+                closeEditAddressModal();
+                showNotification(message);
+            })
+        })
+
+        document.getElementById("addAdressForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const form = this;
+            const submitBtn = this.querySelector('.btn-primary');
+
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            var message;
+
+            const formData = new FormData(form);
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            })
+            console.log(jsonData);
+
+            fetch("/address/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type" : 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code == 1000) {
+                    console.log(data.result)
+                    message = "Updated address successfully"
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    message = "Updated address failed:" + data.message;
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                showNotification("Updated address failed: " + error);
+            })
+            .finally(() => {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+            })
+        })
+
 
         function showNotification(message) {
             const notification = document.getElementById('notification');
@@ -377,8 +477,31 @@
         }
 
         function showEditAddressModal(addressId) {
-            document.getElementById('editAddressModal').classList.add('show');
-            document.body.style.overflow = 'hidden';
+            fetch(`/address/${addressId}`, {
+                method: 'GET'
+            }) 
+            .then(response => response.json())
+            .then(data => {
+                if (data.code == 1000) {
+                    var result = data.result
+                    document.getElementById('editAddressId').value = result.id;
+                    document.getElementById('editStreet').value = result.street || '';
+                    document.getElementById('editCity').value = result.city || '';
+                    document.getElementById('editPostal').value = result.postalCode || '';
+                    
+                    const countrySelect = document.getElementById('editCountry');
+                    const countryValue = result.country;
+                    countrySelect.value = countryValue;
+
+                    document.getElementById('editAddressModal').classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                }
+                console.log(data)
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error loading address data');
+            });
         }
 
         function closeEditAddressModal() {

@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import com.beautystore.adeline.dto.request.AddOrderRequest;
 import com.beautystore.adeline.dto.request.OrderUpdateRequest;
+import com.beautystore.adeline.dto.response.CartItemResponse;
 import com.beautystore.adeline.dto.response.DashboardDataResponse;
 import com.beautystore.adeline.dto.response.OrderResponse;
 import com.beautystore.adeline.entity.Address;
@@ -48,8 +49,9 @@ public class OrderService {
     private final CouponRepository couponRepository;
     private final InventoryRepository inventoryRepository;
     private final PurchaseOrderRepository purchaseOrderRepository;
+    private final CartService cartService;
 
-    public OrderService(OrderRepository orderRepository, UserService userService, UserRepository userRepository, AddressRepository addressRepository, ProductRepository productRepository, CouponRepository couponRepository,InventoryRepository inventoryRepository, PurchaseOrderRepository purchaseOrderRepository) {
+    public OrderService(OrderRepository orderRepository, UserService userService, UserRepository userRepository, AddressRepository addressRepository, ProductRepository productRepository, CouponRepository couponRepository,InventoryRepository inventoryRepository, PurchaseOrderRepository purchaseOrderRepository, CartService cartService) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.userRepository = userRepository;
@@ -58,6 +60,7 @@ public class OrderService {
         this.couponRepository = couponRepository;
         this.purchaseOrderRepository = purchaseOrderRepository;
         this.inventoryRepository = inventoryRepository;
+        this.cartService = cartService;
     }
 
     public DashboardDataResponse getDashboardData(LocalDateTime startDate, LocalDateTime endDate) {
@@ -167,25 +170,44 @@ public class OrderService {
         order.setUser(user);
 
         // 4. Xử lý order items
-        List<OrderDetail> orderItems = request.getItems().stream()
-                .map((AddOrderRequest.OrderItemRequest itemRequest) -> { // Thêm explicit type
-                    Product product = productRepository.findById(itemRequest.getProductId())
-                            .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
-
-                int product_quantity =  product.getQuantity();
+        List<OrderDetail> orderItems = cartService.getCart(userId).getItems().stream()
+            .map(cartItem -> {
+                Product product = productRepository.findById(cartItem.getProductId())
+                    .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
                 
-                if(itemRequest.getQuantity() > product_quantity) {
+                int product_quantity = product.getQuantity();
+                if (cartItem.getQuantity() > product_quantity) {
                     throw new AppException(ErrorCode.STOCK_QUANTITY_NOT_ENOUGH);
                 }
 
                 return OrderDetail.builder()
-                        .order(order)
-                        .product(product)
-                        .quantity(itemRequest.getQuantity())
-                        .unitPrice(product.getPrice())
-                        .build();
+                    .order(order)
+                    .product(product)
+                    .quantity(cartItem.getQuantity())
+                    .unitPrice(product.getPrice())
+                    .build();
             })
-        .collect(Collectors.toList());
+            .collect(Collectors.toList());
+
+        // List<OrderDetail> orderItems = request.getItems().stream()
+        //         .map((AddOrderRequest.OrderItemRequest itemRequest) -> { // Thêm explicit type
+        //             Product product = productRepository.findById(itemRequest.getProductId())
+        //                     .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        //         int product_quantity =  product.getQuantity();
+                
+        //         if(itemRequest.getQuantity() > product_quantity) {
+        //             throw new AppException(ErrorCode.STOCK_QUANTITY_NOT_ENOUGH);
+        //         }
+
+        //         return OrderDetail.builder()
+        //                 .order(order)
+        //                 .product(product)
+        //                 .quantity(itemRequest.getQuantity())
+        //                 .unitPrice(product.getPrice())
+        //                 .build();
+        //     })
+        // .collect(Collectors.toList());
 
         order.setItems(orderItems);
 
@@ -196,7 +218,6 @@ public class OrderService {
 
         order.setAddress(address);
         order.setSubtotal(subtotal);
-        order.setPaymentMethod(request.getPaymentInfo().getMethod());
         order.setNotes(request.getNotes());
         order.setShippingFee(BigDecimal.valueOf( request.getPaymentInfo().getShippingFee() != null ? request.getPaymentInfo().getShippingFee() : 2.0 ));
         order.setTax(BigDecimal.valueOf(request.getPaymentInfo().getTax() != null ? request.getPaymentInfo().getTax() : 0.0));
@@ -210,11 +231,14 @@ public class OrderService {
 
         // 7. Lưu order
         Order savedOrder = orderRepository.save(order);
-        long expiryTime = System.currentTimeMillis() + 5 * 60 * 1000;
+        OrderResponse response = mapToResponse(savedOrder);
+
+        long expiryTime = System.currentTimeMillis() + 15 * 60 * 1000;
         TempOrderSession temp = new TempOrderSession(savedOrder.getId(), expiryTime);
         session.setAttribute("orderSession", temp);
+        session.setAttribute("order", response);
         // 8. Map sang DTO
-        return mapToResponse(savedOrder);
+        return response;
     }
 
     private OrderResponse mapToResponse(Order order) {
@@ -224,9 +248,12 @@ public class OrderService {
                 .orderId(order.getId())
                 .customerName(order.getUser().getName())
                 .orderDate(order.getOrderDate())
+                .subTotal(order.getSubtotal())
                 .status(order.getStatus().name())
                 .totalAmount(order.getTotalAmount())
-                .paymentMethod(order.getPaymentMethod().toString())
+                .discount(order.getDiscount())
+                .shippingFee(order.getShippingFee())
+                .phone(order.getUser().getPhone())
                 .address(address)
                 .items(order.getItems().stream()
                         .map(this::mapToItemResponse)

@@ -3,9 +3,12 @@ package com.beautystore.adeline.controller;
 import com.beautystore.adeline.dto.request.AuthenticationRequest;
 import com.beautystore.adeline.dto.response.ApiResponse;
 import com.beautystore.adeline.dto.response.AuthenticationResponse;
+import com.beautystore.adeline.dto.response.UserResponse;
 import com.beautystore.adeline.entity.User;
+import com.beautystore.adeline.mapper.UserMapper;
 import com.beautystore.adeline.services.AuthenticationService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,12 +28,16 @@ import lombok.experimental.FieldDefaults;
 public class AuthenticationController {
 
     AuthenticationService authenticationService;
+
+    @Autowired
+    private UserMapper userMapper;
     
     @PostMapping("/log-in")
     ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request, HttpServletRequest httpRequest) {
-        HttpSession session = httpRequest.getSession(); // Lấy session
+        HttpSession session = httpRequest.getSession();
         User user = authenticationService.authenticate(request, session);
-        session.setAttribute("userEmail", request.getEmail()); // Lưu email vào session
+        UserResponse userRes = userMapper.toUserResponse(user);
+        session.setAttribute("user", userRes);
         boolean isAdmin = "ROLE_ADMIN".equals(user.getRole());
         session.setAttribute("isAdmin", isAdmin);
 

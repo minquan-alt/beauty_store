@@ -16,6 +16,7 @@ import lombok.experimental.FieldDefaults;
 public class UserCreateRequest {
     String name;
     String email;
+    String phone;
     @Size(min = 8, message = "PASSWORD_INVALID")
     String password;
     

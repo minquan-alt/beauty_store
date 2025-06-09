@@ -3,7 +3,7 @@ package com.beautystore.adeline.dto.response;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.beautystore.adeline.entity.Order.PaymentMethod;
+import com.beautystore.adeline.entity.Payment.PaymentMethod;
 
 import lombok.Builder;
 import lombok.Data;

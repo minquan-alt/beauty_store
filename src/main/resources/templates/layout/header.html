@@ -24,7 +24,7 @@
         <!-- Biểu tượng tài khoản + giỏ hàng bên phải -->
         <div class="d-flex ms-auto gap-3">
           <!-- Nếu đã đăng nhập, hiển thị avatar và email -->
-          <div class="dropdown" th:if="${not #strings.isEmpty(session.userEmail)}">
+          <div class="dropdown" th:if="${not #strings.isEmpty(session.user)}">
             <a class="nav-link d-flex align-items-center gap-2 dropdown-toggle" href="#" id="userDropdown" role="button"
                data-bs-toggle="dropdown" aria-expanded="false">
               <img th:src="@{/assets/images/user.png}" alt="Avatar" class="rounded-circle">
@@ -32,7 +32,7 @@
           
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
               <li>
-                <a class="dropdown-item d-flex align-items-center gap-2" href="/admin/settings">
+                <a class="dropdown-item d-flex align-items-center gap-2" href="/settings">
                   <i class="bi bi-receipt"></i>  Settings
                 </a>
               </li>
@@ -54,11 +54,15 @@
           </div>
           
           <!-- Nếu chưa đăng nhập, hiển thị nút Sign in -->
-          <div th:if="${#strings.isEmpty(session.userEmail)}">
+          <div th:if="${#strings.isEmpty(session.user)}">
             <a class="nav-link d-flex align-items-center gap-2" href="/signin">
               <i class="bi bi-person-circle"></i>Sign in
             </a>
           </div>
+
+                      
+
+
         
           <!-- Giỏ hàng -->
           <a class="nav-link" href="cart-view">
@@ -66,9 +70,7 @@
           </a>
         </div>
         
-        <!-- <a class="nav-link d-flex align-items-center gap-2" href="/signin">
-          <i class="bi bi-person-circle"></i>Sign in
-        </a> -->
+
       </div>
   </nav>
 
