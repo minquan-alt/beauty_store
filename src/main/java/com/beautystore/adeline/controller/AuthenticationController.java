@@ -38,6 +38,7 @@ public class AuthenticationController {
         User user = authenticationService.authenticate(request, session);
         UserResponse userRes = userMapper.toUserResponse(user);
         session.setAttribute("user", userRes);
+        session.setAttribute("userId", userRes.getId());
         boolean isAdmin = "ROLE_ADMIN".equals(user.getRole());
         session.setAttribute("isAdmin", isAdmin);
 

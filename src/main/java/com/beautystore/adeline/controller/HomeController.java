@@ -58,14 +58,12 @@ public class HomeController {
 
     @GetMapping("/cart-view")
     public String cart(HttpSession session, Model model) {
-        Long userId;
-        try {
-            userId = userService.getUserIdFromSession(session);
-        } catch (AppException e) {
+        UserResponse user = (UserResponse) session.getAttribute("user");
+        if(user == null) {
             return "signin";
         }
 
-        CartResponse cart = cartService.getCart(userId);
+        CartResponse cart = cartService.getCart(user.getId());
         List<AddressResponse> addresses = addressService.getAddresses(session);
         model.addAttribute("addresses", addresses);
         model.addAttribute("cart", cart); 
