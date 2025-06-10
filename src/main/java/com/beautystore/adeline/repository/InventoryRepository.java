@@ -1,10 +1,7 @@
 package com.beautystore.adeline.repository;
 
-import java.util.Optional;
-
+import org.springframework.data.jpa.repository.JpaRepository;
 import com.beautystore.adeline.entity.Inventory;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
-public interface InventoryRepository extends JpaRepository<Inventory, Long>{
+public interface InventoryRepository extends JpaRepository<Inventory, Long> {
 }

@@ -1,7 +1,4 @@
-package com.beautystore.adeline.dto.request;
-
-import java.math.BigDecimal;
-import java.util.List;
+package com.beautystore.adeline.dto.response;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,12 +12,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class ProductUpdateRequest {
+public class SupplierResponse {
+    Long id;
+    String contactInfo;
     String name;
-    String description;
-    BigDecimal price;
-    Long supplier_id;
-    Long category_id;
-    Long inventory_id;
-    List<String> imageUrls;
 }

@@ -1,8 +1,6 @@
 package com.beautystore.adeline.dto.request;
 
-import java.math.BigDecimal;
-import java.util.List;
-
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,12 +13,10 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class ProductUpdateRequest {
+public class SupplierCreateRequest {
+    @NotBlank(message = "Contact info is required")
+    String contactInfo;
+
+    @NotBlank(message = "Name is required")
     String name;
-    String description;
-    BigDecimal price;
-    Long supplier_id;
-    Long category_id;
-    Long inventory_id;
-    List<String> imageUrls;
 }

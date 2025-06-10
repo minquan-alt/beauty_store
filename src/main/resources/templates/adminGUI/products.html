@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Products - Beauty Store Admin</title>
   <!-- <link rel="stylesheet" href="style.css"> -->
-  <link rel="stylesheet" href="assets/css/admin/products.css">
+  <link rel="stylesheet" href="/assets/css/admin/products.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
@@ -100,9 +100,10 @@
         </select>
 
         <input type="number" id="productPrice" class="form-control mb-2" placeholder="Price">
-        <input type="file" id="productImageFile" class="form-control mb-2" accept="image/*">
+        <input type="file" id="productImageFile" class="form-control mb-2" accept="image/*" multiple>
         <textarea id="productDescription" class="form-control mb-2" placeholder="Description" maxlength="200"></textarea>
-        <img id="previewImage" class="img-thumbnail d-none" style="max-height: 150px;" alt="Preview" />
+        <!-- <img id="previewImage" class="img-thumbnail d-none" style="max-height: 150px;" alt="Preview" multiple/> -->
+        <div id="previewContainer" class="d-flex flex-wrap"></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-dark" id="saveProduct">Save</button>
@@ -148,8 +149,9 @@
         <textarea id="editProductDescription" class="form-control mb-2" placeholder="Description"></textarea>
 
         <label for="editProductImageFile" class="form-label">Product Image</label>
-        <input type="file" id="editProductImageFile" class="form-control mb-2" accept="image/*">
-        <img id="editPreviewImage" class="img-thumbnail d-none" style="max-height: 150px;" alt="Preview" />
+        <input type="file" id="editProductImageFile" class="form-control mb-2" accept="image/*" multiple>
+        <!-- <img id="editPreviewImage" class="img-thumbnail d-none" style="max-height: 150px;" alt="Preview" /> -->
+        <div id="editPreviewContainer" class="d-flex flex-wrap"></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-dark" id="updateProduct">Update</button>
@@ -177,6 +179,23 @@
     </div>
   </div>
 </div>
+
+
+<!-- Modal: Preview image -->
+<div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 600px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Image Preview</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex justify-content-center align-items-center" style="min-height: 400px;">
+        <img id="modalImage" src="" alt="Preview" class="img-fluid rounded shadow" style="max-height: 100%; max-width: 100%; object-fit: contain;" />
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
   <div id="toastAlert" class="toast align-items-center text-bg-success border-0" role="alert">

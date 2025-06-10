@@ -27,6 +27,8 @@ public enum ErrorCode {
     ADD_CART_RESPONSE_NOT_FOUND(2010, "Error in add to cart"),
 
     SUPPLIER_NOT_FOUND(3001, "Supplier not found"),
+    SUPPLIER_LIST_EMPTY(3002,"Supplier is empty"),
+    SUPPLIER_HAS_PRODUCT(3003, "Cannot delete supplier because it has associated products"),
    
     CATEGORY_EXISTED(4001, "Category existed"),
     CATEGORY_LIST_EMPTY(4002, "Category is empty"),
@@ -64,6 +66,14 @@ public enum ErrorCode {
     PAYMENT_EXISTS(8009, "Payment is existing"),
     PAYMENT_CREATION_FAILED(8010, "Failed to create payment"),
     ERROR_IN_CREATE_SIGNATURE(8011, "Error creating signature"),
+
+    INVENTORY_NOT_FOUND(9001, "Inventory not found"),
+    INVENTORY_HAS_PRODUCTS(9002, "Cannot delete inventory because it has associated products"),
+    INVENTORY_LIST_EMPTY(9003, "Inventory is empty"),
+
+    FILE_IS_EMPTY(10001, "File is empty"),
+    INVALID_FILE_SIZE(10002, "File size must be less than 2MB!"),
+    INVALID_FILE_TYPE(10003, "Only JPG, PNG, and WEBP images are allowed!")
 
 
 
