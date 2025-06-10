@@ -27,13 +27,13 @@ public class PurchaseOrderController {
     @Autowired
     private PurchaseOrderService purchaseOrderService;
 
-    @PostMapping
-    public ApiResponse<PurchaseOrderResponse> createPurchaseOrder(@RequestBody @Valid PurchaseOrderRequest request){
-        System.out.println("Received request" + request);
-        ApiResponse<PurchaseOrderResponse> apiResponse = new ApiResponse<>();
-        apiResponse.setResult(purchaseOrderService.createPurchaseOrder(request));
-        return apiResponse;
-    }
+    // @PostMapping
+    // public ApiResponse<PurchaseOrderResponse> createPurchaseOrder(@RequestBody @Valid PurchaseOrderRequest request){
+    //     System.out.println("Received request" + request);
+    //     ApiResponse<PurchaseOrderResponse> apiResponse = new ApiResponse<>();
+    //     apiResponse.setResult(purchaseOrderService.createPurchaseOrder(request));
+    //     return apiResponse;
+    // }
 
     @GetMapping
     public ApiResponse<PagedResponse<PurchaseOrderResponse>> getPurchaseOrders(

@@ -47,7 +47,7 @@ public class Product {
 
     @JsonIgnoreProperties({"products"}) // Ngăn đệ quy
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
     @JsonIgnoreProperties({"products"}) // Ngăn đệ quy

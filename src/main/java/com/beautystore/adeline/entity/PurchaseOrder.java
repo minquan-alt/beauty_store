@@ -27,10 +27,6 @@ public class PurchaseOrder {
     @Column(name = "purchase_order_id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "supplier_id")
-    private Supplier supplier;
-
     @Column(name = "order_date")
     private LocalDateTime orderDate;
 

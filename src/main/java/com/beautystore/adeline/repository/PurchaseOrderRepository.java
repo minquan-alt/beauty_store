@@ -11,9 +11,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Long> {
-    Optional<PurchaseOrder> findTopBySupplierIdOrderByIdDesc(Long supplierId);
-
-    
     @Query("""
             SELECT po
             FROM PurchaseOrder po

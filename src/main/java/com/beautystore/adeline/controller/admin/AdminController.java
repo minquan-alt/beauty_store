@@ -55,6 +55,12 @@ public class AdminController {
     //         @RequestParam(value = "startDate", required = false) LocalDateTime startDate,
     //         @RequestParam(value = "endDate", required = false) LocalDateTime endDate,
     //         Model model) {
+    @GetMapping("/coupon") 
+    String adminCoupon(){
+        return "adminGUI/coupon";
+    }
+
+    
 
     //     // Mặc định báo cáo là tháng này
     //     if (startDate == null) {
