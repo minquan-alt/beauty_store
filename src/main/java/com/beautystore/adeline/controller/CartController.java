@@ -25,16 +25,14 @@ import jakarta.validation.Valid;
 public class CartController {
 
   private final CartService cartService;
-  private final UserService userService;
 
-  public CartController(CartService cartService, UserService userService) {
+  public CartController(CartService cartService) {
     this.cartService = cartService;
-    this.userService = userService;
   }
 
   @GetMapping()
   public ApiResponse<CartResponse> getCart(HttpSession session) {
-    Long userId = userService.getUserIdFromSession(session);
+    Long userId = (Long) session.getAttribute("userId");
     ApiResponse<CartResponse> response = new ApiResponse<>();
     response.setResult(cartService.getCart(userId));
     return response;
@@ -43,7 +41,7 @@ public class CartController {
 
   @PostMapping("/add")
   public ApiResponse<AddCartResponse> addToCart(@RequestBody AddToCartRequest request, HttpSession session) {
-      Long userId = userService.getUserIdFromSession(session);
+      Long userId = (Long) session.getAttribute("userId");
       AddCartResponse result = cartService.addToCart(request, userId);
       ApiResponse<AddCartResponse> apiResponse = new ApiResponse<>();
       apiResponse.setResult(result);
@@ -57,7 +55,9 @@ public class CartController {
       @PathVariable Long productId,
       @Valid @RequestBody UpdateCartItemRequest request,
       HttpSession session) {
-    Long userId = userService.getUserIdFromSession(session);
+
+    Long userId = (Long) session.getAttribute("userId");
+
     ApiResponse<CartResponse> response = new ApiResponse<>();
     response.setResult(cartService.updateCartItem(userId, productId, request));
     return response;
@@ -67,7 +67,8 @@ public class CartController {
   public ApiResponse<String> removeFromCart(
       @PathVariable Long productId,
       HttpSession session) {
-    Long userId = userService.getUserIdFromSession(session);
+
+    Long userId = (Long) session.getAttribute("userId");
     ApiResponse<String> response = new ApiResponse<>();
     cartService.removeFromCart(userId, productId);
     response.setResult("Product with id:  " + productId + " has been removed from cart");
@@ -76,7 +77,8 @@ public class CartController {
 
   @DeleteMapping("/clear")
   public ApiResponse<String> clearCart(HttpSession session) {
-    Long userId = userService.getUserIdFromSession(session);
+    Long userId = (Long) session.getAttribute("userId");
+
     cartService.clearCart(userId);
     ApiResponse<String> response = new ApiResponse<>();
     response.setResult("Cart cleared successfully");

@@ -157,7 +157,7 @@ public class OrderService {
     @Transactional
     public OrderResponse addOrder(AddOrderRequest request, HttpSession session) {
         // 1. Xác thực người dùng
-        Long userId = userService.getUserIdFromSession(session);
+        Long userId = (Long) session.getAttribute("userId");
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 

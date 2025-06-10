@@ -36,11 +36,16 @@ async function goToPayment() {
     .catch()
     console.log(addOrderRequest);
 }
-
 document.getElementById("apply-coupon").addEventListener("click", async function () {
     const code = document.getElementById("coupon-code").value.trim().toUpperCase();
-    var shippingFee;
-    var discountTotalCart;
+    
+    // Lấy shipping fee từ DOM
+    const shippingFeeText = document.getElementById("shippingFee").innerText;
+    const shippingFee = parseFloat(shippingFeeText.replace('$', ''));
+    
+    var discountAmount = 0; // Số tiền được giảm
+    var finalTotal = 0;     // Tổng cuối cùng sau giảm giá
+    
     var totalCart = await fetch(`http://localhost:8080/cart`, {
             method: "GET",
         })
@@ -54,44 +59,74 @@ document.getElementById("apply-coupon").addEventListener("click", async function
         })
         .catch(e => {
             console.log("Error: ", e);
+            return null;
         })
-    console.log("totalCart: ", totalCart)
-
-    if (code != null && code != "") {
+    
+    console.log("totalCart: ", totalCart);
+    console.log("shippingFee: ", shippingFee);
+    
+    if (code != null && code != "" && totalCart != null) {
         await fetch(`http://localhost:8080/coupons/${code}`, {
                 method: "GET",
             })
             .then(res => res.json())
             .then(data => {
-                console.log(data.type);
+                console.log("Coupon data:", data);
                 const result = data.result;
+                
                 if (data.code == 1000) {
                     if (result.type == "PERCENTAGE") {
-                        discountTotalCart = totalCart * (100 - result.discountValue) / 100;
-                        alert(`Applied coupon successfully: ${code} (-${totalCart - discountTotalCart} $)`);
-
+                        // Tính số tiền giảm
+                        discountAmount = totalCart * (result.discountValue / 100);
+                        finalTotal = totalCart - discountAmount + shippingFee;
+                        
+                        alert(`Applied coupon successfully: ${code} (-$${discountAmount.toFixed(2)})`);
+                        
                     } else if (result.type == "FIXED_AMOUNT") {
-                        discountTotalCart = totalCart - result.discountValue;
-                        alert(`Applied coupon successfully: ${code} (-${totalCart - discountTotalCart} $)`);
-
+                        // Giảm số tiền cố định
+                        discountAmount = result.discountValue;
+                        finalTotal = totalCart - discountAmount + shippingFee;
+                        
+                        alert(`Applied coupon successfully: ${code} (-$${discountAmount.toFixed(2)})`);
+                        
                     } else if (result.type == "FREE_SHIPPING") {
-                        discountTotalCart = totalCart - shippingFee;
-                        alert(`Applied coupon successfully: ${code} (-${totalCart - discountTotalCart} $)`);
-
+                        // Miễn phí ship
+                        discountAmount = shippingFee;
+                        finalTotal = totalCart; // Không cộng shipping fee
+                        
+                        alert(`Applied coupon successfully: ${code} (Free Shipping -$${shippingFee.toFixed(2)})`);
+                        
                     } else {
                         alert("Coupon is expired or not existed.");
+                        return;
                     }
+                    
+                    // Cập nhật DOM
+                    document.getElementById("subtotal").innerText = '$' + totalCart.toFixed(2);
+                    document.getElementById("discount").innerText = '-$' + discountAmount.toFixed(2);
+                    
+                    // Cập nhật shipping fee nếu là free shipping
+                    if (result.type == "FREE_SHIPPING") {
+                        document.getElementById("shippingFee").innerText = '$0.00';
+                    }
+                    
+                    document.getElementById("cart-total").innerText = '$' + finalTotal.toFixed(2);
+                    
+                } else {
+                    alert("Coupon is expired or not existed.");
                 }
             })
             .catch(e => {
                 console.log("Error: ", e);
+                alert("Error applying coupon. Please try again.");
             })
-        console.log("Final discount total cart: ", discountTotalCart);
+    } else {
+        if (!code || code == "") {
+            alert("Please enter a coupon code.");
+        } else {
+            alert("Unable to load cart information. Please refresh and try again.");
+        }
     }
-
-    document.getElementById("subtotal").innerText = '$' + totalCart.toFixed(2);
-    document.getElementById("discount").innerText = '$' + (totalCart - discountTotalCart).toFixed(2);
-    document.getElementById("cart-total").innerText = '$' + discountTotalCart.toFixed(2);
 });
 
 async function updateCartTotal() {

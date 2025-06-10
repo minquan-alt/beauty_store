@@ -143,6 +143,7 @@
   <div class="row justify-content-end text-end">
     <div class="col-md-6">
       <p class="mb-1"><strong>Subtotal:</strong> <span id="subtotal"  th:text="${'$' + #numbers.formatDecimal(cart.totalCartPrice, 1, 'COMMA', 2, 'POINT')}">$0</span></p>
+      <p class="mb-1 text-success"><strong>Shipping fee:</strong> <span id="shippingFee">$2.00</span></p>
       <p class="mb-1 text-success"><strong>Discount:</strong> <span id="discount">$0.00</span></p>
       <hr />
       <h4><strong>Total:</strong> <span id="cart-total" th:text="${'$' + #numbers.formatDecimal(cart.totalCartPrice, 1, 'COMMA', 2, 'POINT')}"></span></h4>

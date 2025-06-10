@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CouponResponse {
-    private Long id;
     private String code;
     private Coupon.CouponType type;
     private BigDecimal discountValue;

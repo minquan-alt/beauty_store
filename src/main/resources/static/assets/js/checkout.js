@@ -177,7 +177,6 @@ function initializeOrderId() {
 
 /* Initialize on page load */
 document.addEventListener("DOMContentLoaded", function() {
-    updateTotal();
     initializeOrderId();
     
     if (paymentSelect && paymentSelect.value === "Select method") {
