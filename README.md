@@ -28,6 +28,9 @@ Adeline Beauty Store là một ứng dụng web thương mại điện tử dàn
 
 
 <h2>💻 Cách chạy dự án</h2>
+Tiền điều kiện:
+  - Đã cài đặt JDK 17, Git, Maven Apache - 4.0.0 (hoặc Maven Extension nếu dùng VS Code)
+  - Đã kết nối vào mạng ảo trên Zerotier
 
 <h4>1️⃣ Clone repository</h4>
 
@@ -37,9 +40,10 @@ Adeline Beauty Store là một ứng dụng web thương mại điện tử dàn
 </pre>
 
 <h4>2️⃣ Chạy dự án bằng Maven</h4>
+<pre>Tạo file cấu hình application.properties</pre>
+<pre>Trong terminal gõ: mvn spring-boot:run</pre>
+<pre>Nếu dùng IDE như IntelliJ: Chạy file AdelineBeautyStoreApplication.java trong package com.beautystore.adeline</pre>
 
-<pre>mvn spring-boot:run</pre>
+<h4>3️⃣ Truy cập ứng dụng</h4> 
 
-3️⃣ Truy cập ứng dụng
-
-Mở trình duyệt và vào http://localhost:8080
+Mở trình duyệt và vào http://localhost:8080 (hoặc số PORT bạn cấu hình trong application.properties
