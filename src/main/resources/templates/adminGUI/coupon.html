@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,149 +10,150 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="dashboard.css">
 </head>
+
 <body>
-<div class="container-fluid">
-  <div class="row">
-    <!-- Sidebar -->
-    <nav class="col-md-2 d-none d-md-block sidebar py-4">
-      <div class="px-3">
-        <h4 class="mb-4">Beauty Admin</h4>
-        <ul class="nav flex-column">
-  <li class="nav-item mb-2">
-    <a class="nav-link" href="dashboard.html">
-      <i class="bi bi-house-door"></i> Dashboard
-    </a>
-  </li>
-  <li class="nav-item mb-2">
-    <a class="nav-link " href="products.html">
-      <i class="bi bi-bag"></i> Products
-    </a>
-  </li>
-  <li class="nav-item mb-2">
-    <a class="nav-link " href="orders.html">
-      <i class="bi bi-cart-check"></i> Orders
-    </a>
-  </li>
-  <li class="nav-item mb-2">
-    <a class="nav-link" href="users.html">
-      <i class="bi bi-people"></i> Users
-    </a>
-  </li>
-  <li class="nav-item mb-2">
-    <a class="nav-link" href="inventory.html">
-      <i class="bi bi-truck"></i> Inventory
-    </a>
-  </li>
-  <li class="nav-item mb-2">
-    <a class="nav-link" href="suppliers.html">
-      <i class="bi bi-box-seam"></i> Suppliers
-    </a>
-  </li>
-  <li class="nav-item mb-2"><a class="nav-link active" href="coupons.html"><i class="bi bi-percent"></i> Coupons</a></li>
-</ul>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <nav class="col-md-2 d-none d-md-block sidebar py-4">
+        <div class="px-3">
+          <h4 class="mb-4">Beauty Admin</h4>
+          <ul class="nav flex-column">
 
-      </div>
-    </nav>
+            <li class="nav-item mb-2"><a class="nav-link active" th:href="@{/admin}"><i class="bi bi-house-door"></i>
+                Dashboard</a></li>
+            <li class="nav-item mb-2"><a class="nav-link" th:href="@{/admin/product}"><i class="bi bi-bag"></i>
+                Products</a></li>
+            <li class="nav-item mb-2"><a class="nav-link" th:href="@{/admin/order}"><i class="bi bi-cart-check"></i>
+                Orders</a></li>
+            <li class="nav-item mb-2"><a class="nav-link" th:href="@{/admin/user}"><i class="bi bi-people"></i>
+                Users</a></li>
+            <li class="nav-item mb-2"><a class="nav-link" th:href="@{/admin/inventory}"><i class="bi bi-truck"></i>
+                Inventory</a></li>
+            <li class="nav-item mb-2"><a class="nav-link" th:href="@{/admin/supplier}"><i class="bi bi-box-seam"></i>
+                Suppliers</a></li>
+            <li class="nav-item mb-2"><a class="nav-link" th:href="@{/admin/coupon}"><i class="bi bi-percent"></i>
+                Coupon</a></li>
+          </ul>
 
-    <!-- Main Content -->
-<main class="col-md-10 ms-sm-auto px-4 py-4">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Coupon Management</h2>
-        <button class="btn btn-dark" onclick="openCreateModal()">
-          <i class="bi bi-plus-circle"></i> New Coupon
-        </button>
-      </div>
-
-      <div class="input-group mb-3">
-        <input type="text" id="searchInput" class="form-control" placeholder="Search by code...">
-        <button class="btn btn-outline-dark" onclick="renderCoupons()">Search</button>
-      </div>
-
-      <div class="card mb-3">
-        <div class="card-header bg-dark text-white">Coupons List</div>
-        <div class="card-body p-0">
-          <table class="table table-hover mb-0 text-nowrap">
-            <thead class="table-light">
-              <tr>
-                <th>Code</th>
-                <th>Type</th>
-                <th>Discount</th>
-                <th>Min Order</th>
-                <th>Max Discount</th>
-                <th>Start</th>
-                <th>End</th>
-                <th>Usage</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="couponTableBody"></tbody>
-          </table>
         </div>
-      </div>
-    </main>
-  </div>
-</div>
+      </nav>
 
-<div class="modal fade" id="couponModal" tabindex="-1">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header bg-dark text-white">
-        <h5 class="modal-title" id="couponModalTitle">Create/Edit Coupon</h5>
-        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form id="couponForm">
-          <input type="hidden" id="editingIndex">
-          <div class="row mb-3">
-            <div class="col"><input type="text" class="form-control" id="code" placeholder="Coupon Code" required /></div>
-            <div class="col">
-              <select class="form-select" id="type" required>
-                <option value="">-- Type --</option>
-                <option value="PERCENTAGE">Percentage</option>
-                <option value="FIXED_AMOUNT">Fixed</option>
-                <option value="FREE_SHIPPING">Free Shipping</option>
-              </select>
+      <!-- Main Content -->
+      <main class="col-md-10 ms-sm-auto px-4 py-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2>Coupon Management</h2>
+          <button class="btn btn-dark" onclick="openCreateModal()">
+            <i class="bi bi-plus-circle"></i> New Coupon
+          </button>
+        </div>
+
+        <div class="input-group mb-3">
+          <input type="text" id="searchInput" class="form-control" placeholder="Search by code...">
+          <button class="btn btn-outline-dark" onclick="renderCoupons()">Search</button>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header bg-dark text-white">Coupons List</div>
+          <div class="card-body p-0">
+            <table class="table table-hover mb-0 text-nowrap">
+              <thead class="table-light">
+                <tr>
+                  <th>Code</th>
+                  <th>Type</th>
+                  <th>Discount</th>
+                  <th>Min Order</th>
+                  <th>Max Discount</th>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th>Usage</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="couponTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal fade" id="couponModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title" id="couponModalTitle">Create/Edit Coupon</h5>
+          <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="couponForm">
+            <input type="hidden" id="editingIndex">
+            <div class="row mb-3">
+              <div class="col"><input type="text" class="form-control" id="code" placeholder="Coupon Code" required />
+              </div>
+              <div class="col">
+                <select class="form-select" id="type" required>
+                  <option value="">-- Type --</option>
+                  <option value="PERCENTAGE">Percentage</option>
+                  <option value="FIXED_AMOUNT">Fixed</option>
+                  <option value="FREE_SHIPPING">Free Shipping</option>
+                </select>
+              </div>
             </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col"><input type="number" step="0.01" id="discount" class="form-control" placeholder="Discount Value" required /></div>
-            <div class="col"><input type="number" step="0.01" id="minOrder" class="form-control" placeholder="Min Order Amount" /></div>
-            <div class="col"><input type="number" step="0.01" id="maxDiscount" class="form-control" placeholder="Max Discount Amount" /></div>
-          </div>
-          <div class="row mb-3">
-            <div class="col"><input type="date" id="start" class="form-control" required /></div>
-            <div class="col"><input type="date" id="end" class="form-control" required /></div>
-            <div class="col"><input type="number" id="usageLimit" class="form-control" placeholder="Usage Limit" /></div>
-          </div>
-          <div class="text-end">
-            <button type="submit" class="btn btn-success">Save</button>
-          </div>
-        </form>
+            <div class="row mb-3">
+              <div class="col"><input type="number" step="0.01" id="discount" class="form-control"
+                  placeholder="Discount Value" required /></div>
+              <div class="col"><input type="number" step="0.01" id="minOrder" class="form-control"
+                  placeholder="Min Order Amount" /></div>
+              <div class="col"><input type="number" step="0.01" id="maxDiscount" class="form-control"
+                  placeholder="Max Discount Amount" /></div>
+            </div>
+            <div class="row mb-3">
+              <div class="col"><input type="date" id="start" class="form-control" required /></div>
+              <div class="col"><input type="date" id="end" class="form-control" required /></div>
+              <div class="col"><input type="number" id="usageLimit" class="form-control" placeholder="Usage Limit" />
+              </div>
+            </div>
+            <div class="text-end">
+              <button type="submit" class="btn btn-success">Save</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<script>
-  let coupons = [
-    {
-      code: "WELCOME10", type: "PERCENTAGE", discountValue: 10, minOrder: 300000, maxDiscount: 50000,
-      start: "2025-06-01", end: "2025-06-30", usage: "0/100"
-    },
-    {
-      code: "SHIPFREE", type: "FREE_SHIPPING", discountValue: 0, minOrder: 500000, maxDiscount: null,
-      start: "2025-06-01", end: "2025-12-31", usage: "5/999"
-    }
-  ];
+  <script>
+    let coupons = [{
+        code: "WELCOME10",
+        type: "PERCENTAGE",
+        discountValue: 10,
+        minOrder: 300000,
+        maxDiscount: 50000,
+        start: "2025-06-01",
+        end: "2025-06-30",
+        usage: "0/100"
+      },
+      {
+        code: "SHIPFREE",
+        type: "FREE_SHIPPING",
+        discountValue: 0,
+        minOrder: 500000,
+        maxDiscount: null,
+        start: "2025-06-01",
+        end: "2025-12-31",
+        usage: "5/999"
+      }
+    ];
 
-  function renderCoupons() {
-    const keyword = document.getElementById("searchInput").value.toLowerCase();
-    const tbody = document.getElementById("couponTableBody");
-    tbody.innerHTML = "";
-    coupons
-      .filter(c => c.code.toLowerCase().includes(keyword))
-      .forEach((c, i) => {
-        tbody.innerHTML += `
+    function renderCoupons() {
+      const keyword = document.getElementById("searchInput").value.toLowerCase();
+      const tbody = document.getElementById("couponTableBody");
+      tbody.innerHTML = "";
+      coupons
+        .filter(c => c.code.toLowerCase().includes(keyword))
+        .forEach((c, i) => {
+          tbody.innerHTML += `
           <tr>
             <td>${c.code}</td>
             <td>${c.type}</td>
@@ -166,79 +168,79 @@
               <button class="btn btn-sm btn-outline-danger" onclick="deleteCoupon(${i})"><i class="bi bi-trash"></i></button>
             </td>
           </tr>`;
-      });
-  }
-
-  function openCreateModal() {
-  document.getElementById("couponModalTitle").textContent = "Create Coupon";
-  document.getElementById("couponForm").reset();
-  document.getElementById("editingIndex").value = "";
-  const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById("couponModal"));
-  modal.show();
-}
-
-function editCoupon(index) {
-  const c = coupons[index];
-  document.getElementById("couponModalTitle").textContent = "Edit Coupon";
-  document.getElementById("editingIndex").value = index;
-  code.value = c.code;
-  type.value = c.type;
-  discount.value = c.discountValue;
-  minOrder.value = c.minOrder || "";
-  maxDiscount.value = c.maxDiscount || "";
-  start.value = c.start;
-  end.value = c.end;
-  usageLimit.value = c.usage.split("/")[1];
-  const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById("couponModal"));
-  modal.show();
-}
-
-  document.getElementById("couponForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-    const i = document.getElementById("editingIndex").value;
-    const coupon = {
-      code: code.value,
-      type: type.value,
-      discountValue: parseFloat(discount.value),
-      minOrder: parseFloat(minOrder.value) || null,
-      maxDiscount: parseFloat(maxDiscount.value) || null,
-      start: start.value,
-      end: end.value,
-      usage: `0/${usageLimit.value || 999}`
-    };
-    if (i === "") {
-      coupons.push(coupon);
-    } else {
-      coupons[i] = coupon;
+        });
     }
-    renderCoupons();
-    bootstrap.Modal.getInstance(document.getElementById("couponModal")).hide();
-  });
 
-  function deleteCoupon(index) {
-    if (confirm("Are you sure you want to delete this coupon?")) {
-      coupons.splice(index, 1);
+    function openCreateModal() {
+      document.getElementById("couponModalTitle").textContent = "Create Coupon";
+      document.getElementById("couponForm").reset();
+      document.getElementById("editingIndex").value = "";
+      const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById("couponModal"));
+      modal.show();
+    }
+
+    function editCoupon(index) {
+      const c = coupons[index];
+      document.getElementById("couponModalTitle").textContent = "Edit Coupon";
+      document.getElementById("editingIndex").value = index;
+      code.value = c.code;
+      type.value = c.type;
+      discount.value = c.discountValue;
+      minOrder.value = c.minOrder || "";
+      maxDiscount.value = c.maxDiscount || "";
+      start.value = c.start;
+      end.value = c.end;
+      usageLimit.value = c.usage.split("/")[1];
+      const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById("couponModal"));
+      modal.show();
+    }
+
+    document.getElementById("couponForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const i = document.getElementById("editingIndex").value;
+      const coupon = {
+        code: code.value,
+        type: type.value,
+        discountValue: parseFloat(discount.value),
+        minOrder: parseFloat(minOrder.value) || null,
+        maxDiscount: parseFloat(maxDiscount.value) || null,
+        start: start.value,
+        end: end.value,
+        usage: `0/${usageLimit.value || 999}`
+      };
+      if (i === "") {
+        coupons.push(coupon);
+      } else {
+        coupons[i] = coupon;
+      }
       renderCoupons();
+      bootstrap.Modal.getInstance(document.getElementById("couponModal")).hide();
+    });
+
+    function deleteCoupon(index) {
+      if (confirm("Are you sure you want to delete this coupon?")) {
+        coupons.splice(index, 1);
+        renderCoupons();
+      }
     }
-  }
 
-  function editCoupon(index) {
-    const c = coupons[index];
-    document.getElementById("couponModalTitle").textContent = "Edit Coupon";
-    document.getElementById("editingIndex").value = index;
-    code.value = c.code;
-    type.value = c.type;
-    discount.value = c.discountValue;
-    minOrder.value = c.minOrder || "";
-    maxDiscount.value = c.maxDiscount || "";
-    start.value = c.start;
-    end.value = c.end;
-    usageLimit.value = c.usage.split("/")[1];
-    new bootstrap.Modal(document.getElementById("couponModal")).show();
-  }
+    function editCoupon(index) {
+      const c = coupons[index];
+      document.getElementById("couponModalTitle").textContent = "Edit Coupon";
+      document.getElementById("editingIndex").value = index;
+      code.value = c.code;
+      type.value = c.type;
+      discount.value = c.discountValue;
+      minOrder.value = c.minOrder || "";
+      maxDiscount.value = c.maxDiscount || "";
+      start.value = c.start;
+      end.value = c.end;
+      usageLimit.value = c.usage.split("/")[1];
+      new bootstrap.Modal(document.getElementById("couponModal")).show();
+    }
 
-  renderCoupons();
-</script>
+    renderCoupons();
+  </script>
 </body>
-</html>
 
+</html>

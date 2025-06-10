@@ -119,8 +119,15 @@ document
 
 //Nhấn nút save
 document.getElementById("saveProduct").addEventListener("click", async () => {
-  if (uploadInProgress)
-    return showToast("Please wait, image upload in progress…", "warning");
+  if (uploadInProgress) {
+    Swal.fire({
+      title: 'Processing!',
+      text: 'Please wait, loading...',
+      icon: 'warning',
+      confirmButtonText: 'OK'
+    });
+    return;
+  }
 
   const name = document.getElementById("productName").value.trim();
   const category_id = document.getElementById("productCategory").value;
@@ -138,11 +145,35 @@ document.getElementById("saveProduct").addEventListener("click", async () => {
     !inventory_id ||
     isNaN(price) ||
     !description
-  )
-    return showToast("Please fill in all required fields!", "danger");
-  if (price < 0) return showToast("Price must not be negative!", "danger");
-  if (!selectedImageUrls.length)
-    return showToast("No images uploaded yet!", "danger");
+  ) {
+    Swal.fire({
+      title: 'Missing form!',
+      text: 'Please fill in form!',
+      icon: 'warning',
+      confirmButtonText: 'OK'
+    });
+    return;
+  }
+
+  if (price < 0) {
+    Swal.fire({
+      title: 'Unsuitable price!',
+      text: 'Price must be more than 0!',
+      icon: 'error',
+      confirmButtonText: 'OK'
+    });
+    return;
+  }
+
+  if (!selectedImageUrls.length) {
+    Swal.fire({
+      title: 'Missing images!',
+      text: 'No image uploaded!',
+      icon: 'warning',
+      confirmButtonText: 'OK'
+    });
+    return;
+  }
 
   try {
     const productPayload = {
@@ -166,7 +197,13 @@ document.getElementById("saveProduct").addEventListener("click", async () => {
       throw new Error(err.message ?? "Create product failed!");
     }
 
-    showToast("Product created successfully!");
+    Swal.fire({
+      title: 'Successful!',
+      text: 'Product is created successfully!',
+      icon: 'success',
+      confirmButtonText: 'OK'
+    });
+
     await loadProducts();
     resetForm();
     bootstrap.Modal.getInstance(
@@ -174,7 +211,12 @@ document.getElementById("saveProduct").addEventListener("click", async () => {
     ).hide();
   } catch (err) {
     console.error(err);
-    showToast(err.message, "danger");
+    Swal.fire({
+      title: 'Lỗi!',
+      text: err.message,
+      icon: 'error',
+      confirmButtonText: 'OK'
+    });
   }
 });
 
@@ -290,13 +332,24 @@ document.getElementById("confirmDeleteBtn").onclick = async () => {
     }
 
     await loadProducts();
+    Swal.fire({
+          title: 'Deleted Successfully!',
+          text: 'The product was deleted.',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
     deleteId = null;
 
     const modalEl = document.getElementById("deleteConfirmModal");
     bootstrap.Modal.getInstance(modalEl).hide();
   } catch (err) {
     console.error(err);
-    alert("Xóa sản phẩm thất bại. Vui lòng thử lại hoặc kiểm tra kết nối.");
+        Swal.fire({
+          title: 'Deleted failed!',
+          text: 'Please try again.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
   }
 };
 
@@ -439,7 +492,12 @@ document.getElementById("updateProduct").addEventListener("click", async () => {
       throw new Error(err.message ?? "Update product failed!");
     }
 
-    showToast("Product updated successfully!");
+        Swal.fire({
+          title: 'Updated Successfully!',
+          text: 'Product updated successfully',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
     await loadProducts();
     resetForm();
     bootstrap.Modal.getInstance(
