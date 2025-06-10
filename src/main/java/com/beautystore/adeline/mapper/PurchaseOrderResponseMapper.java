@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 public interface PurchaseOrderResponseMapper {
     
     @Mapping(target = "purchaseOrderId", source = "id")
-    @Mapping(target = "supplierName", source = "supplier.name")
     @Mapping(target = "items", expression = "java(mapOrderDetails(purchaseOrder.getOrderDetails()))")
     @Mapping(target = "status", expression = "java(purchaseOrder.getStatus().name())")
     PurchaseOrderResponse toResponse(PurchaseOrder purchaseOrder);

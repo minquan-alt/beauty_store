@@ -101,6 +101,11 @@ public class AdminController {
         return "adminGUI/suppliers";
     }
 
+    @GetMapping("/coupon") 
+    String adminCoupon(){
+        return "adminGUI/coupon";
+    }
+
     
 
 
