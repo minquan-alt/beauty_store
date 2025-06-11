@@ -71,9 +71,8 @@ public class OrderService {
         BigDecimal totalCost = getTotalCost(orders);
         BigDecimal totalProfit = totalRevenue.subtract(totalCost);
 
-        // Chart data: date -> revenue, date -> profit
+ 
         Map<String, Object> chartData = new HashMap<>();
-        //Map<String, BigDecimal> revenueByDate = new TreeMap<>();
         Map<String, BigDecimal> profitByDate = new TreeMap<>();
 
         for (Order order : orders) {
