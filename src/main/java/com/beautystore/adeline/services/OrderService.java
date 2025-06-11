@@ -15,6 +15,7 @@ import com.beautystore.adeline.dto.request.OrderUpdateRequest;
 import com.beautystore.adeline.dto.response.CartItemResponse;
 import com.beautystore.adeline.dto.response.DashboardDataResponse;
 import com.beautystore.adeline.dto.response.OrderResponse;
+import com.beautystore.adeline.dto.response.FinancialMetricsResponse;
 import com.beautystore.adeline.entity.Address;
 import com.beautystore.adeline.entity.Coupon;
 import com.beautystore.adeline.entity.Order;
@@ -339,6 +340,7 @@ public class OrderService {
     // Giá gốc
     public BigDecimal getOriginalRevenue(List<Order> orders) {
         return orders.stream()
+                .filter(order -> order.getStatus() == OrderStatus.Confirmed)
                 .map(Order::getSubtotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
@@ -355,6 +357,20 @@ public class OrderService {
         return purchaseOrderRepository.findByOrderId(order.getId());
     }
 
+    public BigDecimal getTotalShippingFee(List<Order> orders){
+        return orders.stream()
+            .filter(order -> order.getStatus() == OrderStatus.Confirmed)
+            .map(Order::getShippingFee)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public BigDecimal getTotalDiscount(List<Order> orders){
+        return orders.stream()
+            .filter(order -> order.getStatus() == OrderStatus.Confirmed)
+            .map(Order::getDiscount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
     public List<Map<String, Object>> getProfitChartData(LocalDateTime start, LocalDateTime end) {
         var dashboardData = getDashboardData(start, end);
         Map<String, BigDecimal> profitMap = (Map<String, BigDecimal>) dashboardData.getChartData().get("profit");
@@ -366,5 +382,20 @@ public class OrderService {
             chartData.add(point);
         }
         return chartData;
+    }
+
+    @Transactional
+    public FinancialMetricsResponse getFinancialMetrics(LocalDateTime startDate, LocalDateTime endDate) {
+        List<Order> orders = getOrdersByDateRange(startDate, endDate);
+        
+        return FinancialMetricsResponse.builder()
+                .totalOrders(orders.size())
+                .totalProfit(getRealRevenue(orders).subtract(getTotalCost(orders)))
+                .totalCost(getTotalCost(orders))
+                .totalShippingFee(getTotalShippingFee(orders))
+                .totalDiscount(getTotalDiscount(orders))
+                .totalRealRevenue(getRealRevenue(orders))
+                .totalOriginalRevenue(getOriginalRevenue(orders))
+                .build();
     }
 }
