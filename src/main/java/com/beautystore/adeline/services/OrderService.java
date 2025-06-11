@@ -331,6 +331,7 @@ public class OrderService {
     // Giá đã giảm
     public BigDecimal getRealRevenue(List<Order> orders) {
         return orders.stream()
+                .filter(order -> order.getStatus() == OrderStatus.Confirmed)
                 .map(Order::getTotalAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
