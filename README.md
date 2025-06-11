@@ -28,9 +28,8 @@ Adeline Beauty Store là một ứng dụng web thương mại điện tử dàn
 
 
 <h2>💻 Cách chạy dự án</h2>
-Tiền điều kiện:
-  - Đã cài đặt JDK 17, Git, Maven Apache - 4.0.0 (hoặc Maven Extension nếu dùng VS Code)
-  - Đã kết nối vào mạng ảo trên Zerotier
+Tiền điều kiện: <br>
+  - Đã cài đặt JDK 17, Git, Maven Apache - 4.0.0 (hoặc Maven Extension nếu dùng VS Code) <br>
 
 <h4>1️⃣ Clone repository</h4>
 
