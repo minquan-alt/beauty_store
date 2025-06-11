@@ -115,6 +115,9 @@ public class AdminController {
     public ApiResponse<FinancialMetricsResponse> getFinancialMetrics(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+
+
+    
         
         if (startDate == null) {
             startDate = LocalDateTime.now().minusMonths(1);
@@ -127,5 +130,6 @@ public class AdminController {
         response.setResult(orderService.getFinancialMetrics(startDate, endDate));
         return response;
     }
+
 
 }
