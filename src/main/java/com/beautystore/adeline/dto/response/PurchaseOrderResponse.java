@@ -10,7 +10,6 @@ import lombok.Data;
 @Builder
 public class PurchaseOrderResponse {
     private Long purchaseOrderId;
-    private String supplierName;
     private LocalDateTime orderDate;
     private String status;
     private List<PurchaseOrderDetailResponse> items;

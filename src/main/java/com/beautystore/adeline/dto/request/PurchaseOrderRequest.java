@@ -20,9 +20,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class PurchaseOrderRequest {
-    @NotNull(message = "SUPPLIER_REQUIRED")
-    private Long supplierId;
-
     @Valid
     @NotEmpty(message = "PURCHASE_ITEMS_REQUIRED")
     private List<PurchaseItem> items;

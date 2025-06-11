@@ -44,65 +44,74 @@ public class PurchaseOrderService {
     @Autowired
     private  PurchaseOrderResponseMapper purchaseOrderResponseMapper;
 
-    @Autowired
-    private SupplierRepository supplierRepository;
+
 
     @Autowired
     private ProductRepository productRepository;
 
-
-    // public PurchaseOrderResponse createPurchaseOrder(PurchaseOrderRequest request) {
-    //     // B1: Chuẩn bị OracleConnection
-    //     Session session = entityManager.unwrap(Session.class);
-    //     OracleConnection connection = session
-    //             .doReturningWork(c -> c.unwrap(OracleConnection.class));
-
-    //     try {
-    //         // B2: Chuẩn bị ARRAY Oracle
-    //         Struct[] itemStructs = new Struct[request.getItems().size()];
-    //         for (int i = 0; i < request.getItems().size(); i++) {
-    //             PurchaseOrderRequest.PurchaseItem item = request.getItems().get(i);
-    //             Object[] attrs = new Object[] {
-    //                     item.getProductId(),
-    //                     item.getQuantity(),
-    //                     item.getUnitPrice()
-    //             };
-    //             itemStructs[i] = connection.createStruct("PURCHASE_ITEM_TYPE", attrs);
-    //         }
-
-    //         Array itemsArray = connection.createOracleArray("PURCHASE_ITEM_TABLE_TYPE", itemStructs);
-
-    //         // B3: Gọi Stored Procedure
-    //         CallableStatement stmt = connection.prepareCall("{ call process_purchase_order(?, ?) }");
-    //         stmt.setLong(1, request.getSupplierId());
-    //         stmt.setArray(2, itemsArray);
-    //         stmt.execute();
-    //         stmt.close();
-
-    //         // B4: Lấy purchase order mới nhất theo supplier_id
-    //         PurchaseOrder order = purchaseOrderRepository
-    //             .findTopBySupplierIdOrderByIdDesc(request.getSupplierId())
-    //             .orElseThrow(() -> new RuntimeException("Không tìm thấy Purchase Order sau khi tạo"));
-
-    //         // B5: Trả về DTO
-    //         return PurchaseOrderResponse.builder()
-    //                 .purchaseOrderId(order.getId())
-    //                 .orderDate(order.getOrderDate())
-    //                 .status(order.getStatus().name())
-    //                 .items(order.getOrderDetails().stream().map(detail ->
-    //                         PurchaseOrderDetailResponse.builder()
-    //                                 .productId(detail.getProduct().getId())
-    //                                 .productName(detail.getProduct().getName())
-    //                                 .quantity(detail.getQuantity())
-    //                                 .unitPrice(detail.getUnitPrice())
-    //                                 .build()
-    //                 ).toList())
-    //                 .build();
-
-    //     } catch (Exception e) {
-    //         throw new RuntimeException("Lỗi khi gọi stored procedure: " + e.getMessage(), e);
-    //     }
-    // }
+    public PurchaseOrderResponse createPurchaseOrder(PurchaseOrderRequest request) {
+        // B1: Lấy OracleConnection
+        Session session = entityManager.unwrap(Session.class);
+        OracleConnection connection = session
+                .doReturningWork(c -> c.unwrap(OracleConnection.class));
+    
+        try {
+            /*---------------------------------------------------------
+             * B2: Chuẩn bị ARRAY Oracle (giữ nguyên logic cũ)
+             *--------------------------------------------------------*/
+            Struct[] itemStructs = new Struct[request.getItems().size()];
+            for (int i = 0; i < request.getItems().size(); i++) {
+                PurchaseOrderRequest.PurchaseItem item = request.getItems().get(i);
+                Object[] attrs = {
+                        item.getProductId(),
+                        item.getQuantity(),
+                        item.getUnitPrice()
+                };
+                itemStructs[i] = connection.createStruct("PURCHASE_ITEM_TYPE", attrs);
+            }
+    
+            Array itemsArray =
+                    connection.createOracleArray("PURCHASE_ITEM_TABLE_TYPE", itemStructs);
+    
+            /*---------------------------------------------------------
+             * B3: Gọi stored procedure  (CHỈ CÒN 1 THAM SỐ)
+             *--------------------------------------------------------*/
+            CallableStatement stmt = connection.prepareCall("{ call process_purchase_order(?) }");
+            stmt.setArray(1, itemsArray);          // <-- paramIndex = 1
+            stmt.execute();
+            stmt.close();
+    
+            /*---------------------------------------------------------
+             * B4: Lấy đơn hàng vừa tạo
+             *   (tìm đơn mới nhất theo ID giảm dần)
+             *--------------------------------------------------------*/
+            PurchaseOrder order = purchaseOrderRepository
+                    .findTopByOrderByIdDesc()      // cần khai báo method này trong repository
+                    .orElseThrow(() ->
+                            new RuntimeException("Không tìm thấy Purchase Order sau khi tạo"));
+    
+            /*---------------------------------------------------------
+             * B5: Trả về DTO
+             *--------------------------------------------------------*/
+            return PurchaseOrderResponse.builder()
+                    .purchaseOrderId(order.getId())
+                    .orderDate(order.getOrderDate())   // SYSDATE lấy từ DB
+                    .status(order.getStatus().name())
+                    .items(order.getOrderDetails().stream()
+                            .map(detail -> PurchaseOrderDetailResponse.builder()
+                                    .productId(detail.getProduct().getId())
+                                    .productName(detail.getProduct().getName())
+                                    .quantity(detail.getQuantity())
+                                    .unitPrice(detail.getUnitPrice())
+                                    .build())
+                            .toList())
+                    .build();
+    
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi gọi stored procedure: " + e.getMessage(), e);
+        }
+    }
+    
 
     public int countPurchaseOrders(){
         return (int) purchaseOrderRepository.count();

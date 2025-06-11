@@ -22,4 +22,6 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
             )
         """)
     List<PurchaseOrder> findByOrderId(Long orderId);
+
+    Optional<PurchaseOrder> findTopByOrderByIdDesc();
 }
