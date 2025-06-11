@@ -35,13 +35,14 @@ Tiền điều kiện:
 <h4>1️⃣ Clone repository</h4>
 
 <pre>
-  git clone https://github.com/minquan-alt/beauty_store.git
-  cd beauty_store
+  Terminal:
+    git clone https://github.com/minquan-alt/beauty_store.git
+    cd beauty_store
 </pre>
 
 <h4>2️⃣ Chạy dự án bằng Maven</h4>
 <pre>Tạo file cấu hình application.properties</pre>
-<pre>Trong terminal gõ: mvn spring-boot:run</pre>
+<pre>Terminal: mvn spring-boot:run</pre>
 <pre>Nếu dùng IDE như IntelliJ: Chạy file AdelineBeautyStoreApplication.java trong package com.beautystore.adeline</pre>
 
 <h4>3️⃣ Truy cập ứng dụng</h4> 
