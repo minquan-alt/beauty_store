@@ -324,6 +324,10 @@ public class OrderService {
                 .sum();
     }
 
+    public List<PurchaseOrder> getCompletedPurchaseOrdersByOrderId(Order order) {
+        return purchaseOrderRepository.findByOrderIdAndStatus(order.getId(), PurchaseOrder.Status.Completed);
+    }
+
     // Giá đã giảm
     public BigDecimal getRealRevenue(List<Order> orders) {
         return orders.stream()
@@ -340,10 +344,10 @@ public class OrderService {
 
     public BigDecimal getTotalCost(List<Order> orders) {
         return orders.stream()
-                .flatMap(order -> getPurchaseOrderByOrderId(order).stream())
-                .flatMap(po -> po.getOrderDetails().stream())
-                .map(pod -> pod.getUnitPrice())
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+            .flatMap(order -> getCompletedPurchaseOrdersByOrderId(order).stream())
+            .flatMap(po -> po.getOrderDetails().stream())
+            .map(pod -> pod.getUnitPrice())
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public List<PurchaseOrder> getPurchaseOrderByOrderId(Order order) {
