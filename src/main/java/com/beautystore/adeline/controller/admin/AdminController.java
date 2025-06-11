@@ -3,16 +3,20 @@ package com.beautystore.adeline.controller.admin;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 
+import com.beautystore.adeline.dto.response.ApiResponse;
+import com.beautystore.adeline.dto.response.FinancialMetricsResponse;
 import com.beautystore.adeline.services.OrderService;
 import com.beautystore.adeline.services.ProductService;
 import com.beautystore.adeline.services.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @RequestMapping("/admin")
 @Controller
@@ -106,7 +110,22 @@ public class AdminController {
         return "adminGUI/coupon";
     }
 
-    
+    @GetMapping("/financial-metrics")
+    @ResponseBody
+    public ApiResponse<FinancialMetricsResponse> getFinancialMetrics(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+        
+        if (startDate == null) {
+            startDate = LocalDateTime.now().minusMonths(1);
+        }
+        if (endDate == null) {
+            endDate = LocalDateTime.now();
+        }
 
+        ApiResponse<FinancialMetricsResponse> response = new ApiResponse<>();
+        response.setResult(orderService.getFinancialMetrics(startDate, endDate));
+        return response;
+    }
 
 }
