@@ -447,7 +447,27 @@
 
         function setAsDefault(addressId) {  
             const currentDefault = document.querySelector('.default-address');
+            console.log("Address Id: " + addressId);
             if (currentDefault) {
+                fetch(`address/update-default/${addressId}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    if(data.code == 1000) {
+                        console.log("Update successfully")
+                    } else {
+                        showNotification("Update default address failed");
+                    }
+                })
+                .catch(e => {
+                    showNotification("Update default address failed: " + e);
+                    console.log(e);
+                })
                 currentDefault.classList.remove('default-address');
                 const currentBadge = currentDefault.querySelector('.default-badge');
                 if (currentBadge) {

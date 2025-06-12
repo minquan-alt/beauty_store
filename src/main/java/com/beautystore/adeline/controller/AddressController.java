@@ -58,7 +58,7 @@ public class AddressController {
     }
 
     @PutMapping("/update-default/{addressId}")
-    public ApiResponse<Boolean> updateDefaultAddress(HttpSession session, Long addressId) {
+    public ApiResponse<Boolean> updateDefaultAddress(HttpSession session, @PathVariable Long addressId) {
         ApiResponse<Boolean> apiResponse = new ApiResponse<>();
         apiResponse.setResult(addressService.updateDefaultAddress(session, addressId));
         return apiResponse;

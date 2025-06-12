@@ -34,6 +34,7 @@ public class Payment {
         Cash,
         Momo,
         BankTransfer,
+        VNPay
     }
 
     public enum PaymentStatus {

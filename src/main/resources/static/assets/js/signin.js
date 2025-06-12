@@ -23,7 +23,14 @@ $(document).ready(function() {
         .then(response => response.json())
         .then(data => {
             if (data.result.authenticated) {
-                alert("Đăng nhập thành công!");
+                    Swal.fire({
+                    title: "",
+                    text: `You are authenticated!`,
+                    icon: "success",
+                    timer: 1000,
+                    showConfirmButton: false,
+                    });
+                // alert("Đăng nhập thành công!");
                 window.location.href = "/";
             } else {
                 alert("Sai email hoặc mật khẩu!");

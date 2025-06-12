@@ -704,7 +704,7 @@ function renderProducts(products) {
         <td><img src="${p.imageUrls[0]}" alt="product" height="50"></td>
         <td>${p.name}</td>
         <td>${p.categoryName}</td>
-        <td>${p.price.toLocaleString()} đ</td>
+        <td>$${p.price.toLocaleString()}</td>
         <td>
           <button class="btn btn-sm btn-outline-primary me-2" onclick="showEditModal(${
             p.id

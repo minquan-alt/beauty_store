@@ -63,7 +63,29 @@ if (checkoutBtn) {
                 success = "Your order will be paid on delivery. Thank you!";
                 break;
             case "bank":
+                const transactionId = "BANK" + Date.now() + Math.floor(Math.random() * 1000);
+                console.log("Generated Transaction ID:", transactionId);
                 success = "Your order will be confirmed once the payment is successfully received. Please check the bank transfer details above.";
+                var jsonData = {}
+                jsonData["transactionId"] = transactionId;
+                jsonData["paymentMethod"] = "BankTransfer"
+
+                console.log(jsonData)
+
+                fetch("api/payment", {
+                    method: "POST",
+                    headers: {
+                    "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(jsonData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.code == 1000){
+                        console.log("Successfully")
+                    }
+                })
+
                 break;
             case "momo":
                 success = "You will be redirected to Momo to complete payment.";
