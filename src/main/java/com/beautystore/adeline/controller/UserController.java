@@ -55,10 +55,9 @@ public class UserController {
     }
 
     // update user
-    @PutMapping("/update-user")
-    ApiResponse<UserResponse> updateUser(@RequestBody UserUpdateRequest request, HttpSession session){
+    @PutMapping("/update-user/{userId}")
+    ApiResponse<UserResponse> updateUser(@RequestBody UserUpdateRequest request, @PathVariable Long userId, HttpSession session){
         ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
-        Long userId = userService.getUserIdFromSession(session);
         apiResponse.setResult(userService.updateUser(request, userId));
         return apiResponse;
     }

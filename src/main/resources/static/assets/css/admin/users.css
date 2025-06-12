@@ -1,9 +1,0 @@
-.user-status {
-  font-weight: 500;
-}
-.user-status.active {
-  color: green;
-}
-.user-status.inactive {
-  color: red;
-}

@@ -36,8 +36,8 @@ public class SupplierController {
     }
 
     @GetMapping()
-    ApiResponse<List<Supplier>> getSuppliers(){
-        ApiResponse<List<Supplier>> apiResponse = new ApiResponse<>();
+    ApiResponse<List<SupplierResponse>> getSuppliers(){
+        ApiResponse<List<SupplierResponse>> apiResponse = new ApiResponse<>();
         apiResponse.setResult(supplierService.getSuppliers());
         return apiResponse;
     }

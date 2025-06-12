@@ -31,4 +31,6 @@ public class CouponUpdateRequest {
     private Integer usageLimit;
     
     private Long applicableUserId;
+
+    private Boolean active;
 }

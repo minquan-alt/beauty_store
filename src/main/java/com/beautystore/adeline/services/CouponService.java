@@ -2,6 +2,7 @@ package com.beautystore.adeline.services;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.beautystore.adeline.dto.request.CouponCreateRequest;
 import com.beautystore.adeline.dto.request.CouponUpdateRequest;
@@ -40,8 +41,9 @@ public CouponResponse createCoupon(CouponCreateRequest request) {
     return this.couponMapper.toResponse(savedCoupon);
 }
 
-public List<Coupon> getCoupons() {
-    return this.couponRepository.findAll();
+public List<CouponResponse> getCoupons() {
+
+    return this.couponRepository.findAll().stream().map(c -> this.couponMapper.toResponse(c)).collect(Collectors.toList());
 }
 
 public CouponResponse getCouponById(String code) {

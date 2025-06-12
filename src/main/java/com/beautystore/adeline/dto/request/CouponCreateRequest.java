@@ -41,4 +41,6 @@ public class CouponCreateRequest {
     private Integer usageLimit;
     
     private Long applicableUserId;
+
+    private Boolean active;
 }

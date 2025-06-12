@@ -2,11 +2,17 @@ package com.beautystore.adeline.controller.admin;
 
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
+import java.util.List;
 
 import com.beautystore.adeline.dto.response.ApiResponse;
+import com.beautystore.adeline.dto.response.CouponResponse;
 import com.beautystore.adeline.dto.response.FinancialMetricsResponse;
+import com.beautystore.adeline.dto.response.SupplierResponse;
+import com.beautystore.adeline.entity.Coupon;
+import com.beautystore.adeline.services.CouponService;
 import com.beautystore.adeline.services.OrderService;
 import com.beautystore.adeline.services.ProductService;
+import com.beautystore.adeline.services.SupplierService;
 import com.beautystore.adeline.services.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +28,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class AdminController {
 
-    private final OrderService orderService;
-    private final UserService userService;
-    private final ProductService productService;
+    @Autowired
+    private OrderService orderService;
 
     @Autowired
-    public AdminController(OrderService orderService, UserService userService, ProductService productService) {
-        this.orderService = orderService;
-        this.userService = userService;
-        this.productService = productService;
-    }
+    private SupplierService supplierService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private CouponService couponService;
+
 
     @GetMapping
     String adminDashboard(
@@ -62,7 +73,7 @@ public class AdminController {
         
         var dashboardData = orderService.getDashboardData(startDate, endDate);
 
-        //Data cho bảng
+
         int totalUsers = userService.countUsers();
         int totalProducts = productService.countProducts();
         model.addAttribute("totalRevenue", dashboardData.getTotalRevenue());
@@ -70,10 +81,10 @@ public class AdminController {
         model.addAttribute("totalUsers", totalUsers);
         model.addAttribute("totalProducts", totalProducts);
 
-        //Data cho chart
+
         model.addAttribute("chartData", orderService.getProfitChartData(startDate, endDate));
 
-        //Data cho filter
+
         model.addAttribute("filter", filter);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
@@ -86,7 +97,10 @@ public class AdminController {
     }
 
     @GetMapping("/order") 
-    String adminOrder(){
+    String adminOrder(Model model){
+
+        List<CouponResponse> coupons = couponService.getCoupons();
+        model.addAttribute("coupons" ,coupons);
         return "adminGUI/orders";
     }
 
@@ -101,7 +115,10 @@ public class AdminController {
     }
 
     @GetMapping("/supplier") 
-    String adminSupplier(){
+    String adminSupplier(Model model){
+        List<SupplierResponse> suppliers = supplierService.getSuppliers();
+
+        model.addAttribute("suppliers", suppliers);
         return "adminGUI/suppliers";
     }
 
@@ -115,9 +132,6 @@ public class AdminController {
     public ApiResponse<FinancialMetricsResponse> getFinancialMetrics(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
-
-
-    
         
         if (startDate == null) {
             startDate = LocalDateTime.now().minusMonths(1);

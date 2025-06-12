@@ -18,4 +18,5 @@ public class UserUpdateRequest {
     String phone;
     @Size(min = 8, message = "PASSWORD_INVALID")
     String password;
+    String role;
 }

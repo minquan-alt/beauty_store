@@ -1,6 +1,7 @@
 package com.beautystore.adeline.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,16 +30,26 @@ public class SupplierService {
     @Autowired
     private final SupplierMapper supplierMapper;
 
+    private SupplierResponse supplierToSupplierResponse(Supplier supplier) {
+        return SupplierResponse.builder()
+            .id(supplier.getId())
+            .name(supplier.getName())
+            .contactInfo(supplier.getContactInfo())
+            .build();
+    }
+
     public Supplier createSupplier(SupplierCreateRequest request){
         Supplier supplier = supplierMapper.toSupplier(request);
         return supplierRepository.save(supplier);
     }
 
-    public List<Supplier> getSuppliers(){
+    public List<SupplierResponse> getSuppliers(){
         List<Supplier> suppliers = supplierRepository.findAll();
         if(suppliers.isEmpty())
             throw new AppException(ErrorCode.SUPPLIER_LIST_EMPTY);
-        return suppliers;
+        return suppliers.stream()
+            .map(supplier -> supplierToSupplierResponse(supplier))
+            .collect(Collectors.toList());
     }
 
     public SupplierResponse getSupplier(Long id){
@@ -65,6 +76,7 @@ public class SupplierService {
             .orElseThrow(() -> new AppException(ErrorCode.SUPPLIER_NOT_FOUND));
         
         if(!supplier.getProducts().isEmpty()){
+            System.out.println(ErrorCode.SUPPLIER_HAS_PRODUCT);
             throw new AppException(ErrorCode.SUPPLIER_HAS_PRODUCT);
         }
 

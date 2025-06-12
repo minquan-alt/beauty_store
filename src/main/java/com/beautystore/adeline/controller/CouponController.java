@@ -37,8 +37,8 @@ public class CouponController {
     }    
 
     @GetMapping()
-    ApiResponse<List<Coupon>> getCoupons(){
-        ApiResponse<List<Coupon>> apiResponse = new ApiResponse<>();
+    ApiResponse<List<CouponResponse>> getCoupons(){
+        ApiResponse<List<CouponResponse>> apiResponse = new ApiResponse<>();
         apiResponse.setResult(this.couponService.getCoupons());
         return apiResponse;
     }
@@ -64,15 +64,4 @@ public class CouponController {
         apiResponse.setResult("Coupon has been deleted");
         return apiResponse;
     }
-
-    // @PostMapping("use/{couponId}")
-    // public ApiResponse<Boolean> useCouponById(@PathVariable Long couponId) {
-    //     //TODO: process POST request
-    //     ApiResponse<Boolean> apiResponse = new ApiResponse<>();
-    //     apiResponse.setResult(couponService.useCouponById(couponId)); 
-        
-    //     return true;
-    // }
-    
-
 }

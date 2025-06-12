@@ -22,10 +22,11 @@ public interface CouponMapper {
     // Changed method name from toEntity to toCoupon
     @Mapping(target = "code", source = "code")
     @Mapping(target = "usedCount", constant = "0")
-    @Mapping(target = "active", constant = "true")
+    @Mapping(target = "active", source = "active") 
     @Mapping(target = "createdAt", expression = "java(LocalDateTime.now())")
     @Mapping(target = "applicableUser", source = "applicableUserId", qualifiedByName = "mapUserIdToUser")
     @Mapping(target = "value", source = "discountValue")
+    // @Mapping(target = "active", source = "active")
     Coupon toCoupon(CouponCreateRequest request);
 
     @Mapping(target = "discountValue", source = "value") // Maps value to discountValue
