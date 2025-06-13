@@ -106,7 +106,11 @@ public class HomeController {
 
     @GetMapping("/payment/success")
     public String paymentSuccess(@RequestParam Long orderId, Model model) {
-        model.addAttribute("orderId", orderId);
+        if(orderId != null) {
+            model.addAttribute("orderId", orderId);
+        } else {
+            model.addAttribute("orderId", orderId);
+        }
         return "payment_successful";  // Trả về success.html
     }
 }
