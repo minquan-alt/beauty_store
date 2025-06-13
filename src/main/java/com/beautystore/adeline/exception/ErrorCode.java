@@ -25,6 +25,7 @@ public enum ErrorCode {
     PRODUCT_LIST_EMPTY(2008, "Product is empty"),
     PRODUCT_REQUIRED(2009, "Product is required"),
     ADD_CART_RESPONSE_NOT_FOUND(2010, "Error in add to cart"),
+    PRODUCT_PRICE_LOWER_THAN_COST(2011, "Price must not be lower than cost"),
 
     SUPPLIER_NOT_FOUND(3001, "Supplier not found"),
     SUPPLIER_LIST_EMPTY(3002,"Supplier is empty"),

@@ -5,6 +5,8 @@ import com.beautystore.adeline.dto.request.UpdateCartItemRequest;
 import com.beautystore.adeline.dto.response.AddCartResponse;
 import com.beautystore.adeline.dto.response.ApiResponse;
 import com.beautystore.adeline.dto.response.CartResponse;
+import com.beautystore.adeline.exception.AppException;
+import com.beautystore.adeline.exception.ErrorCode;
 import com.beautystore.adeline.services.CartService;
 import com.beautystore.adeline.services.UserService;
 
@@ -42,6 +44,9 @@ public class CartController {
   @PostMapping("/add")
   public ApiResponse<AddCartResponse> addToCart(@RequestBody AddToCartRequest request, HttpSession session) {
       Long userId = (Long) session.getAttribute("userId");
+      if(userId == null) {
+        throw new AppException(ErrorCode.USER_NOT_FOUND);
+      }
       AddCartResponse result = cartService.addToCart(request, userId);
       ApiResponse<AddCartResponse> apiResponse = new ApiResponse<>();
       apiResponse.setResult(result);

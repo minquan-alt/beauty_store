@@ -6,10 +6,7 @@ let categories = [];
 let suppliers = [];
 let inventories = [];
 
-/***************************************************************************************************************************/
-/**
- * Khi refresh trang
- */
+
 window.addEventListener("load", function () {
   loadProducts();
   loadCategories("filterCategory");
@@ -17,10 +14,7 @@ window.addEventListener("load", function () {
   loadSuppliers();
 });
 
-/***************************************************************************************************************************/
-/**
- * Load các category, supplier, inventory để cho thẻ select
- */
+
 async function loadCategories(selectId = "filterCategory") {
   const res = await fetch("http://localhost:8080/categories");
   const categories = (await res.json()).result;

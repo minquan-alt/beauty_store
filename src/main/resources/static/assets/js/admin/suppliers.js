@@ -55,7 +55,6 @@ function editSupplier(id) {
     document.getElementById("supplierContact").value = supplier.contactInfo;
     document.getElementById("saveSupplierBtn").setAttribute("data-edit-id", supplier.id);
     
-    // Change modal title for editing
     document.querySelector('#addSupplierModal .modal-title').textContent = 'Edit Supplier';
     
     const modal = new bootstrap.Modal(document.getElementById("addSupplierModal"));
@@ -182,7 +181,6 @@ function setupEventListeners() {
     const editingId = document.getElementById("saveSupplierBtn").getAttribute("data-edit-id");
     
     if (editingId) {
-      // EDIT MODE - Cập nhật supplier
       const idx = suppliers.findIndex(s => s.id == editingId);
       if (idx !== -1) {
         const updatedSupplier = {
@@ -191,11 +189,9 @@ function setupEventListeners() {
           contactInfo: contact
         };
         
-        // Gọi API để cập nhật trên server
         const success = await updateSupplierOnServer(updatedSupplier);
         
         if (success) {
-          // Chỉ cập nhật local array khi server thành công
           suppliers[idx].name = name;
           suppliers[idx].contactInfo = contact;
           showToast("Supplier updated successfully!", "success");

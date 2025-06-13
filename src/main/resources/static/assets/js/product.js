@@ -93,7 +93,7 @@ function decreaseQty(btn) {
 }
 
 function addToCartAPI(productId, quantity) {
-  fetch("http://localhost:8080/cart/add", {
+  return fetch("http://localhost:8080/cart/add", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -103,10 +103,26 @@ function addToCartAPI(productId, quantity) {
     .then((res) => res.json())
     .then((data) => {
       console.log(data.result);
+      if (data.code != 1000) {
+        Swal.fire({
+          title: "You need to login",
+          text: data.message,
+          icon: "error",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        return false;
+      }
+      return true;
+    })
+    .catch((err) => {
+      console.error("Add to cart failed:", err);
+      return false;
     });
 }
 
-function addToCart(btn, selector, productId, type) {
+
+async function addToCart(btn, selector, productId, type) {
   if (type == "card" && selector.style.display === "none") {
     selector.style.display = "flex"; // Hiện bộ chọn số lượng
     btn.textContent = "Confirm"; // Đổi tên nút
@@ -114,7 +130,13 @@ function addToCart(btn, selector, productId, type) {
     const qtyInput = selector.querySelector("input");
     const quantity = parseInt(qtyInput.value);
 
-    addToCartAPI(productId, quantity);
+    const success = await addToCartAPI(productId, quantity);
+    console.log("success: ", success)
+    if(!success) {
+      window.location.href = "/signin";
+      return;
+    }
+    
 
     Swal.fire({
       title: "Added to Cart!",

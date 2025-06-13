@@ -105,6 +105,10 @@ public class ProductService {
 
         productResponseMapper.updateProduct(product, request);
 
+        if (request.getPrice().compareTo(product.getPrice()) < 0) {
+            throw new AppException(ErrorCode.PRODUCT_PRICE_LOWER_THAN_COST);
+        }
+
         if (request.getCategory_id() != null)
             product.setCategory(categoryRepository.getReferenceById(request.getCategory_id()));
 

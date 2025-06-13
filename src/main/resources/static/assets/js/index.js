@@ -6,7 +6,7 @@ function logoutUser() {
     .then((response) => response.json())
     .then((data) => {
       if (!data.result.authenticated) {
-        window.location.href = "/"; // Redirect về trang chủ
+        window.location.href = "/"; 
       }
     })
     .catch((error) => console.error("Logout failed:", error));
