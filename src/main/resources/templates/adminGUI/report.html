@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports - Beauty Store Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.css" rel="stylesheet">
+  <style>
+    .report-card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      overflow: hidden;
+    }
+    .report-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .report-card .card-header {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: white;
+      font-weight: bold;
+      border: none;
+    }
+    .report-card.revenue .card-header {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+    }
+    .form-control, .form-select {
+      border-radius: 8px;
+      border: 2px solid #e9ecef;
+      transition: border-color 0.3s ease;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #3498db;
+      box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      border: none;
+      border-radius: 8px;
+      padding: 10px 25px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #2980b9, #1f618d);
+      transform: translateY(-2px);
+    }
+    .btn-success {
+      background: linear-gradient(135deg, #27ae60, #229954);
+      border: none;
+      border-radius: 8px;
+      padding: 10px 25px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .btn-success:hover {
+      background: linear-gradient(135deg, #229954, #1e8449);
+      transform: translateY(-2px);
+    }
+    .table {
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .table thead th {
+      background: linear-gradient(135deg, #34495e, #2c3e50);
+      color: white;
+      border: none;
+      font-weight: 500;
+    }
+    .table tbody tr:hover {
+      background-color: #f8f9fa;
+      transform: scale(1.01);
+      transition: all 0.2s ease;
+    }
+    .chart-container {
+      position: relative;
+      height: 400px;
+      margin: 20px 0;
+    }
+    .summary-card {
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+      border-left: 5px solid #3498db;
+    }
+    .loading-spinner {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+    .export-buttons {
+      display: none;
+      gap: 10px;
+      margin: 15px 0;
+    }
+    .export-buttons.show {
+      display: flex;
+    }
+  </style>
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <nav class="col-md-2 d-none d-md-block sidebar py-4">
+      <div class="px-3">
+        <h4 class="mb-4">Beauty Admin</h4>
+        <ul class="nav flex-column">
+          <li class="nav-item mb-2"><a class="nav-link" th:href="@{/admin}"><i class="bi bi-house-door"></i> Dashboard</a></li>
+          <li class="nav-item mb-2"><a class="nav-link" th:href="@{/admin/product}"><i class="bi bi-bag"></i> Products</a></li>
+          <li class="nav-item mb-2"><a class="nav-link" th:href="@{/admin/order}"><i class="bi bi-cart-check"></i> Orders</a></li>
+          <li class="nav-item mb-2"><a class="nav-link" th:href="@{/admin/user}"><i class="bi bi-people"></i> Users</a></li>
+          <li class="nav-item mb-2"><a class="nav-link" th:href="@{/admin/inventory}"><i class="bi bi-truck"></i> Inventory</a></li>
+          <li class="nav-item mb-2"><a class="nav-link" th:href="@{/admin/supplier}"><i class="bi bi-box-seam"></i> Suppliers</a></li>
+          <li class="nav-item mb-2"><a class="nav-link" th:href="@{/admin/coupon}"><i class="bi bi-percent"></i> Coupon</a></li>
+          <li class="nav-item mb-2"><a class="nav-link active" th:href="@{/admin/report}"><i class="bi bi-journal-text"></i> Reports</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="col-md-10 ms-sm-auto px-4 py-4">
+      <h2 class="mb-4">
+        <i class="bi bi-graph-up text-primary"></i> 
+        Reports Dashboard
+      </h2>
+
+      <div class="row">
+        <!-- Inventory Report Card -->
+        <div class="col-lg-6 mb-4">
+          <div class="card report-card">
+            <div class="card-header">
+              <h5 class="mb-0">
+                <i class="bi bi-boxes"></i> 
+                Báo Cáo Tồn Kho
+              </h5>
+            </div>
+            <div class="card-body">
+              <form id="inventoryReportForm">
+                <div class="mb-3">
+                  <label for="inventoryStartDate" class="form-label">Từ ngày:</label>
+                  <input type="date" id="inventoryStartDate" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                  <label for="inventoryEndDate" class="form-label">Đến ngày:</label>
+                  <input type="date" id="inventoryEndDate" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                  <label for="inventoryCategory" class="form-label">Danh mục:</label>
+                  <select id="inventoryCategory" class="form-select">
+                    <option value="">Tất cả danh mục</option>
+                    <option value="skincare">Skincare</option>
+                    <option value="makeup">Makeup</option>
+                    <option value="fragrance">Fragrance</option>
+                    <option value="haircare">Hair Care</option>
+                  </select>
+                </div>
+                <!-- <div class="mb-3">
+                  <label for="inventorySupplier" class="form-label">Nhà cung cấp:</label>
+                  <select id="inventorySupplier" class="form-select">
+                    <option value="">Tất cả nhà cung cấp</option>
+                    <option value="supplier1">L'Oréal</option>
+                    <option value="supplier2">Unilever</option>
+                    <option value="supplier3">P&G</option>
+                  </select>
+                </div> -->
+                <button type="submit" class="btn btn-primary w-100">
+                  <i class="bi bi-search"></i> Tạo Báo Cáo Tồn Kho
+                </button>
+              </form>
+
+              <div class="loading-spinner" id="inventoryLoading">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Đang tạo báo cáo...</p>
+              </div>
+
+              <div class="export-buttons" id="inventoryExportButtons">
+                <button class="btn btn-success btn-sm" onclick="exportInventoryReport('excel')">
+                  <i class="bi bi-file-earmark-excel"></i> Excel
+                </button>
+                <button class="btn btn-success btn-sm" onclick="exportInventoryReport('pdf')">
+                  <i class="bi bi-file-earmark-pdf"></i> PDF
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Report Results Section -->
+      <div id="reportResults" style="display: none;">
+
+        <div class="d-flex justify-content-end mb-2">
+            <button id="btnExportPdf" class="btn btn-primary">
+            <i class="bi bi-file-earmark-pdf"></i> Xuất PDF
+            </button>
+        </div>
+        <!-- Summary Cards -->
+        <div class="row mb-4" id="summaryCards">
+          <!-- Dynamic summary cards will be inserted here -->
+        </div>
+
+        <!-- Chart Section -->
+        <div class="card mb-4" id="chartSection">
+          <div class="card-header bg-dark text-white">
+            <h5 class="mb-0" id="chartTitle">
+              <i class="bi bi-bar-chart"></i> Biểu Đồ
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="reportChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data Table Section -->
+        <div class="card" id="tableSection">
+          <div class="card-header bg-dark text-white">
+            <h5 class="mb-0" id="tableTitle">
+              <i class="bi bi-table"></i> Chi Tiết Tồn Kho
+            </h5>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover mb-0" id="reportTable">
+                <thead>
+                  <!-- Dynamic headers will be inserted here -->
+                </thead>
+                <tbody>
+                  <!-- Dynamic data will be inserted here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="toastAlert" class="toast align-items-center border-0" role="alert">
+    <div class="d-flex">
+      <div class="toast-body" id="toastMessage"></div>
+      <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.js"></script> -->
+ <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.getElementById("inventoryReportForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        console.log("You click submit inventoryReportForm");
+        var inventoryStartDate = document.getElementById("inventoryStartDate").value;
+        var inventoryEndDate = document.getElementById("inventoryEndDate").value;
+
+        const result = await fetch(`/inventories/report/generate?startDate=${inventoryStartDate}&endDate=${inventoryEndDate}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if(data.code == 1000) {
+                    return data.result;
+                } else {
+                    return null;
+                }
+            })
+            .catch(e => {
+                console.log(e);
+                return null;
+            })
+        
+        const opening  = result.openingInventory || [];
+        const inflows  = result.incomingInventory || [];
+        const outflows = result.outgoingInventory || [];
+        const closing  = result.closingInventory || [];
+
+        console.log(opening);
+
+        document.getElementById('reportResults').style.display = 'block';
+
+        const sum = arr => arr.reduce((s, r) => s + r.totalQuantity, 0);
+        const cards = [
+            { title: 'Đầu kỳ',       value: sum(opening)  },
+            { title: 'Nhập trong kỳ', value: sum(inflows) },
+            { title: 'Xuất trong kỳ', value: sum(outflows)},
+            { title: 'Cuối kỳ',       value: sum(closing) }
+        ];
+        const container = document.getElementById('summaryCards');
+        container.innerHTML = '';
+        cards.forEach(c => {
+            const col = document.createElement('div');
+            col.className = 'col-md-3';
+            col.innerHTML = `
+            <div class="card text-center">
+                <div class="card-body">
+                <h6>${c.title}</h6>
+                <h3>${c.value}</h3>
+                </div>
+            </div>`;
+            container.appendChild(col);
+        });
+
+        // 5. Vẽ biểu đồ: so sánh opening/inflows/outflows/closing theo product
+        const labels = closing.map(r => r.name);
+        const dataSets = [
+            { label: 'Tồn Đầu kỳ',  data: opening .map(r => r.totalQuantity) },
+            { label: 'Nhập trong kỳ',    data: inflows .map(r => r.totalQuantity) },
+            { label: 'Xuất trong kỳ',    data: outflows.map(r => r.totalQuantity) },
+            { label: 'Tồn Cuối kỳ', data: closing .map(r => r.totalQuantity) }
+        ];
+        const ctx = document.getElementById('reportChart').getContext('2d');
+        document.getElementById('chartTitle').textContent = 'So sánh tồn kho theo sản phẩm';
+        new Chart(ctx, {
+            type: 'bar',
+            data: { labels, datasets: dataSets },
+            options: { responsive: true }
+        });
+
+        // 6. Đổ bảng chi tiết: mình dùng closing làm ví dụ
+        const thead = document.querySelector('#reportTable thead');
+        const tbody = document.querySelector('#reportTable tbody');
+
+        // 2 dòng header
+        thead.innerHTML = `
+        <tr>
+            <th rowspan="2">Product ID</th>
+            <th rowspan="2">Tên sản phẩm</th>
+            <th colspan="2" class="text-center">Tồn Đầu kỳ</th>
+            <th colspan="2" class="text-center">Nhập trong kỳ</th>
+            <th colspan="2" class="text-center">Xuất trong kỳ</th>
+            <th colspan="2" class="text-center">Tồn Cuối kỳ</th>
+        </tr>
+        <tr>
+            <th>Số lượng</th><th>Thành tiền</th>
+            <th>Số lượng</th><th>Thành tiền</th>
+            <th>Số lượng</th><th>Thành tiền</th>
+            <th>Số lượng</th><th>Thành tiền</th>
+        </tr>
+        `;
+        tbody.innerHTML = '';
+
+        const allProducts = closing.map(r => r.productId)
+        const findOr = (arr, id) => arr.find(r => r.productId === id) || { totalQuantity: 0, totalAmount: 0 };
+
+        allProducts.forEach(id => {
+        const o = findOr(opening,  id);
+        const i = findOr(inflows,  id);
+        const u = findOr(outflows, id);
+        const c = findOr(closing,  id);
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${id}</td>
+            <td>${c.name}</td>
+            <td>${o.totalQuantity}</td><td>${o.totalAmount.toLocaleString()}</td>
+            <td>${i.totalQuantity}</td><td>${i.totalAmount.toLocaleString()}</td>
+            <td>${u.totalQuantity}</td><td>${u.totalAmount.toLocaleString()}</td>
+            <td>${c.totalQuantity}</td><td>${c.totalAmount.toLocaleString()}</td>
+        `;
+        tbody.appendChild(tr);
+        });
+    })
+
+    document.getElementById('btnExportPdf').addEventListener('click', async () => {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const reportEl = document.getElementById('reportResults');
+
+        const start = document.getElementById("inventoryStartDate").value;
+        const end   = document.getElementById("inventoryEndDate").value;
+        const title = 'Bao cao ton kho';
+        const period = `(${start}, ${end})`;
+
+        pdf.setFontSize(16);
+        pdf.text(title, 105, 15, { align: 'center' });    
+        pdf.setFontSize(12);
+        pdf.text(period, 105, 23, { align: 'center' });    
+        
+    
+        const canvas = await html2canvas(reportEl, {
+            scale: 2,
+            useCORS: true
+        });
+        const imgData = canvas.toDataURL('image/png');
+        
+       
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth() - 20;
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        pdf.addImage(imgData, 'PNG', 10, 30, pdfWidth, pdfHeight);
+        
+        // 4. Lưu file
+        pdf.save(`Inventory_Report_${start}_to_${end}.pdf`);
+    });
+
+</script>
+

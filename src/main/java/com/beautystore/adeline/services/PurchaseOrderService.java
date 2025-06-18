@@ -1,9 +1,6 @@
 package com.beautystore.adeline.services;
 
 import java.math.BigDecimal;
-import java.sql.Array;
-import java.sql.CallableStatement;
-import java.sql.Struct;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,9 +18,7 @@ import com.beautystore.adeline.mapper.PurchaseOrderResponseMapper;
 import com.beautystore.adeline.repository.ProductRepository;
 import com.beautystore.adeline.repository.PurchaseOrderProcedureRepository;
 import com.beautystore.adeline.repository.PurchaseOrderRepository;
-import com.beautystore.adeline.repository.SupplierRepository;
 
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

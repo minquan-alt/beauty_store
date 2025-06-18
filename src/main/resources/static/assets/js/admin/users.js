@@ -22,6 +22,7 @@ const deleteUserModal = new bootstrap.Modal(document.getElementById('deleteUserM
 // Form elements
 const addUserName = document.getElementById('addUserName');
 const addUserEmail = document.getElementById('addUserEmail');
+const addUserPassword = document.getElementById('addUserPassword');
 const addUserPhone = document.getElementById('addUserPhone');
 const addUserRole = document.getElementById('addUserRole');
 
@@ -129,6 +130,7 @@ async function saveUser() {
     const userData = {
         name: addUserName.value.trim(),
         email: addUserEmail.value.trim(),
+        password: addUserPassword.value.trim(),
         phone: addUserPhone.value.trim(),
         role: addUserRole.value
     };
@@ -381,6 +383,7 @@ function openDeleteModal(userId) {
 function clearAddUserForm() {
     addUserName.value = '';
     addUserEmail.value = '';
+    addUserPassword.value = '';
     addUserPhone.value = '';
     addUserRole.value = '';
 }

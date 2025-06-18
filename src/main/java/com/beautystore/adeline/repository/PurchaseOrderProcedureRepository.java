@@ -48,7 +48,7 @@ public class PurchaseOrderProcedureRepository {
     private Long createPurchaseOrder() {
         try {
             // Gọi procedure tạo Purchase Order và trả về ID
-            StoredProcedureQuery query = entityManager.createStoredProcedureQuery("create_purchase_order");
+            StoredProcedureQuery query = entityManager.createStoredProcedureQuery("BEAUTY_STORE.create_purchase_order");
             query.registerStoredProcedureParameter("p_order_id", Long.class, ParameterMode.OUT);
             
             query.execute();
@@ -68,7 +68,7 @@ public class PurchaseOrderProcedureRepository {
     private void insertPurchaseOrderDetail(Long purchaseOrderId, Long productId, Integer quantity, BigDecimal unitPrice) {
         try {
             // Gọi procedure insert detail
-            StoredProcedureQuery query = entityManager.createStoredProcedureQuery("insert_purchase_order_detail");
+            StoredProcedureQuery query = entityManager.createStoredProcedureQuery("BEAUTY_STORE.insert_purchase_order_detail");
             query.registerStoredProcedureParameter("p_purchase_order_id", Long.class, ParameterMode.IN);
             query.registerStoredProcedureParameter("p_product_id", Long.class, ParameterMode.IN);
             query.registerStoredProcedureParameter("p_quantity", Integer.class, ParameterMode.IN);

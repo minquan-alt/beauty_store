@@ -1,22 +1,28 @@
 package com.beautystore.adeline.services;
 
 import com.beautystore.adeline.dto.request.InventoryCreateRequest;
+import com.beautystore.adeline.dto.response.ApiResponse;
+import com.beautystore.adeline.dto.response.InventoryReportResultResponse;
 import com.beautystore.adeline.dto.response.InventoryResponse;
 import com.beautystore.adeline.entity.Inventory;
 import com.beautystore.adeline.exception.AppException;
 import com.beautystore.adeline.exception.ErrorCode;
 import com.beautystore.adeline.mapper.InventoryMapper;
+import com.beautystore.adeline.repository.InventoryReportRepository;
 import com.beautystore.adeline.repository.InventoryRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class InventoryService {
+    @Autowired
+    private InventoryReportRepository inventoryReportRepository;
 
     @Autowired
     private InventoryRepository inventoryRepository;
@@ -57,5 +63,14 @@ public class InventoryService {
             throw new AppException(ErrorCode.INVENTORY_HAS_PRODUCTS);
         }
         inventoryRepository.delete(inventory);
+    }
+
+    public InventoryReportResultResponse generateInventoryReport(LocalDate startDate, LocalDate endDate) {
+        try {
+            return inventoryReportRepository.generateInventoryReport(startDate, endDate);
+        } catch (Exception e) {
+            System.out.println(e);
+            throw e;
+        }
     }
 }

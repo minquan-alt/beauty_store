@@ -127,6 +127,11 @@ public class AdminController {
         return "adminGUI/coupon";
     }
 
+    @GetMapping("/report") 
+    String adminReport(){
+        return "adminGUI/report";
+    }
+
     @GetMapping("/financial-metrics")
     @ResponseBody
     public ApiResponse<FinancialMetricsResponse> getFinancialMetrics(

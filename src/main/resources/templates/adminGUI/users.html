@@ -23,6 +23,7 @@
             <li class="nav-item mb-2"><a class="nav-link" th:href="@{/admin/inventory}"><i class="bi bi-truck"></i> Inventory</a></li>
             <li class="nav-item mb-2"><a class="nav-link" th:href="@{/admin/supplier}"><i class="bi bi-box-seam"></i> Suppliers</a></li>
             <li class="nav-item mb-2"><a class="nav-link" th:href="@{/admin/coupon}"><i class="bi bi-percent"></i> Coupon</a></li>
+            <li class="nav-item mb-2"><a class="nav-link" th:href="@{/admin/report}"><i class="bi bi-journal-text"></i>Report</a></li>
           </ul>
         </div>
       </nav>
@@ -85,6 +86,10 @@
           <div class="mb-3">
             <label for="addUserEmail" class="form-label">Email <span class="text-danger">*</span></label>
             <input type="email" class="form-control" id="addUserEmail" placeholder="Enter email address" required>
+          </div>
+          <div class="mb-3">
+            <label for="addUserPassword" class="form-label">Password <span class="text-danger">*</span></label>
+            <input type="password" class="form-control" id="addUserPassword" placeholder="Enter password" required>
           </div>
           <div class="mb-3">
             <label for="addUserPhone" class="form-label">Phone <span class="text-danger">*</span></label>

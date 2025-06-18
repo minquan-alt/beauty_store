@@ -2,14 +2,19 @@ package com.beautystore.adeline.controller;
 
 import com.beautystore.adeline.dto.request.InventoryCreateRequest;
 import com.beautystore.adeline.dto.response.ApiResponse;
+import com.beautystore.adeline.dto.response.InventoryReportResultResponse;
 import com.beautystore.adeline.dto.response.InventoryResponse;
 import com.beautystore.adeline.entity.Inventory;
 import com.beautystore.adeline.services.InventoryService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -53,6 +58,16 @@ public class InventoryController {
         ApiResponse<String> apiResponse = new ApiResponse<>();
         inventoryService.deleteInventory(inventoryId);
         apiResponse.setResult("Inventory has been deleted");
+        return apiResponse;
+    }
+
+    @GetMapping("/report/generate")
+    public ApiResponse<InventoryReportResultResponse> generateInventoryReport(
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        ApiResponse<InventoryReportResultResponse> apiResponse = new ApiResponse<>();
+        InventoryReportResultResponse result = inventoryService.generateInventoryReport(startDate, endDate);
+        apiResponse.setResult(result);
         return apiResponse;
     }
 }
